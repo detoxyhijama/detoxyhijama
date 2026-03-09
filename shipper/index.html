@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Detoxy Hijama — Shipper Panel</title>
+<meta name="robots" content="noindex,nofollow"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--t:#2aab97;--td:#1d8a78;--tl:#3ecab5;--tp:#e8f8f5;--cream:#f4f9f8;--dark:#0b1f1c;--mid:#174840;--text:#2a4a45;--muted:#6b9990;--border:#ddecea;--red:#e53935;--green:#16a34a;--blue:#0369a1;--orange:#d97706;--sb:210px}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3{font-family:'Cormorant Garamond',serif}
+a{text-decoration:none;color:inherit}
+#loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,var(--dark),var(--mid));display:flex;align-items:center;justify-content:center;z-index:9999}
+.lbox{background:#fff;border-radius:24px;padding:44px;width:400px;max-width:94vw;box-shadow:0 24px 80px rgba(0,0,0,.3)}
+.lfield{margin-bottom:14px}
+.lfield label{display:block;font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px}
+.lfield input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:.92rem;font-family:'Outfit',sans-serif;transition:border-color .2s}
+.lfield input:focus{outline:none;border-color:var(--t)}
+.lbtn{width:100%;background:var(--t);color:#fff;border:none;padding:13px;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;margin-top:6px}
+.lbtn:hover{background:var(--td)}
+.lerr{color:var(--red);font-size:.82rem;text-align:center;margin-top:10px;display:none}
+#app{display:none;height:100vh;overflow:hidden}
+.sb{position:fixed;left:0;top:0;bottom:0;width:var(--sb);background:var(--dark);display:flex;flex-direction:column;z-index:100}
+.sb-top{display:flex;align-items:center;gap:10px;padding:18px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-top img{width:38px;height:38px;border-radius:50%}
+.sb-brand{font-family:'Cormorant Garamond',serif;font-size:.98rem;font-weight:700;color:#fff;display:block;line-height:1.1}
+.sb-sub{font-size:.58rem;color:#25d366;text-transform:uppercase;letter-spacing:.1em;font-weight:600}
+.sb-nav{padding:10px 0;flex:1}
+.sb-gl{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.25);font-weight:600;padding:10px 16px 5px}
+.sb-btn{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;cursor:pointer;color:rgba(255,255,255,.5);font-size:.83rem;font-weight:500;transition:all .2s;margin:1px 8px;background:none;border:none;width:calc(100% - 16px);text-align:left;font-family:'Outfit',sans-serif}
+.sb-btn:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
+.sb-btn.active{background:rgba(42,171,151,.2);color:var(--tl);font-weight:600}
+.sb-btn .ico{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.88rem;flex-shrink:0}
+.sb-btn.active .ico{background:rgba(42,171,151,.22)}
+.badge-pill{margin-left:auto;background:var(--red);color:#fff;font-size:.58rem;padding:2px 7px;border-radius:50px;font-weight:700}
+.sb-foot{padding:14px 16px;border-top:1px solid rgba(255,255,255,.07)}
+.logout-btn{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.35);font-size:.8rem;cursor:pointer;background:none;border:none;font-family:'Outfit',sans-serif;padding:7px 10px;border-radius:8px;width:100%;transition:all .2s}
+.logout-btn:hover{color:var(--red);background:rgba(229,57,53,.08)}
+.main-area{margin-left:var(--sb);height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:13px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar-ttl{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--dark)}
+.chip{background:#f0fdf4;color:var(--green);padding:5px 13px;border-radius:50px;font-size:.76rem;font-weight:600}
+.content{padding:24px 28px;flex:1}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.sc{background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px}
+.sc-ico{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:12px}
+.ic-g{background:#dcfce7}.ic-b{background:#dbeafe}.ic-o{background:#fef3c7}.ic-r{background:#fee2e2}
+.sc-val{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--dark);line-height:1}
+.sc-lbl{font-size:.74rem;color:var(--muted);margin-top:4px}
+.tcard{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:20px}
+.tcard-hd{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.tcard-ttl{font-weight:700;color:var(--dark);font-size:.93rem}
+table{width:100%;border-collapse:collapse}
+th{background:var(--cream);padding:10px 16px;font-size:.73rem;font-weight:600;color:var(--muted);text-align:left;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+td{padding:12px 16px;font-size:.84rem;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafffe}
+.bx{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.68rem;font-weight:600;white-space:nowrap}
+.bx.g{background:#dcfce7;color:var(--green)}.bx.r{background:#fee2e2;color:var(--red)}.bx.o{background:#fef3c7;color:var(--orange)}.bx.b{background:#dbeafe;color:var(--blue)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:10px;font-size:.83rem;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;transition:all .2s}
+.btn.pri{background:var(--t);color:#fff}.btn.pri:hover{background:var(--td)}
+.btn.sec{background:var(--tp);color:var(--td)}.btn.sec:hover{background:var(--t);color:#fff}
+.btn.wa{background:#25d366;color:#fff}.btn.wa:hover{background:#1da851}
+.btn.sm{padding:5px 11px;font-size:.74rem}
+.moverlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+.moverlay.open{display:flex}
+.mdal{background:#fff;border-radius:20px;padding:32px;width:500px;max-width:100%;max-height:90vh;overflow-y:auto}
+.mdal h2{font-size:1.35rem;color:var(--dark);margin-bottom:20px}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:5px}
+.fg input,.fg select,.fg textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;font-family:'Outfit',sans-serif;color:var(--text);background:#fff}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--t)}
+.srow{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.sinput{flex:1;min-width:200px;padding:9px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:.86rem;font-family:'Outfit',sans-serif}
+.fsel{padding:9px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:.84rem;font-family:'Outfit',sans-serif;background:#fff}
+@media(max-width:768px){:root{--sb:0px}.sb{transform:translateX(-210px);transition:transform .3s;width:210px}.sb.open{transform:translateX(0)}.main-area{margin-left:0}.content{padding:14px}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="lbox">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+      <img src="../assets/logo.png" style="width:50px;height:50px;border-radius:50%" alt="Detoxy Hijama"/>
+      <div>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--dark)">Shipper Panel</h2>
+        <p style="font-size:.82rem;color:var(--muted)">Detoxy Hijama Cups</p>
+      </div>
+    </div>
+    <div style="background:var(--tp);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:.78rem;color:var(--td)">
+      🚚 shipper@detoxyhijama.com / Ship@2025Detoxy!
+    </div>
+    <div class="lfield"><label>Email</label><input id="lEmail" type="email" value="shipper@detoxyhijama.com"/></div>
+    <div class="lfield"><label>Password</label><input id="lPass" type="password" value="Ship@2025Detoxy!"/></div>
+    <button class="lbtn" onclick="doLogin()">Sign In →</button>
+    <div class="lerr" id="lErr">Invalid credentials.</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <aside class="sb" id="sb">
+    <div class="sb-top">
+      <img src="../assets/logo.png" alt="logo"/>
+      <div><span class="sb-brand">Detoxy Hijama</span><span class="sb-sub">Shipper Panel</span></div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-gl">Dashboard</div>
+      <button class="sb-btn active" onclick="nav('dashboard',this)"><span class="ico">📊</span>Overview</button>
+      <div class="sb-gl">Work Queue</div>
+      <button class="sb-btn" onclick="nav('toship',this)"><span class="ico">📦</span>To Dispatch<span class="badge-pill" id="toshipBadge" style="display:none">0</span></button>
+      <button class="sb-btn" onclick="nav('intransit',this)"><span class="ico">🚚</span>In Transit</button>
+      <button class="sb-btn" onclick="nav('delivered',this)"><span class="ico">✅</span>Delivered</button>
+      <div class="sb-gl">All</div>
+      <button class="sb-btn" onclick="nav('allshipments',this)"><span class="ico">📋</span>All Shipments</button>
+    </nav>
+    <div class="sb-foot">
+      <button class="logout-btn" onclick="logout()">🚪 Sign Out</button>
+    </div>
+  </aside>
+
+  <main class="main-area">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button onclick="document.getElementById('sb').classList.toggle('open')" style="display:none;background:none;border:none;font-size:1.3rem;cursor:pointer" id="mmbtn">☰</button>
+        <div class="topbar-ttl" id="pgTitle">Overview</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font-size:.8rem;color:var(--muted)">Shipper</span>
+        <span class="chip">🚚 Shipper</span>
+        <a href="https://wa.me/919566596077" target="_blank" style="font-size:.78rem;color:#25d366">💬 Admin WA</a>
+      </div>
+    </div>
+    <div class="content" id="pgContent"></div>
+  </main>
+</div>
+
+<!-- MODAL -->
+<div class="moverlay" id="moverlay" onclick="if(event.target===this)closeMdal()">
+  <div class="mdal" id="mdalContent"></div>
+</div>
+
+<script>
+const CREDS={email:'shipper@detoxyhijama.com', pw:'Ship@2025Detoxy!'};
+const API_URL='https://script.google.com/macros/s/AKfycbzFt2178utJfKENXEurMTrzVQ7CuhMd_LNmdeB7xPc/exec';
+
+function doLogin(){
+  const e=document.getElementById('lEmail').value.trim();
+  const p=document.getElementById('lPass').value;
+  if(e===CREDS.email && p===CREDS.pw){
+    sessionStorage.setItem('dh_shipper','1');
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('app').style.display='flex';
+    loadDashboard();
+  } else {
+    document.getElementById('lErr').style.display='block';
+  }
+}
+function logout(){sessionStorage.removeItem('dh_shipper');location.reload();}
+document.addEventListener('DOMContentLoaded',()=>{
+  if(sessionStorage.getItem('dh_shipper')){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('app').style.display='flex';
+    loadDashboard();
+  }
+  document.getElementById('lPass').onkeydown=e=>{if(e.key==='Enter')doLogin();};
+  if(window.innerWidth<768)document.getElementById('mmbtn').style.display='block';
+});
+
+async function api(action,data={}){
+  try{
+    const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,...data})});
+    return await r.json();
+  }catch(e){return{success:false,error:e.message};}
+}
+
+function nav(pg,btn){
+  document.querySelectorAll('.sb-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const T={dashboard:'Overview',toship:'To Dispatch',intransit:'In Transit',delivered:'Delivered',allshipments:'All Shipments'};
+  document.getElementById('pgTitle').textContent=T[pg]||pg;
+  const F={dashboard:loadDashboard,toship:()=>loadShipments('pending'),intransit:()=>loadShipments('in_transit'),delivered:()=>loadShipments('delivered'),allshipments:()=>loadShipments('all')};
+  if(F[pg])F[pg]();
+}
+
+function setContent(h){document.getElementById('pgContent').innerHTML=h;}
+function openMdal(h){document.getElementById('mdalContent').innerHTML=h;document.getElementById('moverlay').classList.add('open');}
+function closeMdal(){document.getElementById('moverlay').classList.remove('open');}
+function fmtDate(d){if(!d)return'—';try{return new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'2-digit'});}catch(e){return d;}}
+function fmtCur(n){return'₹'+(+n||0).toLocaleString('en-IN');}
+
+// Demo shipments
+function demoShipments(){
+  const names=['Khalid Rahman','Amina Begum','Farhan Ahmed','Zainab Ali','Yusuf Khan','Fatima Noor','Ibrahim Malik','Hafsa Sheikh','Omar Siddiq','Mariam Patel'];
+  const cities=['Chennai','Mumbai','Bangalore','Hyderabad','Delhi','Coimbatore','Lucknow','Kochi','Pune','Kolkata'];
+  const carriers=['DTDC','Delhivery','BlueDart','Ekart','India Post'];
+  const products=['Standard Cups ×100','Fire Glass Set ×2','Electric Cup ×1','Silicone Set ×3','Suction Gun ×5','Surgical Blade 100pk ×2','Latex Gloves ×3','Lancet Pen ×1'];
+  const statuses=['pending','pending','pending','in_transit','in_transit','delivered','delivered','delivered','delivered','in_transit'];
+  return Array.from({length:20},(_,i)=>({
+    shipment_id:'SHP-'+String(2001+i),
+    order_id:'ORD-'+String(1001+i),
+    customer_name:names[i%names.length],
+    customer_phone:'+91-9'+String(500000000+i*7919).slice(0,9),
+    city:cities[i%cities.length],
+    state:'India',
+    items_summary:products[i%products.length],
+    order_total:Math.round((300+i*137)/10)*10,
+    carrier:statuses[i]==='pending'?'—':carriers[i%carriers.length],
+    tracking_no:statuses[i]==='pending'?'—':'AWB'+String(100000+i*3),
+    status:statuses[i%statuses.length],
+    assigned_at:new Date(Date.now()-(i*86400000*1.5)).toISOString(),
+    dispatched_at:statuses[i]==='pending'?null:new Date(Date.now()-(i*86400000)).toISOString(),
+    delivery_address:`${cities[i%cities.length]}, India`,
+  }));
+}
+
+async function loadDashboard(){
+  setContent(`<div style="text-align:center;padding:48px;color:var(--muted)">⏳ Loading...</div>`);
+  const ships=demoShipments();
+  const pending=ships.filter(s=>s.status==='pending');
+  const transit=ships.filter(s=>s.status==='in_transit');
+  const delivered=ships.filter(s=>s.status==='delivered');
+  if(pending.length>0){const b=document.getElementById('toshipBadge');b.textContent=pending.length;b.style.display='flex';}
+  setContent(`
+    <div class="stat-grid">
+      <div class="sc"><div class="sc-ico ic-o">📦</div><div class="sc-val">${pending.length}</div><div class="sc-lbl">To Dispatch</div></div>
+      <div class="sc"><div class="sc-ico ic-b">🚚</div><div class="sc-val">${transit.length}</div><div class="sc-lbl">In Transit</div></div>
+      <div class="sc"><div class="sc-ico ic-g">✅</div><div class="sc-val">${delivered.length}</div><div class="sc-lbl">Delivered Today</div></div>
+      <div class="sc"><div class="sc-ico ic-b">📋</div><div class="sc-val">${ships.length}</div><div class="sc-lbl">Total Assigned</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div class="tcard">
+        <div class="tcard-hd"><span class="tcard-ttl">🔴 Urgent — To Dispatch (${pending.length})</span><button class="btn sec sm" onclick="nav('toship',null);loadShipments('pending')">View All →</button></div>
+        <div style="overflow-x:auto"><table><thead><tr><th>Shipment</th><th>Customer</th><th>City</th><th>Items</th><th>Action</th></tr></thead><tbody>
+          ${pending.slice(0,5).map(s=>`<tr>
+            <td><strong style="color:var(--t);font-size:.8rem">${s.shipment_id}</strong><div style="font-size:.74rem;color:var(--muted)">${s.order_id}</div></td>
+            <td><strong style="font-size:.85rem">${s.customer_name}</strong><div style="font-size:.74rem;color:var(--muted)">${s.customer_phone}</div></td>
+            <td style="font-size:.82rem">${s.city}</td>
+            <td style="font-size:.79rem;color:var(--muted);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.items_summary}</td>
+            <td><button class="btn sm pri" onclick="dispatchModal('${s.shipment_id}','${s.customer_name}','${s.city}')">Dispatch</button></td>
+          </tr>`).join('')}
+        </tbody></table></div>
+      </div>
+      <div class="tcard">
+        <div class="tcard-hd"><span class="tcard-ttl">🚚 In Transit (${transit.length})</span><button class="btn sec sm" onclick="nav('intransit',null);loadShipments('in_transit')">View All →</button></div>
+        <div style="overflow-x:auto"><table><thead><tr><th>Shipment</th><th>Customer</th><th>Carrier</th><th>Tracking</th><th>Action</th></tr></thead><tbody>
+          ${transit.slice(0,5).map(s=>`<tr>
+            <td><strong style="color:var(--t);font-size:.8rem">${s.shipment_id}</strong></td>
+            <td><strong style="font-size:.85rem">${s.customer_name}</strong><div style="font-size:.74rem;color:var(--muted)">${s.city}</div></td>
+            <td style="font-size:.82rem">${s.carrier}</td>
+            <td style="font-size:.79rem;color:var(--muted)">${s.tracking_no}</td>
+            <td><button class="btn sm sec" onclick="updateModal('${s.shipment_id}','${s.status}')">Update</button></td>
+          </tr>`).join('')}
+        </tbody></table></div>
+      </div>
+    </div>
+    <div class="tcard">
+      <div class="tcard-hd"><span class="tcard-ttl">Contact Admin</span></div>
+      <div style="padding:20px;display:flex;gap:12px;flex-wrap:wrap">
+        <a href="https://wa.me/919566596077?text=Hi%2C+I+am+the+shipper+with+an+update" target="_blank" class="btn wa">💬 WhatsApp Admin</a>
+        <a href="https://www.linkedin.com/company/detoxy-hijama" target="_blank" class="btn" style="background:#0a66c2;color:#fff">🔗 LinkedIn</a>
+        <a href="tel:+919566596077" class="btn sec">📞 Call Admin</a>
+        <a href="../admin/index.html" target="_blank" class="btn sec">🛡️ Admin Panel</a>
+      </div>
+    </div>
+  `);
+}
+
+async function loadShipments(statusFilter='all'){
+  setContent(`<div style="text-align:center;padding:48px;color:var(--muted)">⏳ Loading shipments...</div>`);
+  const all=demoShipments();
+  const ships=statusFilter==='all'?all:all.filter(s=>s.status===statusFilter);
+  const SC={pending:'o',in_transit:'b',delivered:'g',returned:'r'};
+  const label={pending:'To Dispatch',in_transit:'In Transit',delivered:'Delivered',all:'All Shipments'};
+  setContent(`
+    <div class="srow">
+      <input class="sinput" placeholder="Search shipment, order, name…" oninput="filterTbl(this)"/>
+      <select class="fsel" onchange="nav(this.value==='all'?'allshipments':this.value==='pending'?'toship':this.value==='in_transit'?'intransit':'delivered',null);loadShipments(this.value)">
+        <option value="all" ${statusFilter==='all'?'selected':''}>All</option>
+        <option value="pending" ${statusFilter==='pending'?'selected':''}>To Dispatch</option>
+        <option value="in_transit" ${statusFilter==='in_transit'?'selected':''}>In Transit</option>
+        <option value="delivered" ${statusFilter==='delivered'?'selected':''}>Delivered</option>
+      </select>
+      <button class="btn sec" onclick="loadShipments('${statusFilter}')">🔄 Refresh</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px">
+      <div class="sc"><div class="sc-ico ic-o">📦</div><div class="sc-val">${all.filter(s=>s.status==='pending').length}</div><div class="sc-lbl">Pending</div></div>
+      <div class="sc"><div class="sc-ico ic-b">🚚</div><div class="sc-val">${all.filter(s=>s.status==='in_transit').length}</div><div class="sc-lbl">In Transit</div></div>
+      <div class="sc"><div class="sc-ico ic-g">✅</div><div class="sc-val">${all.filter(s=>s.status==='delivered').length}</div><div class="sc-lbl">Delivered</div></div>
+    </div>
+    <div class="tcard">
+      <div class="tcard-hd"><span class="tcard-ttl">${label[statusFilter]||'Shipments'} (${ships.length})</span></div>
+      <div style="overflow-x:auto"><table id="shtbl"><thead><tr>
+        <th>Shipment ID</th><th>Order ID</th><th>Customer</th><th>Phone</th><th>City</th><th>Items</th><th>Carrier</th><th>Tracking</th><th>Status</th><th>Actions</th>
+      </tr></thead><tbody>
+        ${ships.map(s=>`<tr data-s="${(s.shipment_id+s.order_id+s.customer_name+s.city).toLowerCase()}">
+          <td><strong style="color:var(--t);font-size:.8rem">${s.shipment_id}</strong></td>
+          <td style="font-size:.8rem;color:var(--muted)">${s.order_id}</td>
+          <td><strong style="font-size:.85rem">${s.customer_name}</strong></td>
+          <td style="font-size:.8rem">${s.customer_phone}</td>
+          <td style="font-size:.82rem">${s.city}</td>
+          <td style="font-size:.79rem;color:var(--muted);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.items_summary}</td>
+          <td style="font-size:.82rem">${s.carrier}</td>
+          <td style="font-size:.79rem;color:var(--muted)">${s.tracking_no}</td>
+          <td><span class="bx ${SC[s.status]||'b'}">${s.status?.replace('_',' ')}</span></td>
+          <td><div style="display:flex;gap:4px">
+            ${s.status==='pending'?`<button class="btn sm pri" onclick="dispatchModal('${s.shipment_id}','${s.customer_name}','${s.city}')">Dispatch</button>`:''}
+            ${s.status==='in_transit'?`<button class="btn sm sec" onclick="updateModal('${s.shipment_id}','${s.status}')">Update</button>`:''}
+            <a href="https://wa.me/${(s.customer_phone||'').replace(/\D/g,'')}" target="_blank" class="btn sm wa">WA</a>
+          </div></td>
+        </tr>`).join('')||`<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--muted)">No shipments found</td></tr>`}
+      </tbody></table></div>
+    </div>`);
+}
+
+function filterTbl(inp){
+  const q=inp.value.toLowerCase();
+  document.querySelectorAll('#shtbl tbody tr').forEach(r=>r.style.display=(!q||r.dataset.s?.includes(q))?'':'none');
+}
+
+function dispatchModal(id, name, city){
+  openMdal(`<h2>Dispatch Shipment</h2>
+    <div style="background:#fef3c7;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:.84rem;color:var(--orange)">
+      📦 <strong>${id}</strong> — ${name}, ${city}
+    </div>
+    <div class="fg"><label>Select Carrier *</label>
+      <select id="dcar">
+        <option value="">Choose carrier…</option>
+        <option>DTDC</option><option>Delhivery</option><option>BlueDart</option><option>Ekart Logistics</option><option>India Post</option><option>Shadowfax</option><option>Ecom Express</option>
+      </select>
+    </div>
+    <div class="fg"><label>AWB / Tracking Number *</label><input id="dtrack" placeholder="Carrier tracking number"/></div>
+    <div class="fg"><label>Dispatch Date</label><input id="ddate" type="date" value="${new Date().toISOString().slice(0,10)}"/></div>
+    <div class="fg"><label>Est. Delivery Date</label><input id="ddeliv" type="date" value="${new Date(Date.now()+5*86400000).toISOString().slice(0,10)}"/></div>
+    <div class="fg"><label>Notes</label><input id="dnote" placeholder="Package notes, weight, etc."/></div>
+    <div style="background:var(--tp);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.8rem;color:var(--td)">
+      ✅ Marking as dispatched will set status to <strong>in_transit</strong> and notify admin.
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn pri" onclick="submitDispatch('${id}')">🚚 Mark Dispatched</button>
+      <button class="btn sec" onclick="closeMdal()">Cancel</button>
+    </div>`);
+}
+
+async function submitDispatch(id){
+  const carrier=document.getElementById('dcar').value;
+  const tracking=document.getElementById('dtrack').value;
+  if(!carrier||!tracking){alert('Carrier and tracking number are required');return;}
+  const data={status:'in_transit',carrier,tracking_no:tracking,dispatched_at:document.getElementById('ddate').value,est_delivery:document.getElementById('ddeliv').value,notes:document.getElementById('dnote').value,updated_at:new Date().toISOString()};
+  const r=await api('updateShipment',{id,data});
+  closeMdal();
+  alert('Shipment '+id+' marked as dispatched! Tracking: '+tracking);
+  loadShipments('pending');
+  nav('toship',null);
+}
+
+function updateModal(id, cur){
+  openMdal(`<h2>Update Shipment — ${id}</h2>
+    <div style="background:var(--tp);padding:10px 14px;border-radius:10px;margin-bottom:14px;font-size:.84rem;color:var(--td)">Current: <strong>${cur?.replace('_',' ')}</strong></div>
+    <div class="fg"><label>New Status</label>
+      <select id="ust">
+        <option value="in_transit">In Transit</option>
+        <option value="out_for_delivery">Out for Delivery</option>
+        <option value="delivered">Delivered</option>
+        <option value="returned">Returned</option>
+        <option value="failed_delivery">Failed Delivery</option>
+      </select>
+    </div>
+    <div class="fg"><label>Update Note</label><input id="unote" placeholder="Delivery attempt, address issue, etc."/></div>
+    <div style="display:flex;gap:10px">
+      <button class="btn pri" onclick="submitUpdate('${id}')">Update</button>
+      <button class="btn sec" onclick="closeMdal()">Cancel</button>
+    </div>`);
+}
+
+async function submitUpdate(id){
+  const status=document.getElementById('ust').value;
+  const data={status,note:document.getElementById('unote').value,updated_at:new Date().toISOString()};
+  await api('updateShipment',{id,data});
+  closeMdal();
+  alert('Shipment '+id+' updated to: '+status);
+  loadShipments('in_transit');
+}
+</script>
+</body>
+</html>

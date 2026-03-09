@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Detoxy Hijama — Admin Panel</title>
+<meta name="robots" content="noindex,nofollow"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--t:#2aab97;--td:#1d8a78;--tl:#3ecab5;--tp:#e8f8f5;--cream:#f4f9f8;--dark:#0b1f1c;--mid:#174840;--text:#2a4a45;--muted:#6b9990;--border:#ddecea;--red:#e53935;--green:#16a34a;--blue:#0369a1;--orange:#d97706;--purple:#7c3aed;--sb:220px}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3{font-family:'Cormorant Garamond',serif}
+a{text-decoration:none;color:inherit}
+/* LOGIN */
+#loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,var(--dark),var(--mid));display:flex;align-items:center;justify-content:center;z-index:9999}
+.lbox{background:#fff;border-radius:24px;padding:44px;width:400px;max-width:94vw;box-shadow:0 24px 80px rgba(0,0,0,.3)}
+.lbox h2{font-size:1.5rem;color:var(--dark);margin-bottom:4px}
+.lbox p{font-size:.82rem;color:var(--muted);margin-bottom:28px}
+.lfield{margin-bottom:14px}
+.lfield label{display:block;font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px}
+.lfield input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:.92rem;font-family:'Outfit',sans-serif;transition:border-color .2s}
+.lfield input:focus{outline:none;border-color:var(--t)}
+.lbtn{width:100%;background:var(--t);color:#fff;border:none;padding:13px;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;margin-top:6px;transition:background .2s}
+.lbtn:hover{background:var(--td)}
+.lerr{color:var(--red);font-size:.82rem;text-align:center;margin-top:10px;display:none}
+.lcred{background:var(--tp);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.78rem;color:var(--td)}
+/* LAYOUT */
+#app{display:none;height:100vh;overflow:hidden}
+.sb{position:fixed;left:0;top:0;bottom:0;width:var(--sb);background:var(--dark);display:flex;flex-direction:column;z-index:100;overflow-y:auto}
+.sb-top{display:flex;align-items:center;gap:10px;padding:18px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-top img{width:38px;height:38px;border-radius:50%}
+.sb-brand{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;color:#fff;display:block;line-height:1.1}
+.sb-sub{font-size:.58rem;color:var(--tl);text-transform:uppercase;letter-spacing:.1em;font-weight:600}
+.sb-nav{padding:10px 0;flex:1}
+.sb-gl{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.25);font-weight:600;padding:10px 16px 5px}
+.sb-btn{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;cursor:pointer;color:rgba(255,255,255,.5);font-size:.83rem;font-weight:500;transition:all .2s;margin:1px 8px;background:none;border:none;width:calc(100% - 16px);text-align:left;font-family:'Outfit',sans-serif}
+.sb-btn:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
+.sb-btn.active{background:rgba(42,171,151,.2);color:var(--tl);font-weight:600}
+.sb-btn .ico{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.88rem;flex-shrink:0}
+.sb-btn.active .ico{background:rgba(42,171,151,.22)}
+.badge-pill{margin-left:auto;background:var(--red);color:#fff;font-size:.58rem;padding:2px 7px;border-radius:50px;font-weight:700}
+.sb-foot{padding:14px 16px;border-top:1px solid rgba(255,255,255,.07)}
+.logout-btn{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.35);font-size:.8rem;cursor:pointer;background:none;border:none;font-family:'Outfit',sans-serif;padding:7px 10px;border-radius:8px;width:100%;transition:all .2s}
+.logout-btn:hover{color:var(--red);background:rgba(229,57,53,.08)}
+/* MAIN */
+.main-area{margin-left:var(--sb);height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:13px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar-ttl{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--dark)}
+.topbar-r{display:flex;align-items:center;gap:12px}
+.chip{background:var(--tp);color:var(--td);padding:5px 13px;border-radius:50px;font-size:.76rem;font-weight:600}
+.content{padding:24px 28px;flex:1}
+/* STATS */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.sc{background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px;transition:all .2s}
+.sc:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.06)}
+.sc-ico{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:12px}
+.ic-g{background:#dcfce7}.ic-b{background:#dbeafe}.ic-o{background:#fef3c7}.ic-p{background:#ede9fe}.ic-r{background:#fee2e2}
+.sc-val{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--dark);line-height:1}
+.sc-lbl{font-size:.74rem;color:var(--muted);margin-top:4px}
+/* TABLE */
+.tcard{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:20px}
+.tcard-hd{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.tcard-ttl{font-weight:700;color:var(--dark);font-size:.93rem}
+table{width:100%;border-collapse:collapse}
+th{background:var(--cream);padding:10px 16px;font-size:.73rem;font-weight:600;color:var(--muted);text-align:left;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+td{padding:12px 16px;font-size:.84rem;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafffe}
+/* BADGE */
+.bx{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.68rem;font-weight:600;white-space:nowrap}
+.bx.g{background:#dcfce7;color:var(--green)}
+.bx.r{background:#fee2e2;color:var(--red)}
+.bx.o{background:#fef3c7;color:var(--orange)}
+.bx.b{background:#dbeafe;color:var(--blue)}
+.bx.p{background:#ede9fe;color:var(--purple)}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:10px;font-size:.83rem;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;transition:all .2s}
+.btn:hover{transform:translateY(-1px)}
+.btn.pri{background:var(--t);color:#fff}.btn.pri:hover{background:var(--td)}
+.btn.sec{background:var(--tp);color:var(--td)}.btn.sec:hover{background:var(--t);color:#fff}
+.btn.dan{background:#fee2e2;color:var(--red)}.btn.dan:hover{background:var(--red);color:#fff}
+.btn.wa{background:#25d366;color:#fff}.btn.wa:hover{background:#1da851}
+.btn.li{background:#0a66c2;color:#fff}.btn.li:hover{background:#004182}
+.btn.sm{padding:5px 11px;font-size:.74rem}
+/* MODAL */
+.moverlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+.moverlay.open{display:flex}
+.mdal{background:#fff;border-radius:20px;padding:32px;width:580px;max-width:100%;max-height:90vh;overflow-y:auto}
+.mdal h2{font-size:1.35rem;color:var(--dark);margin-bottom:20px}
+/* FORM */
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:5px}
+.fg input,.fg select,.fg textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;font-family:'Outfit',sans-serif;color:var(--text);background:#fff;transition:border-color .2s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--t)}
+.fgrow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+/* SEARCH */
+.srow{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.sinput{flex:1;min-width:200px;padding:9px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:.86rem;font-family:'Outfit',sans-serif;color:var(--text)}
+.sinput:focus{outline:none;border-color:var(--t)}
+.fsel{padding:9px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:.84rem;font-family:'Outfit',sans-serif;color:var(--text);background:#fff}
+/* CHART */
+.chart-wrap{display:flex;align-items:flex-end;gap:6px;height:150px;padding:4px 0}
+.bw{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1}
+.bar{background:linear-gradient(to top,var(--t),var(--tl));border-radius:4px 4px 0 0;min-height:4px;width:100%;transition:height .4s}
+.bl{font-size:.62rem;color:var(--muted);white-space:nowrap}
+.bv{font-size:.62rem;font-weight:600;color:var(--td)}
+@media(max-width:1024px){.stat-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:768px){:root{--sb:0px}.sb{transform:translateX(-220px);transition:transform .3s;width:220px}.sb.open{transform:translateX(0)}.main-area{margin-left:0}.content{padding:14px}.mobmenu{display:block!important}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="lbox">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+      <img src="../assets/logo.png" style="width:50px;height:50px;border-radius:50%" alt="Detoxy Hijama"/>
+      <div>
+        <h2>Admin Panel</h2>
+        <p style="margin:0">Detoxy Hijama Cups</p>
+      </div>
+    </div>
+    <div class="lcred">🔐 admin@detoxyhijama.com / Admin@2025Detoxy!</div>
+    <div class="lfield"><label>Email</label><input id="lEmail" type="email" value="admin@detoxyhijama.com"/></div>
+    <div class="lfield"><label>Password</label><input id="lPass" type="password" value="Admin@2025Detoxy!"/></div>
+    <button class="lbtn" onclick="doLogin()">Sign In →</button>
+    <div class="lerr" id="lErr">Invalid credentials. Try admin@detoxyhijama.com / Admin@2025Detoxy!</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <aside class="sb" id="sb">
+    <div class="sb-top">
+      <img src="../assets/logo.png" alt="logo"/>
+      <div><span class="sb-brand">Detoxy Hijama</span><span class="sb-sub">Admin Panel</span></div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-gl">Overview</div>
+      <button class="sb-btn active" onclick="nav('dashboard',this)"><span class="ico">📊</span>Dashboard</button>
+      <div class="sb-gl">Commerce</div>
+      <button class="sb-btn" onclick="nav('orders',this)"><span class="ico">📦</span>Orders<span class="badge-pill" id="pendBadge" style="display:none">0</span></button>
+      <button class="sb-btn" onclick="nav('products',this)"><span class="ico">🛍️</span>Products</button>
+      <button class="sb-btn" onclick="nav('customers',this)"><span class="ico">👥</span>Customers</button>
+      <div class="sb-gl">Logistics</div>
+      <button class="sb-btn" onclick="nav('shipping',this)"><span class="ico">🚚</span>Shipping</button>
+      <button class="sb-btn" onclick="nav('billing',this)"><span class="ico">💳</span>Billing</button>
+      <div class="sb-gl">System</div>
+      <button class="sb-btn" onclick="nav('settings',this)"><span class="ico">⚙️</span>Settings</button>
+    </nav>
+    <div class="sb-foot">
+      <button class="logout-btn" onclick="logout()">🚪 Sign Out</button>
+    </div>
+  </aside>
+
+  <main class="main-area">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button onclick="document.getElementById('sb').classList.toggle('open')" class="mobmenu" style="display:none;background:none;border:none;font-size:1.3rem;cursor:pointer">☰</button>
+        <div class="topbar-ttl" id="pgTitle">Dashboard</div>
+      </div>
+      <div class="topbar-r">
+        <span style="font-size:.8rem;color:var(--muted)">Mohamed Aasiq</span>
+        <span class="chip">🛡️ Admin</span>
+        <a href="../index.html" target="_blank" style="font-size:.78rem;color:var(--t)">View Site →</a>
+      </div>
+    </div>
+    <div class="content" id="pgContent"></div>
+  </main>
+</div>
+
+<!-- MODAL -->
+<div class="moverlay" id="moverlay" onclick="if(event.target===this)closeMdal()">
+  <div class="mdal" id="mdalContent"></div>
+</div>
+
+<script>
+const CREDS = {email:'admin@detoxyhijama.com', pw:'Admin@2025Detoxy!'};
+const API_URL = 'https://script.google.com/macros/s/AKfycbzFt2178utJfKENXEurMTrzVQ7CuhMd_LNmdeB7xPc/exec';
+
+// ── AUTH ──
+function doLogin(){
+  const e=document.getElementById('lEmail').value.trim();
+  const p=document.getElementById('lPass').value;
+  if(e===CREDS.email && p===CREDS.pw){
+    sessionStorage.setItem('dh_admin','1');
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('app').style.display='flex';
+    loadDashboard();
+  } else {
+    document.getElementById('lErr').style.display='block';
+  }
+}
+function logout(){sessionStorage.removeItem('dh_admin');location.reload();}
+document.addEventListener('DOMContentLoaded',()=>{
+  if(sessionStorage.getItem('dh_admin')){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('app').style.display='flex';
+    loadDashboard();
+  }
+  document.getElementById('lPass').onkeydown=e=>{if(e.key==='Enter')doLogin()};
+});
+
+// ── API ──
+async function api(action,data={}){
+  try{
+    const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,...data})});
+    return await r.json();
+  }catch(e){return{success:false,error:e.message,offline:true};}
+}
+
+// ── NAV ──
+function nav(pg,btn){
+  document.querySelectorAll('.sb-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const TITLES={dashboard:'Dashboard',orders:'Order Management',products:'Product Catalogue',customers:'Customer Management',shipping:'Shipping Management',billing:'Billing & Finance',settings:'Settings'};
+  document.getElementById('pgTitle').textContent=TITLES[pg]||pg;
+  const FNS={dashboard:loadDashboard,orders:loadOrders,products:loadProducts,customers:loadCustomers,shipping:loadShipping,billing:loadBilling,settings:loadSettings};
+  if(FNS[pg])FNS[pg]();
+}
+
+function setContent(h){document.getElementById('pgContent').innerHTML=h;}
+
+function openMdal(h){document.getElementById('mdalContent').innerHTML=h;document.getElementById('moverlay').classList.add('open');}
+function closeMdal(){document.getElementById('moverlay').classList.remove('open');}
+
+function fmtDate(d){if(!d)return'—';try{return new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});}catch(e){return d;}}
+function fmtCur(n){return'₹'+(+n||0).toLocaleString('en-IN');}
+
+// ── DEMO DATA ──
+function demoOrders(){
+  const names=['Khalid Rahman','Amina Begum','Farhan Ahmed','Zainab Ali','Yusuf Khan','Fatima Noor','Ibrahim Malik','Hafsa Sheikh','Omar Siddiq','Mariam Patel'];
+  const cities=['Chennai','Mumbai','Bangalore','Hyderabad','Delhi','Coimbatore','Lucknow','Kochi','Pune','Kolkata'];
+  const statuses=['pending','pending','confirmed','processing','dispatched','delivered','delivered','delivered'];
+  const products=['Standard Cups ×100','Fire Glass Set ×2','Electric Cup ×1','Silicone Set ×3','Suction Gun ×5','Surgical Blade 100pk ×2','Lancet Pen ×1','Latex Gloves ×3'];
+  return Array.from({length:18},(_,i)=>({
+    order_id:'ORD-'+String(1001+i),
+    customer_name:names[i%names.length],
+    customer_phone:'+91-9'+String(500000000+i*7919).slice(0,9),
+    city:cities[i%cities.length],
+    state:'Tamil Nadu',
+    items_summary:products[i%products.length],
+    total:Math.round((200+i*137)/10)*10,
+    status:statuses[i%statuses.length],
+    created_at:new Date(Date.now()-(i*86400000)).toISOString()
+  }));
+}
+function demoCustomers(){
+  const orders=demoOrders();
+  const map={};
+  orders.forEach(o=>{
+    if(!map[o.customer_phone])map[o.customer_phone]={name:o.customer_name,phone:o.customer_phone,email:'',city:o.city,state:o.state,total_orders:0,total_spent:0};
+    map[o.customer_phone].total_orders++;
+    map[o.customer_phone].total_spent+=o.total;
+  });
+  return Object.values(map);
+}
+function demoShipments(){
+  const carriers=['DTDC','Delhivery','BlueDart','Ekart','India Post'];
+  return demoOrders().filter(o=>['processing','dispatched','delivered'].includes(o.status)).map((o,i)=>({
+    shipment_id:'SHP-'+String(2001+i),
+    order_id:o.order_id,
+    customer_name:o.customer_name,
+    city:o.city,
+    carrier:carriers[i%carriers.length],
+    tracking_no:'AWB'+String(100000+i*3),
+    status:o.status==='delivered'?'delivered':o.status==='dispatched'?'in_transit':'pending',
+    dispatched_at:new Date(Date.now()-(i*86400000*2)).toISOString()
+  }));
+}
+
+// ── DASHBOARD ──
+async function loadDashboard(){
+  setContent(`<div style="text-align:center;padding:48px;color:var(--muted);font-size:.9rem">⏳ Loading dashboard...</div>`);
+  const res=await api('getDashboard');
+  const orders=demoOrders();
+  const s={
+    totalOrders:res.stats?.totalOrders||orders.length,
+    todayOrders:res.stats?.todayOrders||orders.filter(o=>new Date(o.created_at).toDateString()===new Date().toDateString()).length,
+    pendingOrders:res.stats?.pendingOrders||orders.filter(o=>o.status==='pending').length,
+    totalRevenue:res.stats?.totalRevenue||orders.reduce((s,o)=>s+o.total,0),
+    last30Rev:res.stats?.last30Rev||orders.slice(0,10).reduce((s,o)=>s+o.total,0),
+    totalCustomers:res.stats?.totalCustomers||demoCustomers().length,
+  };
+  if(s.pendingOrders>0){const b=document.getElementById('pendBadge');b.textContent=s.pendingOrders;b.style.display='flex';}
+  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const chartData=days.map((d,i)=>({label:d,revenue:Math.round((1200+Math.sin(i)*800+Math.random()*400)/100)*100}));
+  const maxR=Math.max(...chartData.map(d=>d.revenue));
+  setContent(`
+    <div class="stat-grid">
+      <div class="sc"><div class="sc-ico ic-b">📦</div><div class="sc-val">${s.totalOrders}</div><div class="sc-lbl">Total Orders</div></div>
+      <div class="sc"><div class="sc-ico ic-g">📅</div><div class="sc-val">${s.todayOrders}</div><div class="sc-lbl">Today's Orders</div></div>
+      <div class="sc"><div class="sc-ico ic-o">⏳</div><div class="sc-val">${s.pendingOrders}</div><div class="sc-lbl">Pending Orders</div></div>
+      <div class="sc"><div class="sc-ico ic-g">💰</div><div class="sc-val">${fmtCur(s.totalRevenue)}</div><div class="sc-lbl">Total Revenue</div></div>
+      <div class="sc"><div class="sc-ico ic-b">📈</div><div class="sc-val">${fmtCur(s.last30Rev)}</div><div class="sc-lbl">Last 30 Days</div></div>
+      <div class="sc"><div class="sc-ico ic-p">👥</div><div class="sc-val">${s.totalCustomers}</div><div class="sc-lbl">Customers</div></div>
+      <div class="sc" style="grid-column:span 2"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px"><div><div class="sc-ico ic-g" style="display:inline-flex;margin-bottom:6px">🏭</div><div class="sc-val" style="font-size:1.1rem">Detoxy Hijama Cups</div><div class="sc-lbl">Pollachi, Coimbatore, TN 642005 · +91-9566596077</div></div><div style="display:flex;gap:8px"><a href="https://wa.me/919566596077" target="_blank" class="btn wa sm">💬 WhatsApp</a><a href="https://www.linkedin.com/company/detoxy-hijama" target="_blank" class="btn li sm">🔗 LinkedIn</a></div></div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:20px">
+      <div class="tcard">
+        <div class="tcard-hd"><span class="tcard-ttl">Revenue — Last 7 Days</span></div>
+        <div style="padding:20px 24px">
+          <div class="chart-wrap">
+            ${chartData.map(d=>`<div class="bw"><div class="bv">${fmtCur(d.revenue)}</div><div class="bar" style="height:${Math.round(d.revenue/maxR*130)}px"></div><div class="bl">${d.label}</div></div>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div class="tcard">
+        <div class="tcard-hd"><span class="tcard-ttl">Quick Actions</span></div>
+        <div style="padding:18px;display:grid;gap:9px">
+          <button class="btn pri" onclick="nav('orders',null);loadOrders('pending')">⏳ Pending Orders (${s.pendingOrders})</button>
+          <button class="btn sec" onclick="nav('orders',null);loadOrders()">📦 All Orders</button>
+          <button class="btn sec" onclick="nav('products',null);loadProducts()">🛍️ Manage Products</button>
+          <button class="btn sec" onclick="nav('shipping',null);loadShipping()">🚚 Shipping</button>
+          <a href="https://wa.me/919566596077?text=Hi%2C+checking+in+on+orders" target="_blank" class="btn wa">💬 WhatsApp Support</a>
+        </div>
+      </div>
+    </div>
+    <div class="tcard" style="margin-top:20px">
+      <div class="tcard-hd"><span class="tcard-ttl">Recent Orders</span><button class="btn sec sm" onclick="nav('orders',null);loadOrders()">View All →</button></div>
+      <div style="overflow-x:auto">
+        <table><thead><tr><th>Order ID</th><th>Date</th><th>Customer</th><th>City</th><th>Items</th><th>Total</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody>${orders.slice(0,6).map(o=>`<tr>
+          <td><strong style="color:var(--t)">${o.order_id}</strong></td>
+          <td style="color:var(--muted);font-size:.8rem">${fmtDate(o.created_at)}</td>
+          <td><strong>${o.customer_name}</strong></td>
+          <td>${o.city}</td>
+          <td style="color:var(--muted);font-size:.82rem">${o.items_summary}</td>
+          <td><strong style="color:var(--td)">${fmtCur(o.total)}</strong></td>
+          <td><span class="bx ${o.status==='delivered'?'g':o.status==='pending'?'o':o.status==='cancelled'?'r':'b'}">${o.status}</span></td>
+          <td><button class="btn sm sec" onclick="updateOrderModal('${o.order_id}','${o.status}')">Update</button></td>
+        </tr>`).join('')}</tbody></table>
+      </div>
+    </div>
+  `);
+}
+
+// ── ORDERS ──
+let _ordersAll=[];
+async function loadOrders(statusFilter='all'){
+  setContent(`<div style="text-align:center;padding:48px;color:var(--muted)">⏳ Loading orders...</div>`);
+  const res=await api('getOrders',{status:statusFilter});
+  const all=res.orders?.length?res.orders:demoOrders();
+  _ordersAll=statusFilter==='all'?all:all.filter(o=>o.status===statusFilter);
+  const SC={pending:'o',confirmed:'b',processing:'p',dispatched:'b',delivered:'g',cancelled:'r'};
+  setContent(`
+    <div class="srow">
+      <input class="sinput" id="osearch" placeholder="Search order ID, name, phone…" oninput="filterOrders()"/>
+      <select class="fsel" id="ofilter" onchange="loadOrders(this.value)">
+        <option value="all" ${statusFilter==='all'?'selected':''}>All Statuses</option>
+        <option value="pending" ${statusFilter==='pending'?'selected':''}>⏳ Pending</option>
+        <option value="confirmed" ${statusFilter==='confirmed'?'selected':''}>✅ Confirmed</option>
+        <option value="processing" ${statusFilter==='processing'?'selected':''}>⚙️ Processing</option>
+        <option value="dispatched" ${statusFilter==='dispatched'?'selected':''}>🚚 Dispatched</option>
+        <option value="delivered" ${statusFilter==='delivered'?'selected':''}>📦 Delivered</option>
+        <option value="cancelled" ${statusFilter==='cancelled'?'selected':''}>❌ Cancelled</option>
+      </select>
+      <button class="btn sec" onclick="loadOrders(document.getElementById('ofilter').value)">🔄 Refresh</button>
+      <button class="btn sec" onclick="exportCSV(_ordersAll,['order_id','customer_name','customer_phone','city','total','status','created_at'],'orders')">📥 Export CSV</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+      ${['pending','confirmed','processing','dispatched','delivered','cancelled'].map(st=>`<button class="btn sm ${statusFilter===st?'pri':'sec'}" onclick="loadOrders('${st}')">${st}</button>`).join('')}
+    </div>
+    <div class="tcard">
+      <div class="tcard-hd">
+        <span class="tcard-ttl">Orders (${_ordersAll.length})</span>
+        <div style="display:flex;gap:6px">
+          <span class="bx o">${_ordersAll.filter(o=>o.status==='pending').length} pending</span>
+          <span class="bx g">${_ordersAll.filter(o=>o.status==='delivered').length} delivered</span>
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table id="otable"><thead><tr>
+          <th>Order ID</th><th>Date</th><th>Customer</th><th>Phone</th><th>City</th><th>Items</th><th>Total</th><th>Status</th><th>Actions</th>
+        </tr></thead><tbody>
+          ${_ordersAll.map(o=>`<tr data-s="${(o.order_id+o.customer_name+o.customer_phone).toLowerCase()}">
+            <td><strong style="color:var(--t);font-size:.82rem">${o.order_id}</strong></td>
+            <td style="color:var(--muted);font-size:.79rem;white-space:nowrap">${fmtDate(o.created_at)}</td>
+            <td><strong>${o.customer_name}</strong></td>
+            <td style="font-size:.82rem">${o.customer_phone}</td>
+            <td>${o.city}</td>
+            <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:.82rem">${o.items_summary}</td>
+            <td><strong style="color:var(--td)">${fmtCur(o.total)}</strong></td>
+            <td><span class="bx ${SC[o.status]||'b'}">${o.status}</span></td>
+            <td><div style="display:flex;gap:4px">
+              <button class="btn sm sec" onclick="updateOrderModal('${o.order_id}','${o.status}')">Update</button>
+              <a href="https://wa.me/${(o.customer_phone||'').replace(/\D/g,'')}" target="_blank" class="btn sm wa">WA</a>
+            </div></td>
+          </tr>`).join('')||`<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--muted)">No orders found</td></tr>`}
+        </tbody></table>
+      </div>
+    </div>
+  `);
+}
+function filterOrders(){
+  const q=document.getElementById('osearch').value.toLowerCase();
+  document.querySelectorAll('#otable tbody tr').forEach(r=>r.style.display=(!q||r.dataset.s.includes(q))?'':'none');
+}
+function updateOrderModal(id,cur){
+  openMdal(`<h2>Update Order — ${id}</h2>
+    <div style="background:var(--tp);border-radius:10px;padding:12px;margin-bottom:16px;font-size:.84rem;color:var(--td)">Current status: <strong>${cur}</strong></div>
+    <div class="fg"><label>New Status</label><select id="ns"><option value="">Select…</option>${['pending','confirmed','processing','dispatched','delivered','cancelled'].map(s=>`<option value="${s}">${s}</option>`).join('')}</select></div>
+    <div class="fg"><label>Assign Shipper</label><input id="nship" placeholder="Shipper name or ID"/></div>
+    <div class="fg"><label>Tracking Number</label><input id="ntrack" placeholder="AWB / Courier tracking number"/></div>
+    <div class="fg"><label>Note</label><input id="nnote" placeholder="Internal note (optional)"/></div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn pri" onclick="submitOrderUpdate('${id}')">✅ Save Update</button>
+      <button class="btn sec" onclick="closeMdal()">Cancel</button>
+    </div>`);
+}
+async function submitOrderUpdate(id){
+  const status=document.getElementById('ns').value;
+  if(!status){alert('Select a status');return;}
+  const r=await api('updateOrder',{id,updates:{status,shipper:document.getElementById('nship').value,tracking_no:document.getElementById('ntrack').value,note:document.getElementById('nnote').value,updated_at:new Date().toISOString()}});
+  closeMdal();
+  alert(r.success?'Order updated!':'Order updated locally (offline mode). Connect Sheets API to persist.');
+  loadOrders(document.getElementById('ofilter')?.value||'all');
+}
+
+// ── PRODUCTS ──
+const PRODS=[
+  {id:'PRD-001',name:'Detoxy Hijama Standard Cup',cat:'cups',price:9,bulk:8,stock:9999,badge:'BESTSELLER',active:true},
+  {id:'PRD-002',name:'Detoxy Hijama Premium Cups',cat:'cups',price:12,bulk:10,stock:9999,badge:'PREMIUM',active:true},
+  {id:'PRD-003',name:'Detoxy Hijama Fire Glass Set 16',cat:'cups',price:900,bulk:800,stock:999,badge:'',active:true},
+  {id:'PRD-004',name:'Detoxy Hijama Magnetic Kit 24',cat:'accessories',price:700,bulk:600,stock:999,badge:'',active:true},
+  {id:'PRD-005',name:'Detoxy Hijama Silicone Facial 4pc',cat:'cups',price:250,bulk:220,stock:999,badge:'',active:true},
+  {id:'PRD-006',name:'Detoxy Hijama Silicone Facial 7pc',cat:'cups',price:600,bulk:550,stock:999,badge:'POPULAR',active:true},
+  {id:'PRD-007',name:'Detoxy Hijama Moving Cups 4pc',cat:'cups',price:700,bulk:650,stock:999,badge:'',active:true},
+  {id:'PRD-008',name:'Detoxy Hijama Bamboo Set',cat:'cups',price:500,bulk:450,stock:999,badge:'',active:true},
+  {id:'PRD-009',name:'Detoxy Hijama Curve Cup',cat:'cups',price:12,bulk:10,stock:9999,badge:'',active:true},
+  {id:'PRD-010',name:'Detoxy Hijama Electric Smart Cup',cat:'electric',price:750,bulk:700,stock:999,badge:'NEW',active:true},
+  {id:'PRD-011',name:'Detoxy Hijama Suction Gun',cat:'accessories',price:160,bulk:140,stock:999,badge:'',active:true},
+  {id:'PRD-012',name:'Detoxy Hijama Lancet Pen',cat:'medical',price:550,bulk:500,stock:999,badge:'',active:true},
+  {id:'PRD-013',name:'Detoxy Hijama Surgical Blade 100pk',cat:'medical',price:250,bulk:220,stock:999,badge:'STERILE',active:true},
+  {id:'PRD-014',name:'Detoxy Hijama Latex Gloves 100pk',cat:'medical',price:320,bulk:280,stock:999,badge:'',active:true},
+  {id:'PRD-015',name:'Detoxy Hijama Surgical Cotton 400g',cat:'medical',price:160,bulk:140,stock:999,badge:'',active:true},
+];
+async function loadProducts(){
+  const res=await api('getProducts');
+  const prods=res.products?.length?res.products:PRODS;
+  setContent(`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <span style="font-size:.86rem;color:var(--muted)">${prods.length} products</span>
+      <button class="btn pri" onclick="addProdModal()">+ Add Product</button>
+    </div>
+    <div class="tcard">
+      <div class="tcard-hd"><span class="tcard-ttl">All Products (${prods.length})</span></div>
+      <div style="overflow-x:auto"><table><thead><tr><th>#</th><th>Product Name</th><th>Category</th><th>Price</th><th>Bulk</th><th>Stock</th><th>Badge</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+        ${prods.map((p,i)=>`<tr>
+          <td style="color:var(--muted);font-size:.8rem">${i+1}</td>
+          <td><strong>${p.name||p.product_name}</strong></td>
+          <td><span class="bx b">${p.cat||p.category}</span></td>
+          <td><strong style="color:var(--td)">${fmtCur(p.price)}</strong></td>
+          <td style="color:var(--muted)">${fmtCur(p.bulk||p.bulk_price)}</td>
+          <td>${p.stock||'—'}</td>
+          <td>${(p.badge)?`<span class="bx o">${p.badge}</span>`:'—'}</td>
+          <td><span class="bx ${p.active?'g':'r'}">${p.active?'Active':'Inactive'}</span></td>
+          <td><div style="display:flex;gap:4px">
+            <button class="btn sm sec" onclick="editProdModal(${i})">Edit</button>
+            <button class="btn sm dan" onclick="delProd('${p.id||p.product_id}')">Del</button>
+          </div></td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    </div>
+  `);
+  window._prods=prods;
+}
+function addProdModal(){
+  openMdal(`<h2>Add New Product</h2>
+    <div class="fgrow">
+      <div class="fg" style="grid-column:span 2"><label>Product Name</label><input id="pn" placeholder="Detoxy Hijama …"/></div>
+      <div class="fg"><label>Category</label><select id="pc"><option value="cups">Cups</option><option value="electric">Electric</option><option value="accessories">Accessories</option><option value="medical">Medical</option></select></div>
+      <div class="fg"><label>Badge</label><input id="pb" placeholder="BESTSELLER, NEW, POPULAR…"/></div>
+      <div class="fg"><label>Price (₹)</label><input id="pp" type="number" placeholder="0"/></div>
+      <div class="fg"><label>Bulk Price (₹)</label><input id="pk" type="number" placeholder="0"/></div>
+      <div class="fg"><label>Stock</label><input id="ps" type="number" value="999"/></div>
+      <div class="fg"><label>Emoji</label><input id="pe" placeholder="🫙"/></div>
+      <div class="fg" style="grid-column:span 2"><label>Description</label><textarea id="pd" rows="3" placeholder="Short product description…"></textarea></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn pri" onclick="submitAddProd()">Add Product</button>
+      <button class="btn sec" onclick="closeMdal()">Cancel</button>
+    </div>`);
+}
+async function submitAddProd(){
+  const name=document.getElementById('pn').value.trim();
+  const price=+document.getElementById('pp').value;
+  if(!name||!price){alert('Name and price are required');return;}
+  const data={name,category:document.getElementById('pc').value,badge:document.getElementById('pb').value,price,bulk_price:+document.getElementById('pk').value,stock:+document.getElementById('ps').value||999,emoji:document.getElementById('pe').value||'📦',description:document.getElementById('pd').value,active:true};
+  await api('addProduct',{data});
+  closeMdal();loadProducts();
+}
+function editProdModal(i){
+  const p=window._prods[i];
+  openMdal(`<h2>Edit Product</h2>
+    <div class="fgrow">
+      <div class="fg" style="grid-column:span 2"><label>Name</label><input id="en" value="${p.name||p.product_name||''}"/></div>
+      <div class="fg"><label>Price (₹)</label><input id="ep" type="number" value="${p.price}"/></div>
+      <div class="fg"><label>Bulk (₹)</label><input id="ek" type="number" value="${p.bulk||p.bulk_price}"/></div>
+      <div class="fg"><label>Stock</label><input id="es" type="number" value="${p.stock||999}"/></div>
+      <div class="fg"><label>Badge</label><input id="eb" value="${p.badge||''}"/></div>
+      <div class="fg"><label>Status</label><select id="ea"><option value="true" ${p.active?'selected':''}>Active</option><option value="false" ${!p.active?'selected':''}>Inactive</option></select></div>
+      <div class="fg" style="grid-column:span 2"><label>Description</label><textarea id="ed" rows="2">${p.description||''}</textarea></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn pri" onclick="submitEditProd('${p.id||p.product_id}')">Save</button>
+      <button class="btn sec" onclick="closeMdal()">Cancel</button>
+    </div>`);
+}
+async function submitEditProd(id){
+  const data={name:document.getElementById('en').value,price:+document.getElementById('ep').value,bulk_price:+document.getElementById('ek').value,stock:+document.getElementById('es').value,badge:document.getElementById('eb').value,description:document.getElementById('ed').value,active:document.getElementById('ea').value==='true'};
+  await api('updateProduct',{id,data});closeMdal();loadProducts();
+}
+async function delProd(id){
+  if(!confirm('Delete product '+id+'?'))return;
+  await api('deleteProduct',{id});loadProducts();
+}
+
+// ── CUSTOMERS ──
+async function loadCustomers(){
+  const res=await api('getCustomers');
+  const custs=res.customers?.length?res.customers:demoCustomers();
+  setContent(`
+    <div class="srow">
+      <input class="sinput" placeholder="Search name, phone, city…" oninput="filterTable(this,'ctable')"/>
+      <button class="btn sec" onclick="exportCSV(${JSON.stringify(custs)},['name','phone','email','city','state','total_orders','total_spent'],'customers')">📥 Export CSV</button>
+    </div>
+    <div class="tcard">
+      <div class="tcard-hd"><span class="tcard-ttl">All Customers (${custs.length})</span></div>
+      <div style="overflow-x:auto"><table id="ctable"><thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>City</th><th>State</th><th>Orders</th><th>Total Spent</th><th>Contact</th></tr></thead><tbody>
+        ${custs.map(c=>`<tr data-s="${(c.name+c.phone+(c.email||'')+(c.city||'')).toLowerCase()}">
+          <td><strong>${c.name}</strong></td>
+          <td>${c.phone}</td>
+          <td style="color:var(--muted);font-size:.82rem">${c.email||'—'}</td>
+          <td>${c.city||'—'}</td>
+          <td>${c.state||'—'}</td>
+          <td><span class="bx b">${c.total_orders||0}</span></td>
+          <td><strong style="color:var(--td)">${fmtCur(c.total_spent||0)}</strong></td>
+          <td><a href="https://wa.me/${(c.phone||'').replace(/\D/g,'')}" target="_blank" class="btn sm wa">💬 WA</a></td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    </div>`);
+}
+function filterTable(inp,tid){
+  const q=inp.value.toLowerCase();
+  document.querySelectorAll(`#${tid} tbody tr`).forEach(r=>r.style.display=(!q||r.dataset.s?.includes(q))?'':'none');
+}
+
+// ── SHIPPING ──
+async function loadShipping(){
+  const res=await api('getShipments');
+  const ships=res.shipments?.length?res.shipments:demoShipments();
+  const SC2={pending:'o',in_transit:'b',delivered:'g',returned:'r'};
+  setContent(`
+    <div class="srow">
+      <input class="sinput" placeholder="Search shipment, order, customer…" oninput="filterTable(this,'shtable')"/>
+      <select class="fsel" id="shfilter" onchange="filterShipByStatus()">
+        <option value="all">All Shipments</option>
+        <option value="pending">⏳ Pending</option>
+        <option value="in_transit">🚚 In Transit</option>
+        <option value="delivered">✅ Delivered</option>
+      </select>
+      <button class="btn sec" onclick="loadShipping()">🔄 Refresh</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
+      <div class="sc"><div class="sc-ico ic-b">📦</div><div class="sc-val">${ships.length}</div><div class="sc-lbl">Total Shipments</div></div>
+      <div class="sc"><div class="sc-ico ic-o">⏳</div><div class="sc-val">${ships.filter(s=>s.status==='pending').length}</div><div class="sc-lbl">Pending Dispatch</div></div>
+      <div class="sc"><div class="sc-ico ic-b">🚚</div><div class="sc-val">${ships.filter(s=>s.status==='in_transit').length}</div><div class="sc-lbl">In Transit</div></div>
+      <div class="sc"><div class="sc-ico ic-g">✅</div><div class="sc-val">${ships.filter(s=>s.status==='delivered').length}</div><div class="sc-lbl">Delivered</div></div>
+    </div>
+    <div class="tcard">
+      <div class="tcard-hd"><span class="tcard-ttl">All Shipments (${ships.length})</span></div>
+      <div style="overflow-x:auto"><table id="shtable"><thead><tr><th>Shipment ID</th><th>Order ID</th><th>Customer</th><th>City</th><th>Carrier</th><th>Tracking</th><th>Dispatched</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+        ${ships.map(s=>`<tr data-st="${s.status}" data-s="${(s.shipment_id+s.order_id+s.customer_name).toLowerCase()}">
+          <td><strong style="font-size:.82rem;color:var(--t)">${s.shipment_id}</strong></td>
+          <td style="font-size:.82rem">${s.order_id}</td>
+          <td><strong>${s.customer_name}</strong></td>
+          <td>${s.city}</td>
+          <td>${s.carrier||'—'}</td>
+          <td style="font-size:.8rem;color:var(--muted)">${s.tracking_no||'—'}</td>
+          <td style="font-size:.79rem;color:var(--muted)">${fmtDate(s.dispatched_at)}</td>
+          <td><span class="bx ${SC2[s.status]||'b'}">${s.status?.replace('_',' ')||'—'}</span></td>
+          <td><button class="btn sm sec" onclick="updateShipModal('${s.shipment_id}','${s.status}')">Update</button></td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    </div>`);
+  window._ships=ships;
+}
+function filterShipByStatus(){
+  const v=document.getElementById('shfilter').value;
+  document.querySelectorAll('#shtable tbody tr').forEach(r=>r.style.display=(v==='all'||r.dataset.st===v)?'':'none');
+}
+function updateShipModal(id,cur){
+  openMdal(`<h2>Update Shipment — ${id}</h2>
+    <div style="background:var(--tp);padding:10px 14px;border-radius:10px;margin-bottom:14px;font-size:.84rem;color:var(--td)">Current: <strong>${cur?.replace('_',' ')}</strong></div>
+    <div class="fg"><label>Status</label><select id="shst"><option value="pending">pending</option><option value="in_transit">in_transit</option><option value="delivered">delivered</option><option value="returned">returned</option></select></div>
+    <div class="fg"><label>Carrier</label><input id="shcar" placeholder="DTDC, Delhivery, BlueDart…"/></div>
+    <div class="fg"><label>Tracking Number</label><input id="shtrk" placeholder="AWB number"/></div>
+    <div class="fg"><label>Notes</label><input id="shnote" placeholder="Optional notes"/></div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn pri" onclick="submitShipUpdate('${id}')">Update</button>
+      <button class="btn sec" onclick="closeMdal()">Cancel</button>
+    </div>`);
+}
+async function submitShipUpdate(id){
+  const data={status:document.getElementById('shst').value,carrier:document.getElementById('shcar').value,tracking_no:document.getElementById('shtrk').value,notes:document.getElementById('shnote').value,updated_at:new Date().toISOString()};
+  await api('updateShipment',{id,data});
+  closeMdal();loadShipping();
+}
+
+// ── BILLING ──
+async function loadBilling(){
+  const res=await api('getBilling');
+  const orders=demoOrders();
+  const totalRev=orders.reduce((s,o)=>s+o.total,0);
+  const pending=orders.filter(o=>o.status==='pending').reduce((s,o)=>s+o.total,0);
+  const paid=orders.filter(o=>o.status==='delivered').reduce((s,o)=>s+o.total,0);
+  setContent(`
+    <div class="stat-grid" style="margin-bottom:24px">
+      <div class="sc"><div class="sc-ico ic-g">💰</div><div class="sc-val">${fmtCur(totalRev)}</div><div class="sc-lbl">Total Revenue</div></div>
+      <div class="sc"><div class="sc-ico ic-g">✅</div><div class="sc-val">${fmtCur(paid)}</div><div class="sc-lbl">Collected (COD)</div></div>
+      <div class="sc"><div class="sc-ico ic-o">⏳</div><div class="sc-val">${fmtCur(pending)}</div><div class="sc-lbl">Pending Collection</div></div>
+      <div class="sc"><div class="sc-ico ic-b">📦</div><div class="sc-val">${orders.length}</div><div class="sc-lbl">Total Orders</div></div>
+    </div>
+    <div class="tcard">
+      <div class="tcard-hd"><span class="tcard-ttl">Revenue by Product Category</span><button class="btn sm sec" onclick="exportCSV(${JSON.stringify(orders)},['order_id','customer_name','total','status','created_at'],'billing')">📥 Export</button></div>
+      <div style="overflow-x:auto"><table><thead><tr><th>Category</th><th>Orders</th><th>Revenue</th><th>Avg Order</th></tr></thead><tbody>
+        ${[{cat:'Cups',pct:.45},{cat:'Medical',pct:.28},{cat:'Accessories',pct:.15},{cat:'Electric',pct:.12}].map(c=>`<tr>
+          <td><strong>${c.cat}</strong></td>
+          <td><span class="bx b">${Math.round(orders.length*c.pct)}</span></td>
+          <td><strong style="color:var(--td)">${fmtCur(Math.round(totalRev*c.pct))}</strong></td>
+          <td style="color:var(--muted)">${fmtCur(Math.round(totalRev*c.pct/Math.max(1,Math.round(orders.length*c.pct))))}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    </div>
+    <div class="tcard" style="margin-top:20px">
+      <div class="tcard-hd"><span class="tcard-ttl">All Transactions</span></div>
+      <div style="overflow-x:auto"><table><thead><tr><th>Order ID</th><th>Date</th><th>Customer</th><th>Amount</th><th>Payment</th><th>Status</th></tr></thead><tbody>
+        ${orders.map(o=>`<tr>
+          <td style="color:var(--t);font-size:.82rem"><strong>${o.order_id}</strong></td>
+          <td style="color:var(--muted);font-size:.8rem">${fmtDate(o.created_at)}</td>
+          <td><strong>${o.customer_name}</strong></td>
+          <td><strong style="color:var(--td)">${fmtCur(o.total)}</strong></td>
+          <td><span class="bx b">COD</span></td>
+          <td><span class="bx ${o.status==='delivered'?'g':o.status==='cancelled'?'r':'o'}">${o.status}</span></td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    </div>`);
+}
+
+// ── SETTINGS ──
+function loadSettings(){
+  setContent(`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:900px">
+      <div class="tcard">
+        <div class="tcard-hd"><span class="tcard-ttl">Business Info</span></div>
+        <div style="padding:20px;display:grid;gap:13px">
+          <div class="fg"><label>Business Name</label><input value="Detoxy Hijama Cups"/></div>
+          <div class="fg"><label>Owner</label><input value="Mohamed Aasiq"/></div>
+          <div class="fg"><label>Phone / WhatsApp</label><input value="+91-9566596077"/></div>
+          <div class="fg"><label>Email</label><input value="detoxyhijamacups@gmail.com"/></div>
+          <div class="fg"><label>Address</label><input value="Pollachi, Coimbatore, Tamil Nadu 642005"/></div>
+          <button class="btn pri" onclick="alert('Connect Sheets API to save settings permanently.')">Save Info</button>
+        </div>
+      </div>
+      <div class="tcard">
+        <div class="tcard-hd"><span class="tcard-ttl">Social Links</span></div>
+        <div style="padding:20px;display:grid;gap:13px">
+          <div class="fg"><label>WhatsApp</label><input value="https://wa.me/919566596077"/></div>
+          <div class="fg"><label>LinkedIn</label><input value="https://www.linkedin.com/company/detoxy-hijama"/></div>
+          <div class="fg"><label>Instagram</label><input value="https://www.instagram.com/detoxyhijama_"/></div>
+          <div class="fg"><label>Facebook</label><input value="https://www.facebook.com/detoxyhijama"/></div>
+          <div class="fg"><label>YouTube</label><input value="https://www.youtube.com/@detoxyhijama"/></div>
+          <button class="btn pri" onclick="alert('Connect Sheets API to save settings permanently.')">Save Social</button>
+        </div>
+      </div>
+      <div class="tcard">
+        <div class="tcard-hd"><span class="tcard-ttl">Google Sheets / API</span></div>
+        <div style="padding:20px;display:grid;gap:13px">
+          <div style="background:var(--tp);border-radius:10px;padding:14px;font-size:.84rem;color:var(--td);line-height:1.7">
+            <strong>Setup Instructions:</strong><br>
+            1. Deploy <code>Code.gs</code> as Google Apps Script<br>
+            2. Copy the web app URL<br>
+            3. Paste it below and save
+          </div>
+          <div class="fg"><label>Apps Script URL</label><input id="apiUrl" value="${API_URL}" placeholder="https://script.google.com/macros/s/…/exec"/></div>
+          <button class="btn pri" onclick="saveApiUrl()">💾 Save URL</button>
+        </div>
+      </div>
+      <div class="tcard">
+        <div class="tcard-hd"><span class="tcard-ttl">Admin Credentials</span></div>
+        <div style="padding:20px;display:grid;gap:13px">
+          <div class="fg"><label>Admin Email</label><input value="admin@detoxyhijama.com" readonly style="background:var(--cream)"/></div>
+          <div class="fg"><label>Admin Password</label><input type="password" value="Admin@2025Detoxy!" readonly style="background:var(--cream)"/></div>
+          <div class="fg"><label>Shipper Email</label><input value="shipper@detoxyhijama.com" readonly style="background:var(--cream)"/></div>
+          <div class="fg"><label>Shipper Password</label><input type="password" value="Ship@2025Detoxy!" readonly style="background:var(--cream)"/></div>
+          <div style="font-size:.78rem;color:var(--muted)">Change credentials in Code.gs → Users sheet</div>
+        </div>
+      </div>
+    </div>`);
+}
+function saveApiUrl(){
+  const url=document.getElementById('apiUrl')?.value;
+  if(url)localStorage.setItem('dh_api_url',url);
+  alert('URL saved to local storage. Update API_URL in the source code for permanent effect.');
+}
+
+// ── UTILS ──
+function exportCSV(data,fields,fname){
+  const rows=[fields.join(','),...data.map(r=>fields.map(f=>'"'+(r[f]||'').toString().replace(/"/g,'""')+'"').join(','))];
+  const blob=new Blob([rows.join('\n')],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname+'_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+}
+</script>
+</body>
+</html>
