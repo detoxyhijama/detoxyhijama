@@ -150,7 +150,9 @@
         <select class="form-select" id="payFilter" onchange="renderOrders()" style="max-width:140px">
           <option value="">All Payment</option>
           <option value="COD">COD</option>
-          <option value="Online">Online</option>
+          <option value="UPI">UPI</option>
+          <option value="Card">Card</option>
+          <option value="Bank Transfer">Bank Transfer</option>
           <option value="UPI">UPI</option>
         </select>
         <span id="orderCount" style="font-size:.8rem;color:#7a9490;margin-left:auto;font-weight:600"></span>
@@ -241,6 +243,7 @@ function renderOrders(){
 function updateStatus(idx,newStatus){
   orders[idx].status=newStatus;
   localStorage.setItem("detoxy_orders",JSON.stringify(orders));
+  renderOrders();
 }
 
 // FIX: proper modal instead of alert()

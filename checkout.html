@@ -157,9 +157,15 @@
       notes: get('cNotes'),
       status: 'New'
     };
-    const result = await OrderSync.submit(orderData);
-    Cart.clear();
-    window.location.href = 'confirmation.html?id=' + encodeURIComponent(orderData.id || Date.now());
+    try {
+      const result = await OrderSync.submit(orderData);
+      Cart.clear();
+      window.location.href = 'confirmation.html?id=' + encodeURIComponent(orderData.id || Date.now());
+    } catch (err) {
+      alertEl.innerHTML = '<div class="alert alert--error">Something went wrong. Please try again.</div>';
+      btn.disabled = false;
+      btn.textContent = 'Place Order';
+    }
   }
 
   renderCheckout();
