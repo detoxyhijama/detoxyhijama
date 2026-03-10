@@ -7,7 +7,7 @@
 function _base() {
   // Detect if we're in a subdirectory
   const p = window.location.pathname;
-  if (p.includes('/products/') || p.includes('/admin/') || p.includes('/blogs/') || p.includes('/quote/') || p.includes('/confirmation/')) return '../';
+  if (p.includes('/products/') || p.includes('/admin/') || p.includes('/blogs/') || p.includes('/quote/') || p.includes('/confirmation/') || p.includes('/shipper/')) return '../';
   return '';
 }
 
@@ -19,7 +19,7 @@ function getNavHTML(activePage) {
     { label: 'Home', href: b + 'index.html' },
     { label: 'Products', href: b + 'products.html' },
     { label: 'Quote', href: b + 'quote.html' },
-    { label: 'Blogs', href: b + 'blogs/index.html' },
+    { label: 'Blogs', href: b + 'blogs.html' },
     { label: 'Contact', href: b + 'contact.html' }
   ];
   const navLinks = links.map(l =>
@@ -122,7 +122,7 @@ function getFooterHTML() {
       <h4>Quick Links</h4>
       <ul>
         <li><a href="${b}quote.html">Bulk Quote</a></li>
-        <li><a href="${b}blogs/index.html">Blog</a></li>
+        <li><a href="${b}blogs.html">Blog</a></li>
         <li><a href="${b}contact.html">Contact</a></li>
         <li><a href="${b}cart.html">Cart</a></li>
       </ul>

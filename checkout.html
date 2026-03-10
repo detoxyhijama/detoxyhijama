@@ -159,7 +159,7 @@
     };
     const result = await OrderSync.submit(orderData);
     Cart.clear();
-    window.location.href = 'confirmation/index.html?id=' + encodeURIComponent(orderData.id || Date.now());
+    window.location.href = 'confirmation.html?id=' + encodeURIComponent(orderData.id || Date.now());
   }
 
   renderCheckout();
