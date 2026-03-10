@@ -8,7 +8,7 @@ const SITE = {
   EMAIL: 'detoxyhijama@gmail.com',
   PHONE: '+91-9566596077',
   ADDRESS: 'Pollachi, Coimbatore, Tamil Nadu 642005',
-  APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzFt2178utJfKENXEurMTrzVQ7CuhMd_LNmdeB7xPc/exec',
+  APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzbfUn4idCR-xItPwdQUXINhdv_0CzxffJnEitYA-qr2VG8zwBbo7K8bhcVV6EXQSFa/exec',
   FREE_SHIPPING_ABOVE: 999,
   SHIPPING_CHARGE: 80,
 };

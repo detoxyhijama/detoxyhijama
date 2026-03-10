@@ -8,116 +8,150 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet"/>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--t:#2aab97;--td:#1d8a78;--tl:#3ecab5;--tp:#e8f8f5;--cream:#f4f9f8;--dark:#0b1f1c;--mid:#174840;--text:#2a4a45;--muted:#6b9990;--border:#ddecea;--red:#e53935;--green:#16a34a;--blue:#0369a1;--orange:#d97706;--sb:210px}
+:root{
+  --t:#2aab97;--td:#1d8a78;--tl:#3ecab5;--tp:#e8f8f5;
+  --cream:#f4f9f8;--dark:#0b1f1c;--mid:#174840;--text:#2a4a45;
+  --muted:#6b9990;--border:#ddecea;--red:#e53935;--green:#16a34a;
+  --blue:#0369a1;--orange:#d97706;--sb:215px
+}
 body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 h1,h2,h3{font-family:'Cormorant Garamond',serif}
 a{text-decoration:none;color:inherit}
+/* ---- LOGIN ---- */
 #loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,var(--dark),var(--mid));display:flex;align-items:center;justify-content:center;z-index:9999}
 .lbox{background:#fff;border-radius:24px;padding:44px;width:400px;max-width:94vw;box-shadow:0 24px 80px rgba(0,0,0,.3)}
 .lfield{margin-bottom:14px}
 .lfield label{display:block;font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px}
-.lfield input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:.92rem;font-family:'Outfit',sans-serif;transition:border-color .2s}
-.lfield input:focus{outline:none;border-color:var(--t)}
-.lbtn{width:100%;background:var(--t);color:#fff;border:none;padding:13px;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;margin-top:6px}
+.lfield input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:.92rem;font-family:'Outfit',sans-serif;transition:border-color .2s;outline:none}
+.lfield input:focus{border-color:var(--t)}
+.lbtn{width:100%;background:var(--t);color:#fff;border:none;padding:13px;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;margin-top:6px;transition:background .2s}
 .lbtn:hover{background:var(--td)}
 .lerr{color:var(--red);font-size:.82rem;text-align:center;margin-top:10px;display:none}
+/* ---- APP SHELL ---- */
 #app{display:none;height:100vh;overflow:hidden}
 .sb{position:fixed;left:0;top:0;bottom:0;width:var(--sb);background:var(--dark);display:flex;flex-direction:column;z-index:100}
 .sb-top{display:flex;align-items:center;gap:10px;padding:18px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
-.sb-top img{width:38px;height:38px;border-radius:50%}
+.sb-top img{width:38px;height:38px;border-radius:50%;object-fit:cover}
 .sb-brand{font-family:'Cormorant Garamond',serif;font-size:.98rem;font-weight:700;color:#fff;display:block;line-height:1.1}
-.sb-sub{font-size:.58rem;color:#25d366;text-transform:uppercase;letter-spacing:.1em;font-weight:600}
-.sb-nav{padding:10px 0;flex:1}
+.sb-sub{font-size:.58rem;color:var(--tl);text-transform:uppercase;letter-spacing:.1em;font-weight:600}
+.sb-nav{padding:10px 0;flex:1;overflow-y:auto}
 .sb-gl{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.25);font-weight:600;padding:10px 16px 5px}
 .sb-btn{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;cursor:pointer;color:rgba(255,255,255,.5);font-size:.83rem;font-weight:500;transition:all .2s;margin:1px 8px;background:none;border:none;width:calc(100% - 16px);text-align:left;font-family:'Outfit',sans-serif}
 .sb-btn:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
 .sb-btn.active{background:rgba(42,171,151,.2);color:var(--tl);font-weight:600}
 .sb-btn .ico{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.88rem;flex-shrink:0}
 .sb-btn.active .ico{background:rgba(42,171,151,.22)}
-.badge-pill{margin-left:auto;background:var(--red);color:#fff;font-size:.58rem;padding:2px 7px;border-radius:50px;font-weight:700}
+.pill{margin-left:auto;background:var(--red);color:#fff;font-size:.58rem;padding:2px 7px;border-radius:50px;font-weight:700;display:none}
 .sb-foot{padding:14px 16px;border-top:1px solid rgba(255,255,255,.07)}
 .logout-btn{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.35);font-size:.8rem;cursor:pointer;background:none;border:none;font-family:'Outfit',sans-serif;padding:7px 10px;border-radius:8px;width:100%;transition:all .2s}
 .logout-btn:hover{color:var(--red);background:rgba(229,57,53,.08)}
+/* ---- MAIN ---- */
 .main-area{margin-left:var(--sb);height:100vh;overflow-y:auto;display:flex;flex-direction:column}
-.topbar{background:#fff;border-bottom:1px solid var(--border);padding:13px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:13px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:10px}
 .topbar-ttl{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--dark)}
-.chip{background:#f0fdf4;color:var(--green);padding:5px 13px;border-radius:50px;font-size:.76rem;font-weight:600}
 .content{padding:24px 28px;flex:1}
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
-.sc{background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px}
-.sc-ico{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:12px}
-.ic-g{background:#dcfce7}.ic-b{background:#dbeafe}.ic-o{background:#fef3c7}.ic-r{background:#fee2e2}
+/* ---- STATS ---- */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.sc{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px}
+.sc-ico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:10px}
+.ic-g{background:#dcfce7}.ic-b{background:#dbeafe}.ic-o{background:#fef3c7}.ic-r{background:#fee2e2}.ic-t{background:var(--tp)}
 .sc-val{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--dark);line-height:1}
-.sc-lbl{font-size:.74rem;color:var(--muted);margin-top:4px}
+.sc-lbl{font-size:.72rem;color:var(--muted);margin-top:3px}
+/* ---- TABLE CARD ---- */
 .tcard{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:20px}
-.tcard-hd{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.tcard-hd{padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);gap:10px;flex-wrap:wrap}
 .tcard-ttl{font-weight:700;color:var(--dark);font-size:.93rem}
 table{width:100%;border-collapse:collapse}
-th{background:var(--cream);padding:10px 16px;font-size:.73rem;font-weight:600;color:var(--muted);text-align:left;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
-td{padding:12px 16px;font-size:.84rem;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+th{background:var(--cream);padding:9px 14px;font-size:.71rem;font-weight:600;color:var(--muted);text-align:left;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+td{padding:11px 14px;font-size:.83rem;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#fafffe}
-.bx{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.68rem;font-weight:600;white-space:nowrap}
-.bx.g{background:#dcfce7;color:var(--green)}.bx.r{background:#fee2e2;color:var(--red)}.bx.o{background:#fef3c7;color:var(--orange)}.bx.b{background:#dbeafe;color:var(--blue)}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:10px;font-size:.83rem;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;transition:all .2s}
+/* ---- BADGES ---- */
+.bx{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.67rem;font-weight:600;white-space:nowrap}
+.bx.g{background:#dcfce7;color:var(--green)}.bx.r{background:#fee2e2;color:var(--red)}
+.bx.o{background:#fef3c7;color:var(--orange)}.bx.b{background:#dbeafe;color:var(--blue)}.bx.t{background:var(--tp);color:var(--td)}
+/* ---- BUTTONS ---- */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;font-size:.82rem;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;transition:all .2s}
 .btn.pri{background:var(--t);color:#fff}.btn.pri:hover{background:var(--td)}
 .btn.sec{background:var(--tp);color:var(--td)}.btn.sec:hover{background:var(--t);color:#fff}
+.btn.red{background:#fee2e2;color:var(--red)}.btn.red:hover{background:var(--red);color:#fff}
 .btn.wa{background:#25d366;color:#fff}.btn.wa:hover{background:#1da851}
 .btn.sm{padding:5px 11px;font-size:.74rem}
-.moverlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+/* ---- FILTER ROW ---- */
+.frow{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.sinput{flex:1;min-width:180px;padding:9px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:.86rem;font-family:'Outfit',sans-serif;outline:none}
+.sinput:focus{border-color:var(--t)}
+.fsel{padding:9px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:.84rem;font-family:'Outfit',sans-serif;background:#fff;outline:none}
+/* ---- MODAL ---- */
+.moverlay{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
 .moverlay.open{display:flex}
-.mdal{background:#fff;border-radius:20px;padding:32px;width:500px;max-width:100%;max-height:90vh;overflow-y:auto}
+.mdal{background:#fff;border-radius:20px;padding:32px;width:520px;max-width:100%;max-height:90vh;overflow-y:auto}
 .mdal h2{font-size:1.35rem;color:var(--dark);margin-bottom:20px}
 .fg{margin-bottom:14px}
 .fg label{display:block;font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:5px}
-.fg input,.fg select,.fg textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;font-family:'Outfit',sans-serif;color:var(--text);background:#fff}
-.fg input:focus,.fg select:focus{outline:none;border-color:var(--t)}
-.srow{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
-.sinput{flex:1;min-width:200px;padding:9px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:.86rem;font-family:'Outfit',sans-serif}
-.fsel{padding:9px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:.84rem;font-family:'Outfit',sans-serif;background:#fff}
-@media(max-width:768px){:root{--sb:0px}.sb{transform:translateX(-210px);transition:transform .3s;width:210px}.sb.open{transform:translateX(0)}.main-area{margin-left:0}.content{padding:14px}}
+.fg input,.fg select,.fg textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;font-family:'Outfit',sans-serif;color:var(--text);background:#fff;outline:none}
+.fg input:focus,.fg select:focus{border-color:var(--t)}
+.fg input.err,.fg select.err{border-color:var(--red)}
+/* ---- LOADING / EMPTY ---- */
+.loading{display:flex;align-items:center;justify-content:center;padding:60px;gap:14px;color:var(--muted);font-size:.9rem}
+.spin{width:30px;height:30px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--t);animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:50px;color:var(--muted)}
+.empty-ico{font-size:2.5rem;display:block;margin-bottom:8px}
+.err-box{background:#fee2e2;color:var(--red);border:1px solid #fca5a5;border-radius:12px;padding:16px 20px;margin-bottom:20px;font-size:.86rem;line-height:1.6}
+/* ---- TOAST ---- */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--dark);color:#fff;padding:12px 20px;border-radius:12px;font-size:.86rem;font-weight:500;z-index:9999;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;max-width:320px}
+.toast.show{opacity:1;transform:translateY(0)}
+/* ---- RESPONSIVE ---- */
+@media(max-width:768px){
+  :root{--sb:0px}
+  .sb{transform:translateX(-215px);transition:transform .3s;width:215px}
+  .sb.open{transform:translateX(0)}
+  .main-area{margin-left:0}
+  .content{padding:14px 16px}
+  .stat-grid{grid-template-columns:1fr 1fr}
+  #mmbtn{display:block!important}
+}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- ===== LOGIN ===== -->
 <div id="loginScreen">
   <div class="lbox">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
-      <img src="../assets/logo.png" style="width:50px;height:50px;border-radius:50%" alt="Detoxy Hijama"/>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+      <img src="../assets/logo.jpg" style="width:50px;height:50px;border-radius:50%;object-fit:cover" onerror="this.src='../assets/logo.png'" alt="Detoxy"/>
       <div>
-        <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--dark)">Shipper Panel</h2>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:700;color:var(--dark)">Shipper Panel</h2>
         <p style="font-size:.82rem;color:var(--muted)">Detoxy Hijama Cups</p>
       </div>
     </div>
-    <div style="background:var(--tp);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:.78rem;color:var(--td)">
-      🚚 shipper@detoxyhijama.com / Ship@2025Detoxy!
-    </div>
-    <div class="lfield"><label>Email</label><input id="lEmail" type="email" value="shipper@detoxyhijama.com"/></div>
-    <div class="lfield"><label>Password</label><input id="lPass" type="password" value="Ship@2025Detoxy!"/></div>
+    <div class="lfield"><label>Password</label><input id="lPass" type="password" placeholder="Enter shipper password"/></div>
     <button class="lbtn" onclick="doLogin()">Sign In →</button>
-    <div class="lerr" id="lErr">Invalid credentials.</div>
+    <div class="lerr" id="lErr">Incorrect password. Try again.</div>
   </div>
 </div>
 
-<!-- APP -->
+<!-- ===== APP ===== -->
 <div id="app">
   <aside class="sb" id="sb">
     <div class="sb-top">
-      <img src="../assets/logo.png" alt="logo"/>
+      <img src="../assets/logo.jpg" alt="logo" onerror="this.src='../assets/logo.png'"/>
       <div><span class="sb-brand">Detoxy Hijama</span><span class="sb-sub">Shipper Panel</span></div>
     </div>
     <nav class="sb-nav">
       <div class="sb-gl">Dashboard</div>
       <button class="sb-btn active" onclick="nav('dashboard',this)"><span class="ico">📊</span>Overview</button>
       <div class="sb-gl">Work Queue</div>
-      <button class="sb-btn" onclick="nav('toship',this)"><span class="ico">📦</span>To Dispatch<span class="badge-pill" id="toshipBadge" style="display:none">0</span></button>
+      <button class="sb-btn" onclick="nav('toship',this)"><span class="ico">📦</span>To Dispatch <span class="pill" id="pillToship">0</span></button>
       <button class="sb-btn" onclick="nav('intransit',this)"><span class="ico">🚚</span>In Transit</button>
       <button class="sb-btn" onclick="nav('delivered',this)"><span class="ico">✅</span>Delivered</button>
       <div class="sb-gl">All</div>
-      <button class="sb-btn" onclick="nav('allshipments',this)"><span class="ico">📋</span>All Shipments</button>
+      <button class="sb-btn" onclick="nav('all',this)"><span class="ico">📋</span>All Orders</button>
     </nav>
     <div class="sb-foot">
+      <div style="font-size:.7rem;color:rgba(255,255,255,.2);padding:0 10px 8px">Synced: <span id="syncTime">—</span></div>
       <button class="logout-btn" onclick="logout()">🚪 Sign Out</button>
     </div>
   </aside>
@@ -125,264 +159,418 @@ tr:hover td{background:#fafffe}
   <main class="main-area">
     <div class="topbar">
       <div style="display:flex;align-items:center;gap:12px">
-        <button onclick="document.getElementById('sb').classList.toggle('open')" style="display:none;background:none;border:none;font-size:1.3rem;cursor:pointer" id="mmbtn">☰</button>
+        <button id="mmbtn" style="display:none;background:none;border:none;font-size:1.3rem;cursor:pointer" onclick="document.getElementById('sb').classList.toggle('open')">☰</button>
         <div class="topbar-ttl" id="pgTitle">Overview</div>
       </div>
-      <div style="display:flex;align-items:center;gap:12px">
-        <span style="font-size:.8rem;color:var(--muted)">Shipper</span>
-        <span class="chip">🚚 Shipper</span>
-        <a href="https://wa.me/919566596077" target="_blank" style="font-size:.78rem;color:#25d366">💬 Admin WA</a>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="btn sec sm" onclick="refresh()">🔄 Refresh</button>
+        <span style="font-size:.78rem;color:var(--muted)">Shipper</span>
       </div>
     </div>
-    <div class="content" id="pgContent"></div>
+    <div class="content" id="pgContent">
+      <div class="loading"><div class="spin"></div> Loading orders…</div>
+    </div>
   </main>
 </div>
 
-<!-- MODAL -->
-<div class="moverlay" id="moverlay" onclick="if(event.target===this)closeMdal()">
-  <div class="mdal" id="mdalContent"></div>
+<!-- ===== MODAL ===== -->
+<div class="moverlay" id="moverlay" onclick="if(event.target===this)closeModal()">
+  <div class="mdal" id="modalBody"></div>
 </div>
+<div class="toast" id="toast"></div>
 
 <script>
-const CREDS={email:'shipper@detoxyhijama.com', pw:'Ship@2025Detoxy!'};
-const API_URL='https://script.google.com/macros/s/AKfycbzFt2178utJfKENXEurMTrzVQ7CuhMd_LNmdeB7xPc/exec';
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const API  = 'https://script.google.com/macros/s/AKfycbzbfUn4idCR-xItPwdQUXINhdv_0CzxffJnEitYA-qr2VG8zwBbo7K8bhcVV6EXQSFa/exec';
+const PASS = 'Ship@2025Detoxy!';
 
-function doLogin(){
-  const e=document.getElementById('lEmail').value.trim();
-  const p=document.getElementById('lPass').value;
-  if(e===CREDS.email && p===CREDS.pw){
-    sessionStorage.setItem('dh_shipper','1');
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('app').style.display='flex';
-    loadDashboard();
+/* ============================================================
+   STATE
+   ============================================================ */
+let ORDERS = [];   // live data from sheet
+let CUR    = 'dashboard';
+
+/* ============================================================
+   AUTH
+   ============================================================ */
+function doLogin() {
+  if (document.getElementById('lPass').value === PASS) {
+    sessionStorage.setItem('dh_ship','1');
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    fetchOrders().then(() => renderDashboard());
   } else {
-    document.getElementById('lErr').style.display='block';
+    document.getElementById('lErr').style.display = 'block';
   }
 }
-function logout(){sessionStorage.removeItem('dh_shipper');location.reload();}
-document.addEventListener('DOMContentLoaded',()=>{
-  if(sessionStorage.getItem('dh_shipper')){
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('app').style.display='flex';
-    loadDashboard();
+function logout() { sessionStorage.removeItem('dh_ship'); location.reload(); }
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem('dh_ship')) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    fetchOrders().then(() => renderDashboard());
   }
-  document.getElementById('lPass').onkeydown=e=>{if(e.key==='Enter')doLogin();};
-  if(window.innerWidth<768)document.getElementById('mmbtn').style.display='block';
+  document.getElementById('lPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 });
 
-async function api(action,data={}){
-  try{
-    const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,...data})});
-    return await r.json();
-  }catch(e){return{success:false,error:e.message};}
+/* ============================================================
+   API — fetch from Google Sheet
+   ============================================================ */
+async function callAPI(action, data = {}) {
+  const resp = await fetch(API, {
+    method : 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body   : JSON.stringify({ action, ...data })
+  });
+  return resp.json();
 }
 
-function nav(pg,btn){
-  document.querySelectorAll('.sb-btn').forEach(b=>b.classList.remove('active'));
-  if(btn)btn.classList.add('active');
-  const T={dashboard:'Overview',toship:'To Dispatch',intransit:'In Transit',delivered:'Delivered',allshipments:'All Shipments'};
-  document.getElementById('pgTitle').textContent=T[pg]||pg;
-  const F={dashboard:loadDashboard,toship:()=>loadShipments('pending'),intransit:()=>loadShipments('in_transit'),delivered:()=>loadShipments('delivered'),allshipments:()=>loadShipments('all')};
-  if(F[pg])F[pg]();
+async function fetchOrders() {
+  setHTML(`<div class="loading"><div class="spin"></div> Fetching live orders from sheet…</div>`);
+  try {
+    const res = await callAPI('getOrders');
+    /* handle multiple response shapes Apps Script might return */
+    if      (Array.isArray(res))                   ORDERS = res;
+    else if (res.orders && Array.isArray(res.orders)) ORDERS = res.orders;
+    else if (res.data   && Array.isArray(res.data))   ORDERS = res.data;
+    else                                           ORDERS = [];
+
+    document.getElementById('syncTime').textContent = new Date().toLocaleTimeString('en-IN');
+    updatePill();
+  } catch (err) {
+    ORDERS = [];
+    setHTML(`<div class="err-box">
+      ⚠️ <strong>Could not connect to Google Sheet.</strong><br>
+      Make sure the Apps Script is deployed as <em>"Anyone can access"</em> and the URL is correct.<br><br>
+      <small style="opacity:.7">${err.message}</small>
+    </div>`);
+  }
 }
 
-function setContent(h){document.getElementById('pgContent').innerHTML=h;}
-function openMdal(h){document.getElementById('mdalContent').innerHTML=h;document.getElementById('moverlay').classList.add('open');}
-function closeMdal(){document.getElementById('moverlay').classList.remove('open');}
-function fmtDate(d){if(!d)return'—';try{return new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'2-digit'});}catch(e){return d;}}
-function fmtCur(n){return'₹'+(+n||0).toLocaleString('en-IN');}
+async function refresh() { await fetchOrders(); nav(CUR, null); showToast('Refreshed ✓'); }
 
-// Demo shipments
-function demoShipments(){
-  const names=['Khalid Rahman','Amina Begum','Farhan Ahmed','Zainab Ali','Yusuf Khan','Fatima Noor','Ibrahim Malik','Hafsa Sheikh','Omar Siddiq','Mariam Patel'];
-  const cities=['Chennai','Mumbai','Bangalore','Hyderabad','Delhi','Coimbatore','Lucknow','Kochi','Pune','Kolkata'];
-  const carriers=['DTDC','Delhivery','BlueDart','Ekart','India Post'];
-  const products=['Standard Cups ×100','Fire Glass Set ×2','Electric Cup ×1','Silicone Set ×3','Suction Gun ×5','Surgical Blade 100pk ×2','Latex Gloves ×3','Lancet Pen ×1'];
-  const statuses=['pending','pending','pending','in_transit','in_transit','delivered','delivered','delivered','delivered','in_transit'];
-  return Array.from({length:20},(_,i)=>({
-    shipment_id:'SHP-'+String(2001+i),
-    order_id:'ORD-'+String(1001+i),
-    customer_name:names[i%names.length],
-    customer_phone:'+91-9'+String(500000000+i*7919).slice(0,9),
-    city:cities[i%cities.length],
-    state:'India',
-    items_summary:products[i%products.length],
-    order_total:Math.round((300+i*137)/10)*10,
-    carrier:statuses[i]==='pending'?'—':carriers[i%carriers.length],
-    tracking_no:statuses[i]==='pending'?'—':'AWB'+String(100000+i*3),
-    status:statuses[i%statuses.length],
-    assigned_at:new Date(Date.now()-(i*86400000*1.5)).toISOString(),
-    dispatched_at:statuses[i]==='pending'?null:new Date(Date.now()-(i*86400000)).toISOString(),
-    delivery_address:`${cities[i%cities.length]}, India`,
-  }));
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function norm(s)    { return (s || 'pending').toLowerCase().replace(/[\s_-]+/g, '_'); }
+function fmtD(d)    { if (!d) return '—'; try { return new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'2-digit',hour:'2-digit',minute:'2-digit'}); } catch(e){ return d; } }
+function fmtM(n)    { return '₹' + (+n||0).toLocaleString('en-IN'); }
+function get(o,...k){ for(const key of k){ const v=o[key]; if(v!==undefined&&v!==null&&v!=='') return v; } return '—'; }
+function setHTML(h) { document.getElementById('pgContent').innerHTML = h; }
+function openModal(h){ document.getElementById('modalBody').innerHTML=h; document.getElementById('moverlay').classList.add('open'); }
+function closeModal(){ document.getElementById('moverlay').classList.remove('open'); }
+function showToast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
+
+/* field accessors */
+function orderId(o)  { return get(o,'orderNumber','orderId','order_id','id'); }
+function custName(o) { const f=get(o,'firstName','customerFirstName'),l=o.lastName||o.customerLastName||''; return `${f} ${l}`.trim() || get(o,'customerName','name'); }
+function custPhone(o){ return get(o,'phone','customerPhone','mobile'); }
+function custCity(o) { return get(o,'city','shippingCity','customerCity'); }
+function custAddr(o) {
+  const a=[get(o,'address1','shippingAddress1'), get(o,'address2','shippingAddress2'), custCity(o), get(o,'pincode','shippingPincode'), get(o,'state','shippingState')];
+  return a.filter(x=>x&&x!=='—').join(', ');
+}
+function items(o)    { return Array.isArray(o.items)?o.items.map(i=>`${i.name||i.productId||i.id} ×${i.qty||1}`).join(', '):(o.itemsSummary||o.items_summary||'—'); }
+
+const SC={pending:'o',processing:'b',dispatched:'b',in_transit:'b',out_for_delivery:'b',delivered:'g',cancelled:'r',returned:'r',failed:'r'};
+function badge(s){ const k=norm(s); return `<span class="bx ${SC[k]||'t'}">${s||'Pending'}</span>`; }
+
+function updatePill() {
+  const n = ORDERS.filter(o => ['pending','processing'].includes(norm(o.status))).length;
+  const p = document.getElementById('pillToship');
+  p.textContent = n; p.style.display = n > 0 ? 'flex' : 'none';
 }
 
-async function loadDashboard(){
-  setContent(`<div style="text-align:center;padding:48px;color:var(--muted)">⏳ Loading...</div>`);
-  const ships=demoShipments();
-  const pending=ships.filter(s=>s.status==='pending');
-  const transit=ships.filter(s=>s.status==='in_transit');
-  const delivered=ships.filter(s=>s.status==='delivered');
-  if(pending.length>0){const b=document.getElementById('toshipBadge');b.textContent=pending.length;b.style.display='flex';}
-  setContent(`
+/* ============================================================
+   NAV
+   ============================================================ */
+function nav(pg, btn) {
+  CUR = pg;
+  document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const T = { dashboard:'Overview', toship:'To Dispatch', intransit:'In Transit', delivered:'Delivered', all:'All Orders' };
+  document.getElementById('pgTitle').textContent = T[pg] || pg;
+  const A = {
+    dashboard: renderDashboard,
+    toship   : () => renderList(['pending','processing']),
+    intransit: () => renderList(['dispatched','in_transit','out_for_delivery']),
+    delivered: () => renderList(['delivered']),
+    all      : () => renderList([]),   // empty = all
+  };
+  if (A[pg]) A[pg]();
+}
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+function renderDashboard() {
+  const toShip  = ORDERS.filter(o => ['pending','processing'].includes(norm(o.status)));
+  const transit = ORDERS.filter(o => ['dispatched','in_transit','out_for_delivery'].includes(norm(o.status)));
+  const done    = ORDERS.filter(o => norm(o.status) === 'delivered');
+
+  setHTML(`
     <div class="stat-grid">
-      <div class="sc"><div class="sc-ico ic-o">📦</div><div class="sc-val">${pending.length}</div><div class="sc-lbl">To Dispatch</div></div>
+      <div class="sc"><div class="sc-ico ic-o">📦</div><div class="sc-val">${toShip.length}</div><div class="sc-lbl">To Dispatch</div></div>
       <div class="sc"><div class="sc-ico ic-b">🚚</div><div class="sc-val">${transit.length}</div><div class="sc-lbl">In Transit</div></div>
-      <div class="sc"><div class="sc-ico ic-g">✅</div><div class="sc-val">${delivered.length}</div><div class="sc-lbl">Delivered Today</div></div>
-      <div class="sc"><div class="sc-ico ic-b">📋</div><div class="sc-val">${ships.length}</div><div class="sc-lbl">Total Assigned</div></div>
+      <div class="sc"><div class="sc-ico ic-g">✅</div><div class="sc-val">${done.length}</div><div class="sc-lbl">Delivered</div></div>
+      <div class="sc"><div class="sc-ico ic-t">📋</div><div class="sc-val">${ORDERS.length}</div><div class="sc-lbl">Total Orders</div></div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-      <div class="tcard">
-        <div class="tcard-hd"><span class="tcard-ttl">🔴 Urgent — To Dispatch (${pending.length})</span><button class="btn sec sm" onclick="nav('toship',null);loadShipments('pending')">View All →</button></div>
-        <div style="overflow-x:auto"><table><thead><tr><th>Shipment</th><th>Customer</th><th>City</th><th>Items</th><th>Action</th></tr></thead><tbody>
-          ${pending.slice(0,5).map(s=>`<tr>
-            <td><strong style="color:var(--t);font-size:.8rem">${s.shipment_id}</strong><div style="font-size:.74rem;color:var(--muted)">${s.order_id}</div></td>
-            <td><strong style="font-size:.85rem">${s.customer_name}</strong><div style="font-size:.74rem;color:var(--muted)">${s.customer_phone}</div></td>
-            <td style="font-size:.82rem">${s.city}</td>
-            <td style="font-size:.79rem;color:var(--muted);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.items_summary}</td>
-            <td><button class="btn sm pri" onclick="dispatchModal('${s.shipment_id}','${s.customer_name}','${s.city}')">Dispatch</button></td>
-          </tr>`).join('')}
-        </tbody></table></div>
+
+    ${toShip.length ? `
+    <div class="tcard">
+      <div class="tcard-hd">
+        <span class="tcard-ttl">🔴 Needs Dispatch (${toShip.length})</span>
+        <button class="btn sec sm" onclick="nav('toship',null)">View All →</button>
       </div>
-      <div class="tcard">
-        <div class="tcard-hd"><span class="tcard-ttl">🚚 In Transit (${transit.length})</span><button class="btn sec sm" onclick="nav('intransit',null);loadShipments('in_transit')">View All →</button></div>
-        <div style="overflow-x:auto"><table><thead><tr><th>Shipment</th><th>Customer</th><th>Carrier</th><th>Tracking</th><th>Action</th></tr></thead><tbody>
-          ${transit.slice(0,5).map(s=>`<tr>
-            <td><strong style="color:var(--t);font-size:.8rem">${s.shipment_id}</strong></td>
-            <td><strong style="font-size:.85rem">${s.customer_name}</strong><div style="font-size:.74rem;color:var(--muted)">${s.city}</div></td>
-            <td style="font-size:.82rem">${s.carrier}</td>
-            <td style="font-size:.79rem;color:var(--muted)">${s.tracking_no}</td>
-            <td><button class="btn sm sec" onclick="updateModal('${s.shipment_id}','${s.status}')">Update</button></td>
-          </tr>`).join('')}
-        </tbody></table></div>
+      <div style="overflow-x:auto">${buildTable(toShip.slice(0,8), true)}</div>
+    </div>` : `
+    <div class="tcard">
+      <div class="empty"><span class="empty-ico">✅</span>All orders dispatched — nothing pending!</div>
+    </div>`}
+
+    ${transit.length ? `
+    <div class="tcard">
+      <div class="tcard-hd">
+        <span class="tcard-ttl">🚚 In Transit (${transit.length})</span>
+        <button class="btn sec sm" onclick="nav('intransit',null)">View All →</button>
       </div>
+      <div style="overflow-x:auto">${buildTable(transit.slice(0,6), false)}</div>
+    </div>` : ''}
+  `);
+}
+
+/* ============================================================
+   LIST VIEW (To Dispatch / In Transit / Delivered / All)
+   ============================================================ */
+function renderList(statuses) {
+  const list = statuses.length
+    ? ORDERS.filter(o => statuses.includes(norm(o.status)))
+    : ORDERS;
+
+  setHTML(`
+    <div class="frow">
+      <input class="sinput" placeholder="Search order, name, phone, city…" oninput="filterTbl(this,'ltbl')"/>
+      <button class="btn sec" onclick="refresh()">🔄 Refresh</button>
+      <span style="font-size:.82rem;color:var(--muted);align-self:center">${list.length} orders</span>
     </div>
     <div class="tcard">
-      <div class="tcard-hd"><span class="tcard-ttl">Contact Admin</span></div>
-      <div style="padding:20px;display:flex;gap:12px;flex-wrap:wrap">
-        <a href="https://wa.me/919566596077?text=Hi%2C+I+am+the+shipper+with+an+update" target="_blank" class="btn wa">💬 WhatsApp Admin</a>
-        <a href="https://www.linkedin.com/company/detoxy-hijama" target="_blank" class="btn" style="background:#0a66c2;color:#fff">🔗 LinkedIn</a>
-        <a href="tel:+919566596077" class="btn sec">📞 Call Admin</a>
-        <a href="../admin/index.html" target="_blank" class="btn sec">🛡️ Admin Panel</a>
+      <div style="overflow-x:auto" id="ltblWrap">
+        ${list.length ? buildTable(list, statuses.includes('pending')||statuses.includes('processing')||statuses.length===0, 'ltbl')
+                       : `<div class="empty"><span class="empty-ico">📭</span>No orders found</div>`}
       </div>
     </div>
   `);
 }
 
-async function loadShipments(statusFilter='all'){
-  setContent(`<div style="text-align:center;padding:48px;color:var(--muted)">⏳ Loading shipments...</div>`);
-  const all=demoShipments();
-  const ships=statusFilter==='all'?all:all.filter(s=>s.status===statusFilter);
-  const SC={pending:'o',in_transit:'b',delivered:'g',returned:'r'};
-  const label={pending:'To Dispatch',in_transit:'In Transit',delivered:'Delivered',all:'All Shipments'};
-  setContent(`
-    <div class="srow">
-      <input class="sinput" placeholder="Search shipment, order, name…" oninput="filterTbl(this)"/>
-      <select class="fsel" onchange="nav(this.value==='all'?'allshipments':this.value==='pending'?'toship':this.value==='in_transit'?'intransit':'delivered',null);loadShipments(this.value)">
-        <option value="all" ${statusFilter==='all'?'selected':''}>All</option>
-        <option value="pending" ${statusFilter==='pending'?'selected':''}>To Dispatch</option>
-        <option value="in_transit" ${statusFilter==='in_transit'?'selected':''}>In Transit</option>
-        <option value="delivered" ${statusFilter==='delivered'?'selected':''}>Delivered</option>
-      </select>
-      <button class="btn sec" onclick="loadShipments('${statusFilter}')">🔄 Refresh</button>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px">
-      <div class="sc"><div class="sc-ico ic-o">📦</div><div class="sc-val">${all.filter(s=>s.status==='pending').length}</div><div class="sc-lbl">Pending</div></div>
-      <div class="sc"><div class="sc-ico ic-b">🚚</div><div class="sc-val">${all.filter(s=>s.status==='in_transit').length}</div><div class="sc-lbl">In Transit</div></div>
-      <div class="sc"><div class="sc-ico ic-g">✅</div><div class="sc-val">${all.filter(s=>s.status==='delivered').length}</div><div class="sc-lbl">Delivered</div></div>
-    </div>
-    <div class="tcard">
-      <div class="tcard-hd"><span class="tcard-ttl">${label[statusFilter]||'Shipments'} (${ships.length})</span></div>
-      <div style="overflow-x:auto"><table id="shtbl"><thead><tr>
-        <th>Shipment ID</th><th>Order ID</th><th>Customer</th><th>Phone</th><th>City</th><th>Items</th><th>Carrier</th><th>Tracking</th><th>Status</th><th>Actions</th>
-      </tr></thead><tbody>
-        ${ships.map(s=>`<tr data-s="${(s.shipment_id+s.order_id+s.customer_name+s.city).toLowerCase()}">
-          <td><strong style="color:var(--t);font-size:.8rem">${s.shipment_id}</strong></td>
-          <td style="font-size:.8rem;color:var(--muted)">${s.order_id}</td>
-          <td><strong style="font-size:.85rem">${s.customer_name}</strong></td>
-          <td style="font-size:.8rem">${s.customer_phone}</td>
-          <td style="font-size:.82rem">${s.city}</td>
-          <td style="font-size:.79rem;color:var(--muted);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.items_summary}</td>
-          <td style="font-size:.82rem">${s.carrier}</td>
-          <td style="font-size:.79rem;color:var(--muted)">${s.tracking_no}</td>
-          <td><span class="bx ${SC[s.status]||'b'}">${s.status?.replace('_',' ')}</span></td>
-          <td><div style="display:flex;gap:4px">
-            ${s.status==='pending'?`<button class="btn sm pri" onclick="dispatchModal('${s.shipment_id}','${s.customer_name}','${s.city}')">Dispatch</button>`:''}
-            ${s.status==='in_transit'?`<button class="btn sm sec" onclick="updateModal('${s.shipment_id}','${s.status}')">Update</button>`:''}
-            <a href="https://wa.me/${(s.customer_phone||'').replace(/\D/g,'')}" target="_blank" class="btn sm wa">WA</a>
-          </div></td>
-        </tr>`).join('')||`<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--muted)">No shipments found</td></tr>`}
-      </tbody></table></div>
-    </div>`);
+function filterTbl(inp, tid) {
+  const q = inp.value.toLowerCase();
+  document.querySelectorAll(`#${tid} tbody tr`).forEach(r => {
+    r.style.display = (!q || (r.dataset.s||'').includes(q)) ? '' : 'none';
+  });
 }
 
-function filterTbl(inp){
-  const q=inp.value.toLowerCase();
-  document.querySelectorAll('#shtbl tbody tr').forEach(r=>r.style.display=(!q||r.dataset.s?.includes(q))?'':'none');
+/* ============================================================
+   TABLE BUILDER
+   ============================================================ */
+function buildTable(list, showDispatch, tid='tbl') {
+  const rows = list.map(o => {
+    const id    = orderId(o);
+    const name  = custName(o);
+    const phone = custPhone(o);
+    const city  = custCity(o);
+    const s     = `${id} ${name} ${phone} ${city}`.toLowerCase();
+    const ns    = norm(o.status);
+    const canDispatch = ['pending','processing'].includes(ns);
+    const canUpdate   = ['dispatched','in_transit','out_for_delivery'].includes(ns);
+
+    return `<tr data-s="${s}">
+      <td><strong style="color:var(--t);font-size:.8rem">${id}</strong></td>
+      <td>
+        <div style="font-weight:600;font-size:.85rem">${name}</div>
+        <div style="font-size:.75rem;color:var(--muted)">${phone}</div>
+      </td>
+      <td style="font-size:.82rem">${city}</td>
+      <td style="font-size:.74rem;color:var(--muted);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${items(o)}">${items(o)}</td>
+      <td style="font-size:.8rem">${get(o,'carrier','courierName')}</td>
+      <td style="font-size:.79rem;color:var(--muted)">${get(o,'trackingNumber','tracking_no','awb')}</td>
+      <td>${badge(o.status)}</td>
+      <td style="font-size:.77rem;color:var(--muted)">${fmtD(get(o,'createdAt','timestamp','date'))}</td>
+      <td>
+        <div style="display:flex;gap:4px;flex-wrap:wrap">
+          ${canDispatch ? `<button class="btn sm pri" onclick="dispatchModal('${id}')">Dispatch</button>` : ''}
+          ${canUpdate   ? `<button class="btn sm sec" onclick="updateModal('${id}')">Update</button>` : ''}
+          <a href="tel:${phone.replace(/\D/g,'')}" class="btn sm wa">📞</a>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  return `<table id="${tid}">
+    <thead><tr>
+      <th>Order ID</th><th>Customer</th><th>City</th><th>Items</th>
+      <th>Carrier</th><th>Tracking</th><th>Status</th><th>Date</th><th>Actions</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
 }
 
-function dispatchModal(id, name, city){
-  openMdal(`<h2>Dispatch Shipment</h2>
-    <div style="background:#fef3c7;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:.84rem;color:var(--orange)">
-      📦 <strong>${id}</strong> — ${name}, ${city}
+/* ============================================================
+   DISPATCH MODAL — mark as dispatched, enter carrier + AWB
+   ============================================================ */
+function dispatchModal(id) {
+  const o = ORDERS.find(x => orderId(x) === id);
+  if (!o) return;
+  openModal(`
+    <h2>Dispatch Order</h2>
+    <div style="background:#fef3c7;border-radius:10px;padding:12px 14px;margin-bottom:18px;font-size:.85rem;color:var(--orange)">
+      <strong>${id}</strong> — ${custName(o)}, ${custCity(o)}<br>
+      <span style="font-size:.78rem;opacity:.8">${custAddr(o)}</span>
     </div>
-    <div class="fg"><label>Select Carrier *</label>
-      <select id="dcar">
-        <option value="">Choose carrier…</option>
-        <option>DTDC</option><option>Delhivery</option><option>BlueDart</option><option>Ekart Logistics</option><option>India Post</option><option>Shadowfax</option><option>Ecom Express</option>
+    <div style="background:var(--cream);border-radius:10px;padding:12px;margin-bottom:16px;font-size:.82rem;line-height:1.7">
+      <strong>Items:</strong> ${items(o)}<br>
+      <strong>Payment:</strong> ${get(o,'payment','paymentMethod').toUpperCase()}
+      ${get(o,'total','orderTotal')!=='—'?` &nbsp;|&nbsp; <strong>Total:</strong> ${fmtM(get(o,'total','orderTotal'))}`:''}
+    </div>
+    <div class="fg">
+      <label>Carrier *</label>
+      <select id="dCarrier">
+        <option value="">— Choose courier —</option>
+        <option>DTDC</option>
+        <option>Delhivery</option>
+        <option>BlueDart</option>
+        <option>Ekart Logistics</option>
+        <option>India Post</option>
+        <option>Shadowfax</option>
+        <option>Ecom Express</option>
+        <option>XpressBees</option>
+        <option>Shiprocket</option>
+        <option>Other</option>
       </select>
     </div>
-    <div class="fg"><label>AWB / Tracking Number *</label><input id="dtrack" placeholder="Carrier tracking number"/></div>
-    <div class="fg"><label>Dispatch Date</label><input id="ddate" type="date" value="${new Date().toISOString().slice(0,10)}"/></div>
-    <div class="fg"><label>Est. Delivery Date</label><input id="ddeliv" type="date" value="${new Date(Date.now()+5*86400000).toISOString().slice(0,10)}"/></div>
-    <div class="fg"><label>Notes</label><input id="dnote" placeholder="Package notes, weight, etc."/></div>
-    <div style="background:var(--tp);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.8rem;color:var(--td)">
-      ✅ Marking as dispatched will set status to <strong>in_transit</strong> and notify admin.
+    <div class="fg">
+      <label>AWB / Tracking Number *</label>
+      <input id="dTracking" placeholder="Enter carrier tracking number"/>
+    </div>
+    <div class="fg">
+      <label>Dispatch Date</label>
+      <input id="dDate" type="date" value="${new Date().toISOString().slice(0,10)}"/>
+    </div>
+    <div class="fg">
+      <label>Est. Delivery Date</label>
+      <input id="dEst" type="date" value="${new Date(Date.now()+5*864e5).toISOString().slice(0,10)}"/>
+    </div>
+    <div class="fg">
+      <label>Notes (optional)</label>
+      <input id="dNotes" placeholder="Weight, special instructions…"/>
+    </div>
+    <div style="background:var(--tp);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:.8rem;color:var(--td)">
+      ✅ Marking as <strong>Dispatched</strong> will update the Google Sheet and notify admin.
     </div>
     <div style="display:flex;gap:10px">
-      <button class="btn pri" onclick="submitDispatch('${id}')">🚚 Mark Dispatched</button>
-      <button class="btn sec" onclick="closeMdal()">Cancel</button>
-    </div>`);
+      <button class="btn pri" id="dBtn" onclick="submitDispatch('${id}')">🚚 Mark as Dispatched</button>
+      <button class="btn sec" onclick="closeModal()">Cancel</button>
+    </div>
+  `);
 }
 
-async function submitDispatch(id){
-  const carrier=document.getElementById('dcar').value;
-  const tracking=document.getElementById('dtrack').value;
-  if(!carrier||!tracking){alert('Carrier and tracking number are required');return;}
-  const data={status:'in_transit',carrier,tracking_no:tracking,dispatched_at:document.getElementById('ddate').value,est_delivery:document.getElementById('ddeliv').value,notes:document.getElementById('dnote').value,updated_at:new Date().toISOString()};
-  const r=await api('updateShipment',{id,data});
-  closeMdal();
-  alert('Shipment '+id+' marked as dispatched! Tracking: '+tracking);
-  loadShipments('pending');
-  nav('toship',null);
+async function submitDispatch(id) {
+  const carrier  = document.getElementById('dCarrier').value;
+  const tracking = document.getElementById('dTracking').value.trim();
+  const date     = document.getElementById('dDate').value;
+  const est      = document.getElementById('dEst').value;
+  const notes    = document.getElementById('dNotes').value.trim();
+
+  // validate
+  let ok = true;
+  if (!carrier) { document.getElementById('dCarrier').classList.add('err'); ok = false; }
+  if (!tracking){ document.getElementById('dTracking').classList.add('err'); ok = false; }
+  if (!ok) { showToast('⚠ Fill in carrier and tracking number'); return; }
+
+  const btn = document.getElementById('dBtn');
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  const updates = {
+    status        : 'Dispatched',
+    carrier,
+    trackingNumber: tracking,
+    dispatchDate  : date,
+    estDelivery   : est,
+    shipperNotes  : notes,
+    updatedAt     : new Date().toISOString()
+  };
+
+  try {
+    await callAPI('updateOrder', { id, updates });
+    // update local cache immediately
+    const idx = ORDERS.findIndex(o => orderId(o) === id);
+    if (idx !== -1) Object.assign(ORDERS[idx], updates);
+    updatePill();
+    closeModal();
+    showToast(`✓ ${id} dispatched via ${carrier} — AWB: ${tracking}`);
+    nav(CUR, null);
+  } catch(err) {
+    closeModal();
+    showToast('⚠ Error — check sheet manually');
+  }
 }
 
-function updateModal(id, cur){
-  openMdal(`<h2>Update Shipment — ${id}</h2>
-    <div style="background:var(--tp);padding:10px 14px;border-radius:10px;margin-bottom:14px;font-size:.84rem;color:var(--td)">Current: <strong>${cur?.replace('_',' ')}</strong></div>
-    <div class="fg"><label>New Status</label>
-      <select id="ust">
-        <option value="in_transit">In Transit</option>
-        <option value="out_for_delivery">Out for Delivery</option>
-        <option value="delivered">Delivered</option>
-        <option value="returned">Returned</option>
-        <option value="failed_delivery">Failed Delivery</option>
+/* ============================================================
+   UPDATE MODAL — mark delivered, out for delivery, returned…
+   ============================================================ */
+function updateModal(id) {
+  const o = ORDERS.find(x => orderId(x) === id);
+  if (!o) return;
+  openModal(`
+    <h2>Update Shipment</h2>
+    <div style="background:var(--tp);border-radius:10px;padding:12px;margin-bottom:16px;font-size:.85rem;color:var(--td)">
+      <strong>${id}</strong> — ${custName(o)}<br>
+      Current: ${badge(o.status)}
+      ${get(o,'trackingNumber','tracking_no')!=='—'?`<br><span style="font-size:.78rem">Tracking: ${get(o,'trackingNumber','tracking_no')}</span>`:''}
+    </div>
+    <div class="fg">
+      <label>New Status *</label>
+      <select id="uStatus">
+        <option value="In Transit">In Transit</option>
+        <option value="Out for Delivery">Out for Delivery</option>
+        <option value="Delivered">Delivered</option>
+        <option value="Failed Delivery">Failed Delivery</option>
+        <option value="Returned">Returned</option>
       </select>
     </div>
-    <div class="fg"><label>Update Note</label><input id="unote" placeholder="Delivery attempt, address issue, etc."/></div>
+    <div class="fg">
+      <label>Update Note (optional)</label>
+      <input id="uNote" placeholder="Delivery attempt, address issue, etc."/>
+    </div>
     <div style="display:flex;gap:10px">
-      <button class="btn pri" onclick="submitUpdate('${id}')">Update</button>
-      <button class="btn sec" onclick="closeMdal()">Cancel</button>
-    </div>`);
+      <button class="btn pri" id="uBtn" onclick="submitUpdate('${id}')">Update</button>
+      <button class="btn sec" onclick="closeModal()">Cancel</button>
+    </div>
+  `);
 }
 
-async function submitUpdate(id){
-  const status=document.getElementById('ust').value;
-  const data={status,note:document.getElementById('unote').value,updated_at:new Date().toISOString()};
-  await api('updateShipment',{id,data});
-  closeMdal();
-  alert('Shipment '+id+' updated to: '+status);
-  loadShipments('in_transit');
+async function submitUpdate(id) {
+  const status = document.getElementById('uStatus').value;
+  const note   = document.getElementById('uNote').value.trim();
+  const btn    = document.getElementById('uBtn');
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  const updates = { status, shipperNotes: note, updatedAt: new Date().toISOString() };
+
+  try {
+    await callAPI('updateOrder', { id, updates });
+    const idx = ORDERS.findIndex(o => orderId(o) === id);
+    if (idx !== -1) Object.assign(ORDERS[idx], updates);
+    updatePill();
+    closeModal();
+    showToast(`✓ ${id} → ${status}`);
+    nav(CUR, null);
+  } catch(err) {
+    closeModal();
+    showToast('⚠ Error — verify in sheet');
+  }
 }
 </script>
 </body>
