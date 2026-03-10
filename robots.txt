@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /admin/
-Disallow: /shipper/
-Sitemap: https://detoxyhijama.github.io/sitemap.xml
