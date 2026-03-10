@@ -1,19 +1,11 @@
 User-agent: *
 Allow: /
 Disallow: /admin/
+Disallow: /shipper/
+Disallow: /cart.html
 Disallow: /checkout.html
 Disallow: /confirmation.html
-
-User-agent: Googlebot
-Allow: /
-Crawl-delay: 1
-
-User-agent: Bingbot
-Allow: /
-Crawl-delay: 2
+Disallow: /confirmation/
+Disallow: /login.html
 
 Sitemap: https://detoxyhijama.github.io/sitemap.xml
-
-# Detoxy Hijama Cups — India's Direct Hijama Manufacturer
-# Pollachi, Coimbatore, Tamil Nadu 642005
-# Contact: detoxyhijama@gmail.com | +91-9566596077
