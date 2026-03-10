@@ -36,7 +36,7 @@ window.DETOXY_CONFIG = {
   products: [
     {
       id: "premium-cups",
-      name: "Premium Transparent Hijama Cup",
+      name: "Detoxy Hijama Premium Transparent Cup",
       category: "cups",
       categoryLabel: "Hijama Cups",
       price: 12,
@@ -62,7 +62,7 @@ window.DETOXY_CONFIG = {
     },
     {
       id: "standard-cups",
-      name: "Standard Hijama Cup (Indian Made)",
+      name: "Detoxy Hijama Standard Cup (Indian Made)",
       category: "cups",
       categoryLabel: "Hijama Cups",
       price: 9,
@@ -81,7 +81,7 @@ window.DETOXY_CONFIG = {
     },
     {
       id: "curve-cups",
-      name: "Curve Cup Size 3 & 4",
+      name: "Detoxy Hijama Curve Cup Size 3 & 4",
       category: "cups",
       categoryLabel: "Hijama Cups",
       price: 12,
@@ -100,7 +100,7 @@ window.DETOXY_CONFIG = {
     },
     {
       id: "silicone-moving-cups",
-      name: "Silicone Moving Cup Set of 4",
+      name: "Detoxy Hijama Silicone Moving Cup Set of 4",
       category: "cups",
       categoryLabel: "Silicone Cups",
       price: 700,
@@ -119,7 +119,7 @@ window.DETOXY_CONFIG = {
     },
     {
       id: "silicone-facial-7",
-      name: "Silicone Facial Cup Set of 7",
+      name: "Detoxy Hijama Silicone Facial Cup Set of 7",
       category: "cups",
       categoryLabel: "Facial Cups",
       price: 600,
@@ -138,7 +138,7 @@ window.DETOXY_CONFIG = {
     },
     {
       id: "silicone-facial-4",
-      name: "Silicone Facial Cup Set of 4",
+      name: "Detoxy Hijama Silicone Facial Cup Set of 4",
       category: "cups",
       categoryLabel: "Facial Cups",
       price: 250,
@@ -157,7 +157,7 @@ window.DETOXY_CONFIG = {
     },
     {
       id: "magnetic-vacuum-kit",
-      name: "24-Set Magnetic Vacuum Cupping Kit",
+      name: "Detoxy Hijama 24-Set Magnetic Vacuum Cupping Kit",
       category: "kits",
       categoryLabel: "Cupping Kits",
       price: 700,
@@ -176,7 +176,7 @@ window.DETOXY_CONFIG = {
     },
     {
       id: "electric-smart-cup",
-      name: "Electric Smart Vacuum Cup",
+      name: "Detoxy Hijama Electric Smart Vacuum Cup",
       category: "kits",
       categoryLabel: "Electric Cups",
       price: 750,
@@ -198,7 +198,7 @@ window.DETOXY_CONFIG = {
     },
     {
       id: "fire-cupping-glass",
-      name: "Fire Cupping Glass Set of 16",
+      name: "Detoxy Hijama Fire Cupping Glass Set of 16",
       category: "kits",
       categoryLabel: "Fire Cupping",
       price: 900,
@@ -221,7 +221,7 @@ window.DETOXY_CONFIG = {
     },
     {
       id: "bamboo-cupping-set",
-      name: "Bamboo Cupping Set",
+      name: "Detoxy Hijama Bamboo Cupping Set",
       category: "kits",
       categoryLabel: "Bamboo Sets",
       price: 500,
@@ -240,7 +240,7 @@ window.DETOXY_CONFIG = {
     },
     {
       id: "lancet-pen",
-      name: "3-Lancet Pen Massager",
+      name: "Detoxy Hijama 3-Lancet Pen Massager",
       category: "consumables",
       categoryLabel: "Lancets & Blades",
       price: 550,
@@ -259,7 +259,7 @@ window.DETOXY_CONFIG = {
     },
     {
       id: "suction-gun",
-      name: "Hijama Suction Gun",
+      name: "Detoxy Hijama Suction Gun",
       category: "kits",
       categoryLabel: "Suction Pumps",
       price: 160,
@@ -278,7 +278,7 @@ window.DETOXY_CONFIG = {
     },
     {
       id: "surgical-blade",
-      name: "Surgical Blade No.11 Pack of 100",
+      name: "Detoxy Hijama Surgical Blade No.11 (Pack of 100)",
       category: "consumables",
       categoryLabel: "Lancets & Blades",
       price: 250,
@@ -297,7 +297,7 @@ window.DETOXY_CONFIG = {
     },
     {
       id: "latex-gloves",
-      name: "Premium Latex Gloves Pack of 100",
+      name: "Detoxy Hijama Premium Latex Gloves (Pack of 100)",
       category: "consumables",
       categoryLabel: "Consumables",
       price: 320,
@@ -316,7 +316,7 @@ window.DETOXY_CONFIG = {
     },
     {
       id: "surgical-cotton",
-      name: "Surgical Cotton 400g Roll",
+      name: "Detoxy Hijama Surgical Cotton 400g Roll",
       category: "consumables",
       categoryLabel: "Consumables",
       price: 160,
