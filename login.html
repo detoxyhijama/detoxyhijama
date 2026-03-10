@@ -164,6 +164,7 @@
     const city = document.getElementById('regCity').value.trim();
     if (!name || !phone || !pass) { showAlert('Name, phone and password are required.', 'error'); return; }
     if (pass.length < 8) { showAlert('Password must be at least 8 characters.', 'error'); return; }
+    if (!/^[6-9]\d{9}$/.test(phone.replace(/\s+/g,''))) { showAlert('Please enter a valid 10-digit Indian mobile number.', 'error'); return; }
     const users = JSON.parse(localStorage.getItem('detoxy_customers') || '[]');
     if (users.find(u => u.phone === phone)) { showAlert('An account with this phone already exists. Please sign in.', 'error'); return; }
     users.push({ name, phone, email, password: btoa(pass), city, joinedAt: new Date().toISOString() });

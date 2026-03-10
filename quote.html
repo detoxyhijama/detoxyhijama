@@ -444,14 +444,10 @@ Please confirm availability and dispatch timeline.`;
     const address = document.getElementById("qAddress").value;
     const gstNum = document.getElementById("qGST").value;
     let custDetail = "";
-    if(contact) custDetail += contact+"
-";
-    if(phone) custDetail += phone+"
-";
-    if(email) custDetail += email+"
-";
-    if(address) custDetail += address+"
-";
+    if(contact) custDetail += contact+"\n";
+    if(phone) custDetail += phone+"\n";
+    if(email) custDetail += email+"\n";
+    if(address) custDetail += address+"\n";
     if(gstNum) custDetail += "GSTIN: "+gstNum;
     document.getElementById("inv-cust-detail").innerText = custDetail.trim()||"—";
 
@@ -501,7 +497,10 @@ Please confirm availability and dispatch timeline.`;
     const phone=document.getElementById("qPhone").value.trim();
     const lines=getQuoteLines();
     if(!company||!phone){alert("Please fill in Company Name and Phone Number.");return;}
+    if(!/^[6-9]\d{9}$/.test(phone.replace(/\s+/g,''))){alert("Please enter a valid 10-digit Indian mobile number.");return;}
     if(!lines.length){alert("Please add at least one product with a quantity.");return;}
+    const submitBtn=document.querySelector('button[onclick="submitQuoteRequest()"]');
+    if(submitBtn){submitBtn.disabled=true;submitBtn.textContent='Submitting...';}
     const orderData={
       type:"QUOTE_REQUEST", company, phone,
       contact:document.getElementById("qContact").value,
@@ -513,8 +512,14 @@ Please confirm availability and dispatch timeline.`;
       notes:document.getElementById("qNotes").value,
       timestamp:new Date().toISOString()
     };
-    await OrderSync.submit(orderData);
-    alert("✅ Quote request submitted! We will contact you within 4 business hours.\n\nYou can also download a PDF copy using the 'Download PDF Invoice' button.");
+    try {
+      await OrderSync.submit(orderData);
+      alert("✅ Quote request submitted! We will contact you within 4 business hours.\n\nYou can also download a PDF copy using the 'Download PDF Invoice' button.");
+    } catch(err) {
+      alert("Something went wrong. Please try again or contact us on WhatsApp.");
+    } finally {
+      if(submitBtn){submitBtn.disabled=false;submitBtn.textContent='Submit Quote Request';}
+    }
   }
 
   buildProductRows();

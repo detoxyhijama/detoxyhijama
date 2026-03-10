@@ -20,7 +20,8 @@ window.DETOXY_CONFIG = {
   // 4. Paste the Web App URL below
   googleSheetsURL: "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec",
 
-  // Admin panel password (change this!)
+  // ⚠️ SECURITY WARNING: Change this password and consider moving it to localStorage via admin settings.
+  // This value is publicly visible in the browser. Use admin/settings.html to override via localStorage.
   adminPassword: "detoxy2024admin",
 
   social: {
@@ -190,8 +191,11 @@ window.DETOXY_CONFIG = {
       reviews: 134,
       description: "USB rechargeable electric smart vacuum cup with adjustable suction levels.",
       images: [
+        "../assets/images/products/electric-smart-cup/main.jpg",
+        "../assets/images/products/electric-smart-cup/image2.jpg",
         "../assets/images/products/electric-smart-cup/image3.jpg",
-        "../assets/images/products/electric-smart-cup/image4.jpg"
+        "../assets/images/products/electric-smart-cup/image4.jpg",
+        "../assets/images/products/electric-smart-cup/image5.jpg"
       ],
       features: ["Electric Suction","USB Rechargeable","5 Suction Levels","Auto Mode","LCD Display"],
       specs: { Power:"USB Rechargeable", Levels:"5 Adjustable", Material:"Medical ABS + Silicone", Battery:"1200mAh" }
@@ -335,3 +339,16 @@ window.DETOXY_CONFIG = {
     }
   ]
 };
+
+// ── Admin product overrides: if admin has edited products, use those instead ──
+(function() {
+  try {
+    const custom = localStorage.getItem('detoxy_custom_products');
+    if (custom) {
+      const parsed = JSON.parse(custom);
+      if (Array.isArray(parsed) && parsed.length) {
+        window.DETOXY_CONFIG.products = parsed;
+      }
+    }
+  } catch(e) { /* ignore localStorage errors (e.g. private browsing) */ }
+})();

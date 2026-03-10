@@ -91,7 +91,9 @@
         <button class="cart-remove" onclick="removeItem('${p.id}')" title="Remove">✕</button>
       </div>`;
     }).join('');
-    const shipping = subtotal >= 999 ? 0 : 60;
+    const freeShipAt = parseInt(localStorage.getItem('shop_freeShipAt')) || 999;
+    const shipCost = parseInt(localStorage.getItem('shop_defaultShip')) || 60;
+    const shipping = subtotal >= freeShipAt ? 0 : shipCost;
     const total = subtotal + shipping;
     el.innerHTML = `
     <div class="cart-layout">
@@ -103,7 +105,7 @@
         <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--dark);margin-bottom:18px">Order Summary</h3>
         <div class="summary-row"><span style="color:var(--muted)">Subtotal</span><span>₹${subtotal}</span></div>
         <div class="summary-row"><span style="color:var(--muted)">Shipping</span><span>${shipping === 0 ? '<span style="color:var(--t)">FREE</span>' : '₹' + shipping}</span></div>
-        ${shipping > 0 ? `<div style="font-size:.75rem;color:var(--muted);margin-bottom:8px">Add ₹${999-subtotal} more for free shipping</div>` : ''}
+        ${shipping > 0 ? `<div style="font-size:.75rem;color:var(--muted);margin-bottom:8px">Add ₹${freeShipAt-subtotal} more for free shipping</div>` : ''}
         <div class="summary-total"><span>Total</span><span style="color:var(--td)">₹${total}</span></div>
         <a href="checkout.html" class="btn btn--primary btn--full" style="margin-top:18px">Proceed to Checkout →</a>
         <a href="products.html" class="btn btn--outline btn--full" style="margin-top:10px">Continue Shopping</a>

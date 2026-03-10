@@ -28,7 +28,8 @@
       <div style="width:80px;height:80px;border-radius:50%;background:var(--tp);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.5rem">✅</div>
       <h1 style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--dark);margin-bottom:10px">Order Placed!</h1>
       <p style="font-size:.93rem;color:var(--muted);margin-bottom:28px;line-height:1.75">Thank you for your order. We've received it and will dispatch within 24 hours. You'll receive updates via WhatsApp/SMS.</p>
-      <div id="orderId" style="background:var(--tp);border:1px solid var(--border);border-radius:12px;padding:14px 20px;margin-bottom:28px;font-weight:600;color:var(--td)"></div>
+      <div id="orderId" style="background:var(--tp);border:1px solid var(--border);border-radius:12px;padding:14px 20px;margin-bottom:16px;font-weight:600;color:var(--td)"></div>
+    <div id="orderDetails"></div>
       <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
         <a href="products.html" class="btn btn--primary">Continue Shopping</a>
         <a href="https://wa.me/919566596077" class="btn btn--outline" target="_blank">💬 Track on WhatsApp</a>
@@ -43,7 +44,27 @@
   document.getElementById('header-mount').innerHTML = getNavHTML('');
   document.getElementById('footer-mount').innerHTML = getFooterHTML();
   const id = new URLSearchParams(window.location.search).get('id');
-  if (id) document.getElementById('orderId').textContent = 'Order ID: ' + id;
+  if (id) {
+    document.getElementById('orderId').textContent = 'Order ID: ' + id;
+    // Load order details from localStorage
+    const order = OrderSync.getLocalOrders().find(function(o){ return o.id === id; });
+    if (order) {
+      const detailEl = document.getElementById('orderDetails');
+      if (detailEl) {
+        const emailRow = order.email ? '<div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:var(--muted)">Email</span><span style="font-weight:600">' + order.email + '</span></div>' : '';
+        const itemsList = (order.items || '').split(' | ').join('<br>');
+        detailEl.innerHTML =
+          '<div style="margin-top:18px;padding:18px;background:#f9fffe;border:1px solid var(--border);border-radius:12px;font-size:.87rem">' +
+            '<div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:var(--muted)">Name</span><span style="font-weight:600">' + (order.name||'') + '</span></div>' +
+            '<div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:var(--muted)">Phone</span><span style="font-weight:600">' + (order.phone||'') + '</span></div>' +
+            emailRow +
+            '<div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:var(--muted)">Payment</span><span style="font-weight:600">' + (order.payment||'') + '</span></div>' +
+            '<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"><span style="color:var(--muted)">Items</span><div style="margin-top:6px;font-weight:600;line-height:1.6">' + itemsList + '</div></div>' +
+            '<div style="display:flex;justify-content:space-between;margin-top:12px;font-size:1rem;font-weight:700;color:var(--td)"><span>Total</span><span>&#x20B9;' + (order.total||0) + '</span></div>' +
+          '</div>';
+      }
+    }
+  }
 </script>
 </body>
 </html>
