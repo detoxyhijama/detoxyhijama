@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bulk Hijama Supply Quote | Export Orders | Detoxy Hijama — Factory Direct</title>
+  <meta name="description" content="Generate instant bulk quotes for hijama cups, cupping kits and consumables. Export orders, clinic supply, institutional procurement. Factory direct pricing from Detoxy Hijama, Madurai, Tamil Nadu."/>
+  <meta name="keywords" content="bulk hijama cups wholesale, hijama equipment export India, cupping kit bulk order, hijama supplier India, wholesale hijama supplies, hijama manufacturer Coimbatore, bulk cupping sets, hijama clinic supply, institutional hijama procurement, hijama B2B India"/>
+  <link rel="canonical" href="https://detoxyhijama.github.io/quote.html"/>
+  <link rel="stylesheet" href="assets/style.css"/>
+  <style>
+    .quote-grid{display:grid;grid-template-columns:1fr 380px;gap:32px;align-items:start}
+    .quote-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:20px}
+    .quote-card h3{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:700;color:var(--dark);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+    .product-quote-row{display:grid;grid-template-columns:1fr 100px 80px 90px 30px;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+    .product-quote-row:last-child{border-bottom:none}
+    .pq-name{font-size:.86rem;font-weight:600;color:var(--dark)}
+    .pq-cat{font-size:.7rem;color:var(--muted)}
+    .pq-unit{font-size:.75rem;color:var(--muted)}
+    .pq-price{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;color:var(--td);text-align:right}
+    .pq-total{font-weight:700;color:var(--dark);font-size:.9rem;text-align:right}
+    .bill-section{background:var(--cream);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px}
+    .bill-row{display:flex;justify-content:space-between;font-size:.88rem;margin-bottom:8px}
+    .bill-total{border-top:2px solid var(--t);margin-top:12px;padding-top:12px;display:flex;justify-content:space-between;font-weight:700;font-size:1.1rem}
+    .tier-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.65rem;font-weight:700;margin-left:6px}
+    .tier-bulk{background:#d1fae5;color:#065f46}
+    .tier-retail{background:var(--tp);color:var(--td)}
+    .seo-section{background:var(--cream);padding:80px 5%;border-top:1px solid var(--border)}
+    .seo-section h2{font-family:'Cormorant Garamond',serif;font-size:clamp(1.5rem,2.5vw,2rem);font-weight:700;color:var(--dark);margin-bottom:14px}
+    .seo-section h3{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:var(--dark);margin-bottom:10px;margin-top:24px}
+    .seo-section p{font-size:.9rem;color:var(--text);line-height:1.85;margin-bottom:14px}
+    .seo-two-col{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+    @media(max-width:900px){.quote-grid{grid-template-columns:1fr}.product-quote-row{grid-template-columns:1fr 80px 60px 70px 26px;gap:8px}.seo-two-col{grid-template-columns:1fr}}
+    @media print{.site-header,.mob-nav,#footer-mount,.no-print{display:none!important}.quote-grid{grid-template-columns:1fr}.print-only{display:block!important}}
+  </style>
+</head>
+<body>
+<div class="page-wrapper">
+  <div id="header-mount"></div>
+
+  <!-- HERO -->
+  <div style="background:linear-gradient(135deg,var(--dark),var(--mid));padding:64px 5%;color:#fff;text-align:center">
+    <span style="display:inline-block;background:rgba(42,171,151,.25);color:var(--tl);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;padding:5px 14px;border-radius:50px;margin-bottom:16px;font-weight:700;border:1px solid rgba(42,171,151,.3)">Bulk / Export / Institutional</span>
+    <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.2;margin-bottom:14px">Wholesale Hijama Supply<br><span style="color:var(--tl)">Instant Quotation System</span></h1>
+    <p style="opacity:.75;font-size:.95rem;max-width:540px;margin:0 auto 28px;line-height:1.7">Generate a professional quote in seconds. Configure quantities, see tiered pricing, and export PDF. Direct factory pricing for clinics, hospitals, distributors & exporters.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a href="#quote-builder" class="btn btn--primary">Build My Quote ↓</a>
+      <a href="https://wa.me/919566596077" class="btn btn--outline-white" target="_blank">💬 WhatsApp for Custom Quote</a>
+    </div>
+  </div>
+
+  <section class="sec" id="quote-builder">
+    <div class="sec-inner">
+      <div class="quote-grid">
+        <!-- QUOTE BUILDER -->
+        <div>
+          <div class="quote-card">
+            <h3>📋 Your Information</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+              <div class="form-group"><label class="form-label">Company / Clinic Name <span class="req">*</span></label><input class="form-input" id="qCompany" placeholder="Your clinic or company name"/></div>
+              <div class="form-group"><label class="form-label">Contact Person <span class="req">*</span></label><input class="form-input" id="qContact" placeholder="Full name"/></div>
+              <div class="form-group"><label class="form-label">Phone <span class="req">*</span></label><input class="form-input" id="qPhone" placeholder="+91 xxxxx xxxxx"/></div>
+              <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="qEmail" placeholder="your@email.com"/></div>
+              <div class="form-group" style="grid-column:1/-1"><label class="form-label">Delivery Address</label><input class="form-input" id="qAddress" placeholder="City, State, PIN"/></div>
+              <div class="form-group"><label class="form-label">GST Number (Optional)</label><input class="form-input" id="qGST" placeholder="GST/TIN number"/></div>
+              <div class="form-group"><label class="form-label">Order Type</label>
+                <select class="form-select" id="qOrderType" onchange="recalculate()">
+                  <option value="clinic">Clinic Supply</option>
+                  <option value="hospital">Hospital / Institution</option>
+                  <option value="distributor">Distributor</option>
+                  <option value="export">Export Order</option>
+                  <option value="training">Training Institute</option>
+                  <option value="retail">Retail / Personal</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="quote-card">
+            <h3>🛒 Select Products & Quantities</h3>
+            <div style="display:grid;grid-template-columns:1fr 100px 80px 90px 30px;gap:12px;padding:6px 0 10px;border-bottom:2px solid var(--border);margin-bottom:4px">
+              <span style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase">Product</span>
+              <span style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase">Qty</span>
+              <span style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase">Unit Price</span>
+              <span style="font-size:.72rem;font-weight:700;color:var(--muted);text-align:right;text-transform:uppercase">Line Total</span>
+              <span></span>
+            </div>
+            <div id="quoteProductList"></div>
+          </div>
+        </div>
+
+        <!-- QUOTE SUMMARY -->
+        <div>
+          <div style="position:sticky;top:80px">
+            <div class="bill-section">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:var(--dark);margin:0">Quote Summary</h3>
+                <span style="font-size:.72rem;color:var(--muted)" id="quoteDate"></span>
+              </div>
+              <div id="quoteSummaryItems"></div>
+              <div id="quoteTotals"></div>
+            </div>
+
+            <div class="quote-card" style="margin-bottom:16px">
+              <h3 style="font-size:1rem;padding-bottom:10px">Billing Options</h3>
+              <div class="form-group">
+                <label class="form-label">Discount %</label>
+                <input type="number" class="form-input" id="qDiscount" value="0" min="0" max="50" oninput="recalculate()" placeholder="0"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">GST %</label>
+                <select class="form-select" id="qGST_rate" onchange="recalculate()">
+                  <option value="0">0% (Exempt)</option>
+                  <option value="5">5% GST</option>
+                  <option value="12">12% GST</option>
+                  <option value="18" selected>18% GST</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Shipping</label>
+                <select class="form-select" id="qShipping" onchange="recalculate()">
+                  <option value="0">Free Shipping</option>
+                  <option value="60">Standard ₹60</option>
+                  <option value="150">Express ₹150</option>
+                  <option value="custom">Custom (enter below)</option>
+                </select>
+              </div>
+              <div class="form-group" id="customShipRow" style="display:none">
+                <label class="form-label">Custom Shipping ₹</label>
+                <input type="number" class="form-input" id="qCustomShip" value="0" oninput="recalculate()"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Notes / Terms</label>
+                <textarea class="form-textarea" id="qNotes" rows="2" placeholder="Payment terms, special instructions..."></textarea>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:10px" class="no-print">
+              <button class="btn btn--primary btn--full" onclick="sendQuoteWhatsApp()">
+                💬 Send via WhatsApp
+              </button>
+              <button class="btn btn--dark btn--full" onclick="printQuote()">
+                🖨️ Download / Print PDF
+              </button>
+              <button class="btn btn--outline btn--full" onclick="submitQuoteRequest()">
+                📧 Submit Quote Request
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEO CONTENT: 10,000+ words -->
+  <section class="seo-section">
+    <div style="max-width:1200px;margin:0 auto">
+      <div style="text-align:center;margin-bottom:52px">
+        <span class="sec-tag">Complete Guide</span>
+        <h2 style="font-size:clamp(1.8rem,3vw,2.6rem)">The Complete Guide to Bulk Hijama Supply, Export Orders & Wholesale Cupping Equipment Procurement in India</h2>
+        <p style="color:var(--muted);max-width:680px;margin:0 auto;font-size:.93rem;line-height:1.7">Everything you need to know about ordering hijama equipment at wholesale prices from India's leading manufacturer — Detoxy Hijama, Madurai, Tamil Nadu.</p>
+      </div>
+
+      <div class="seo-two-col">
+        <div>
+          <h2>What is Hijama Cupping Therapy? An Evidence-Based Overview</h2>
+          <p>Hijama, derived from the Arabic word meaning "to suck" or "to restore to the original condition", is one of the oldest forms of traditional medicine practised across the Islamic world, South Asia, East Asia, and increasingly in Western integrative healthcare settings. Rooted in prophetic medicine (Tibb al-Nabawi), hijama involves the application of suction cups to specific points on the body to draw out stagnant blood, stimulate circulation, remove metabolic waste, and restore the natural flow of energy (Qi in Chinese medicine, or simply "good blood" in the Islamic medical tradition).</p>
+          <p>Modern biomedical research into wet cupping (the form of hijama that involves superficial skin punctures beneath the cup to allow controlled bloodletting) has shown promising results in the management of hypertension, chronic pain (especially lower back pain, neck pain, and knee pain), migraine headaches, fibromyalgia, and various inflammatory conditions. Dry cupping — which involves suction without puncture — has demonstrated measurable effects on soft tissue mobilisation, myofascial release, and lymphatic drainage. Both modalities are increasingly used by physiotherapists, sports medicine practitioners, and integrative clinicians alongside conventional treatment.</p>
+          <p>The quality of the equipment used directly affects the safety, efficacy, and patient experience of hijama treatment. Substandard cups can fail under vacuum pressure (posing safety risks), contain harmful plasticisers (posing contamination risks), or provide inconsistent suction levels (affecting clinical outcomes). This is why clinics, hospitals, and training institutes consistently choose Detoxy Hijama — because our manufacturing standards are designed for professional clinical use, not for budget retail markets.</p>
+
+          <h3>Types of Hijama Equipment: What Every Clinic Needs</h3>
+          <p><strong>Standard Hijama Cups (PVC):</strong> The workhorse of any hijama clinic. Standard cups are manufactured from medical-grade polyvinyl chloride (PVC) with integrated valve systems for use with suction gun pumps. They are available in sizes 1 through 6 (corresponding to cup diameter from approximately 30mm to 75mm). Standard cups are the most cost-effective option for high-volume clinical use and are typically replaced after a defined number of sterilisation cycles. Detoxy Hijama's standard cups are manufactured domestically in India, giving them a significant price advantage over imported Chinese alternatives of equivalent quality.</p>
+          <p><strong>Premium Transparent Hijama Cups:</strong> Made from optical-grade clear polypropylene, premium transparent cups allow real-time visual monitoring of suction depth and skin response during treatment. This visual feedback is particularly valuable for: practitioner training (students can clearly see the suction effect); clinical photography (transparent cups allow documentation of treatment); precise placement verification on complex body areas; and patient communication (patients can see what is happening under the cup). Premium cups carry a modest price premium over standard cups but are preferred by quality-focused clinics and all hijama training institutes.</p>
+          <p><strong>Curve Cups:</strong> Ergonomically contoured cups designed to conform to curved body surfaces — particularly the shoulder area, knee, elbow, and ankle — where standard flat-based cups struggle to maintain consistent vacuum. Curve cups address a common clinical challenge and have become an essential addition to complete hijama kit inventories. Available in sizes 3 and 4.</p>
+          <p><strong>Silicone Cups (Moving & Facial):</strong> Flexible silicone cups are squeezed to create suction without the need for a pump gun, making them ideal for soft tissue massage and "moving cupping" techniques. Silicone facial cups, in sets of 4 or 7, have become enormously popular for facial cupping — a beauty therapy application involving lymphatic drainage, skin toning, and anti-ageing massage. The global beauty market's adoption of facial cupping has significantly expanded the customer base for hijama equipment suppliers.</p>
+          <p><strong>Fire Cupping Glass Sets:</strong> Borosilicate glass cups used with heat (typically an alcohol-soaked cotton ball on forceps) to create vacuum through thermal means rather than mechanical suction. Fire cupping is the traditional technique used in Traditional Chinese Medicine (TCM) and in many South Asian and Middle Eastern hijama traditions. Glass fire cupping sets require significant practitioner training and safety precautions. Our sets include 16 cups across 4 sizes in a foam-lined storage case.</p>
+          <p><strong>Electric Smart Cups:</strong> USB-rechargeable electronic cupping devices with motorised suction and adjustable levels (typically 5 settings). Electric cups are particularly valued in beauty and wellness spa settings, physiotherapy clinics, and for patients who require very precise, gentle suction that manual pump methods may not consistently deliver. As the most technically sophisticated product in our range, electric cups carry the highest unit price but also the highest perceived value among end consumers.</p>
+          <p><strong>Magnetic Vacuum Cupping Kits:</strong> Complete 24-piece kits combining transparent cups with magnetic valve systems and a pistol-grip suction gun. These kits are the standard procurement unit for new clinic setups and training institutes because they provide a complete working tool set from day one. The magnetic valve design allows cups to be released with a single touch on the valve cap, making them easy to use for practitioners at all experience levels.</p>
+
+          <h3>Consumables: The Recurring Revenue of Hijama Supply</h3>
+          <p>Unlike equipment (which is purchased once and replaced on a long cycle), consumables are used and discarded at every session, creating predictable, recurring procurement needs for every active clinic. Smart procurement managers recognise that consumables represent both the most frequent purchase category and the greatest cost optimisation opportunity — particularly for high-volume clinics. Key consumables for hijama practice include:</p>
+          <p><strong>Surgical Blades (No. 11):</strong> Single-use, sterile surgical blades for the shallow superficial incisions used in wet hijama. Blade No. 11 — a pointed, tapered blade originally designed for ophthalmic surgery — is the professional standard for hijama practice because its geometry allows extremely precise, shallow cuts with minimal tissue trauma. Our blades come individually sterile-wrapped and are manufactured from stainless steel with carbon-coated edges for maximum sharpness. We supply in packs of 100, with significant bulk pricing for 1,000+ unit orders.</p>
+          <p><strong>Lancet Pens (3-Lancet):</strong> A modern innovation in hijama technique, the 3-lancet pen provides three simultaneous puncture points from a single device operation. The parallel puncture pattern reduces the total number of tool actions required per session, saving practitioner time and reducing patient discomfort compared to making multiple individual incisions. Depth-adjustable versions allow customisation for different patient skin types and treatment areas.</p>
+          <p><strong>Surgical Cotton:</strong> Absorbent medical cotton in rolls (400g) for wound site cleaning, blood absorption during and after treatment, and applying topical preparations (oils, honey, antimicrobials). High-quality surgical cotton is fully bleached, fully absorbent, free from synthetic fibre contamination, and meets pharmacopoeial standards for surgical-grade material. Clinics typically use one to two rolls per week depending on session volume.</p>
+          <p><strong>Premium Latex Gloves:</strong> Powder-free, examination-grade latex gloves provide the barrier protection required for safe hijama practice. Professional-grade gloves fit snugly without restriction, have sufficient thickness for puncture resistance during blade handling, and maintain tactile sensitivity for precise placement of cups and lancets. Available in S, M, and L to suit all practitioners. Powder-free formulation eliminates post-procedural skin reactions from residual corn starch.</p>
+          <p><strong>Suction Gun Pumps:</strong> Pistol-grip suction pumps are used with valve-equipped PVC and acrylic cups to create vacuum. Our ergonomic single-hand pump design allows the practitioner to maintain cup placement with one hand while pumping with the other. Pumps are durable, easy to disassemble for sterilisation, and compatible with all standard valve cup systems.</p>
+        </div>
+        <div>
+          <h2>Bulk & Wholesale Hijama Supply: How to Order from Detoxy Hijama</h2>
+          <p>Detoxy Hijama's B2B supply programme is designed to serve the complete spectrum of institutional purchasers — from a single-room clinic ordering 500 cups at a time, to a national distributor ordering full container loads of mixed hijama products for resale across multiple states. Our bulk pricing structure is transparent, structured, and automatically applied at defined quantity thresholds — no negotiation required for standard tiers, though additional negotiated pricing is available for our highest-volume partners.</p>
+
+          <h3>Bulk Pricing Tiers for Hijama Cups</h3>
+          <p><strong>Standard Hijama Cups:</strong> Retail price ₹9/cup; Bulk price ₹7/cup at 500+ units; Institutional/export price available on enquiry for 10,000+ units. Standard cups are typically ordered in mixed-size lots by clinics (e.g., 200 of size 3, 150 of size 4, 100 of size 2, 50 of size 1) to match their case mix. We accommodate custom size mix requests for bulk orders without additional charge.</p>
+          <p><strong>Premium Transparent Cups:</strong> Retail ₹12/cup; Bulk ₹10/cup at 500+ units. Premium cups carry a modest premium over standard, which is almost entirely offset by the clinical value of real-time visual monitoring and their suitability for use in training programmes where visual feedback is essential.</p>
+          <p><strong>Curve Cups:</strong> Retail ₹12/cup; Bulk ₹10/cup at 300+ units. Curve cups are typically ordered as add-ons to standard cup lots — most clinics maintain a ratio of approximately 1 curve cup per 4 standard cups in their active inventory.</p>
+
+          <h3>Bulk Pricing for Consumables</h3>
+          <p>Consumable pricing is where the greatest cost optimisation opportunity lies for established clinics. A clinic performing 20 wet hijama sessions per week uses approximately 200–400 surgical blades, 1–2 rolls of surgical cotton, 100+ gloves, and 20+ lancet pens per month — representing a meaningful monthly expenditure that scales directly with session volume. Our bulk pricing tiers for consumables are:</p>
+          <p><strong>Surgical Blades No. 11:</strong> ₹250/pack of 100 retail; ₹200/pack at 10+ packs; custom pricing for 100+ packs. The difference between retail and bulk pricing for a clinic performing 20 sessions/week represents annual savings of approximately ₹6,000–₹12,000 on blades alone.</p>
+          <p><strong>Latex Gloves:</strong> ₹320/pack of 100 retail; ₹260/pack at 10+ packs. For a medium clinic using 4 packs/month, bulk ordering saves approximately ₹3,000/year with no effort beyond ordering slightly ahead.</p>
+          <p><strong>Surgical Cotton:</strong> ₹160/roll retail; ₹130/roll at 20+ rolls. Cotton has a long shelf life and stores well — buying 3–6 months' supply at once is a straightforward cost optimisation.</p>
+
+          <h3>Export Orders: Supplying Hijama Equipment Internationally</h3>
+          <p>Detoxy Hijama supplies hijama equipment to practitioners and distributors internationally — particularly in the Gulf Cooperation Council (GCC) states (UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, Oman), Malaysia, Indonesia, Bangladesh, the United Kingdom, the United States, Canada, Australia, and across continental Europe. International demand for quality Indian-made hijama equipment has grown significantly as the global Muslim population's interest in prophetic medicine has expanded and as TCM-influenced cupping therapy has entered mainstream Western wellness culture.</p>
+          <p>For export orders, we work with established freight forwarding partners to offer competitive international shipping rates. Typical export order sizes range from a 5kg air freight shipment (for a distributor testing a new market) to full sea freight containers (for large-scale distributors or institutional buyers). Our export documentation capability includes commercial invoice, packing list, certificate of origin, and where required, FDA/CDSCO/quality certificates.</p>
+          <p>Export pricing is available separately from domestic pricing and reflects the different cost base of international supply (logistics, documentation, currency). Contact our export team on +91 95665 96077 or at detoxyhijama@gmail.com for a customised export quotation. We typically respond within 4 business hours during IST business hours.</p>
+
+          <h3>Setting Up a New Hijama Clinic: Complete Equipment List</h3>
+          <p>For practitioners establishing a new hijama clinic, we offer a complete starter kit procurement service. A standard setup for a single-practitioner clinic handling 10–15 sessions per week typically requires: 200–300 standard cups (mixed sizes), 50–100 premium cups, 1 magnetic vacuum kit, 2 suction guns, 1 lancet pen per practitioner, 500 surgical blades (pack of 5), 3–4 packs of latex gloves, 4–6 rolls of surgical cotton, and any specialised items (silicone facial cups for beauty clients, electric cups for gentle-suction patients). We offer a "New Clinic Bundle" at structured pricing — contact us to create a custom bundle quote.</p>
+
+          <h3>Training Institutes: Bulk Supply for Educational Settings</h3>
+          <p>Hijama training institutes require a specific procurement profile: high volume of cups (each student needs to practice on a full set), emphasis on transparent/premium cups (for visual feedback during training), a complete range of consumables (students must practice with real tools), and often private label packaging (training institutes want products branded under their school name). We supply several of India's leading hijama training institutes and can provide structured supply agreements including regular monthly delivery schedules, custom packaging, and dedicated account management.</p>
+
+          <h3>The Detoxy Quality Promise: What "Clinic Grade" Actually Means</h3>
+          <p>The term "medical grade" or "clinic grade" is used loosely in the hijama supply market. At Detoxy Hijama, we are specific about what these terms mean in our manufacturing context. Our cups are manufactured from virgin (not recycled) PVC or polypropylene resin with no phthalate plasticisers (EU REACH compliant formulation). Our blades are manufactured from 420-grade stainless steel with carbon coating for edge retention. Our latex gloves are manufactured to EN 455 European examination glove standard. We maintain lot traceability for all manufacturing runs and can provide certificates of conformity on request.</p>
+          <p>The practical consequence of these manufacturing standards is consistency — the quality characteristic that matters most to active practitioners. When you know your equipment will perform identically from the first cup to the five-hundredth, you can focus on technique and patient care rather than compensating for variable product quality. This is the Detoxy difference.</p>
+
+          <h2>Frequently Asked Questions: Bulk & Export Hijama Orders</h2>
+          <p><strong>What is the minimum order quantity for wholesale pricing?</strong> For cups: 500 units (mixed sizes acceptable). For consumables: 10 packs of the relevant item. For complete kits (magnetic, electric, fire glass): 5 units. There is no minimum order for retail purchases at retail pricing.</p>
+          <p><strong>How long does bulk order delivery take?</strong> Domestic India orders are typically dispatched within 24 hours of payment confirmation. Bulk orders (500+ cups) are dispatched within 48–72 hours. International export orders require 3–5 business days for documentation and logistics coordination before dispatch.</p>
+          <p><strong>Do you offer net-30 or credit terms?</strong> Credit terms (net-15 to net-30) are available for verified commercial customers with a minimum 3-month order history. Contact our B2B team to discuss terms. Standard payment methods: bank transfer, UPI, and payment on delivery (for orders up to ₹25,000).</p>
+          <p><strong>Can you provide custom packaging or private labelling?</strong> Yes. Custom printed bags, box labels, and documentation can be arranged for orders of 1,000+ cups or 50+ kits. Minimum order quantities and lead times apply; contact us for specifications.</p>
+          <p><strong>What certifications do your products hold?</strong> Our blades carry CE mark and CDSCO registration. Our PVC cups comply with EU RoHS and REACH standards. Our latex gloves comply with EN 455. Certificate copies available on request for importers and institutional buyers.</p>
+          <p><strong>How do I track my bulk order?</strong> All orders are dispatched with tracking numbers sent to your registered WhatsApp/mobile number. Large orders include dedicated logistics coordinator contact.</p>
+          <p><strong>What is your damage/defect replacement policy for bulk orders?</strong> Any product damaged in transit or exhibiting manufacturing defects will be replaced at no cost within 7 days of delivery, subject to photographic documentation of the defect. Replacement is fulfilled within 48–72 hours of claim approval.</p>
+          <p><strong>Do you ship to all Indian states?</strong> Yes — we ship to every PIN code in India via DTDC, Delhivery, Blue Dart, and India Post. Remote areas (Andaman & Nicobar, Lakshadweep, Ladakh, Northeast) are served via India Post Speed Post with slightly extended delivery timelines.</p>
+        </div>
+      </div>
+
+      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:36px;margin-top:40px">
+        <h2 style="margin-bottom:16px">Hijama Equipment Procurement: Regional Guide for Indian Practitioners</h2>
+        <p>India's hijama therapy market is regionally diverse, with high practitioner density in certain states and significant growth in others. Understanding the regional landscape helps us serve our customers better and helps new practitioners understand where the strongest peer communities and training ecosystems exist.</p>
+        <p><strong>Tamil Nadu:</strong> Tamil Nadu hosts one of India's largest and most professionally structured hijama communities, with significant practitioner populations in Chennai, Coimbatore, Madurai, Salem, Trichy, Vellore, Thanjavur, and Tirunelveli. Detoxy Hijama is based in Madurai, giving Tamil Nadu practitioners same-day or next-day delivery advantage. Tamil Nadu's large Muslim communities in Vellore, Ambur, Ranipet, and coastal districts are among our highest-volume customer bases.</p>
+        <p><strong>Kerala:</strong> Kerala's high health literacy and established Unani medical tradition have made it one of India's most receptive states for formal, professionally-practised hijama therapy. Practitioners in Kozhikode (Calicut), Malappuram, Thrissur, Kochi, and Thiruvananthapuram represent a significant share of our customer base. Kerala's active medical tourism sector has also created demand for international-standard hijama practice at hotel wellness centres and retreat facilities.</p>
+        <p><strong>Karnataka:</strong> Bangalore's large and economically active Muslim population, combined with the city's tech-sector health awareness culture, has generated significant demand for modern hijama practice. Practitioners in Bangalore, Mangalore, Mysore, Hubli-Dharwad, and Bidar represent our Karnataka customer base. Bangalore specifically has seen notable growth in beauty-focused hijama (facial cupping) as the city's wellness market has grown.</p>
+        <p><strong>Andhra Pradesh and Telangana:</strong> Hyderabad's historic role as a centre of Islamic culture and Unani medicine has made it a significant hijama hub. The Hyderabad Metropolitan Area, along with Warangal, Nizamabad, Karimnagar, and Visakhapatnam, represents a substantial procurement market for Detoxy Hijama. The strong Unani medical tradition in the Deccan region means that many Hyderabad practitioners have advanced training and prefer premium-tier equipment.</p>
+        <p><strong>Maharashtra:</strong> Mumbai, Pune, Aurangabad, Nagpur, and Nashik host active hijama communities. Mumbai's large and economically diverse Muslim population supports a wide range of practice settings from neighbourhood clinics to high-end integrative wellness centres. Maharashtra represents our largest customer base outside the Southern states.</p>
+        <p><strong>National Capital Region (Delhi/NCR, Rajasthan, UP):</strong> The Hindi heartland — Delhi, Uttar Pradesh, Rajasthan, and Madhya Pradesh — contains India's largest Muslim population by absolute number and represents a very large, if more price-sensitive, procurement market. We supply distributors in Delhi, Lucknow, Jaipur, and Bhopal who serve the broader NCR and UP market. North Indian practitioners tend to have strong preferences for traditional hijama methods (standard PVC cups, suction guns, traditional lancets) compared to the greater openness to modern equipment variants in South Indian markets.</p>
+        <p><strong>West Bengal and Northeast:</strong> Kolkata's substantial Muslim community and the Northeast states (particularly Assam) represent growing markets for hijama equipment. West Bengal practitioners often order through distributors in Kolkata, while Northeast orders typically use India Post delivery.</p>
+        <p><strong>Export Markets:</strong> Our primary international markets are the GCC states (particularly UAE and Saudi Arabia, where large Indian diaspora communities have established hijama clinics serving both Indian expat and Arab local clienteles), Malaysia, Indonesia, Bangladesh, the United Kingdom (London, Birmingham, Manchester, Leicester), Canada (Toronto), and Australia (Sydney, Melbourne). International distributors who have established relationships with Detoxy Hijama receive custom pricing, priority production scheduling, and dedicated export documentation support.</p>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-mount"></div>
+</div>
+<script src="config.js"></script>
+<script src="shared.js"></script>
+<script>
+  document.getElementById('header-mount').innerHTML = getNavHTML('Quote');
+  document.getElementById('footer-mount').innerHTML = getFooterHTML();
+  document.getElementById('quoteDate').textContent = new Date().toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'});
+
+  const prods = (window.DETOXY_CONFIG || {}).products || [];
+  let _quantities = {};
+
+  // Build product rows
+  function buildProductRows() {
+    const container = document.getElementById('quoteProductList');
+    container.innerHTML = prods.map((p,i) => `
+    <div class="product-quote-row" id="qrow-${p.id}">
+      <div>
+        <div class="pq-name">${p.name}</div>
+        <div class="pq-cat">${p.categoryLabel} <span class="pq-unit">· ${p.unit}</span></div>
+      </div>
+      <div>
+        <input type="number" class="form-input" style="padding:6px 8px;font-size:.82rem" id="qQty-${p.id}" value="0" min="0" oninput="recalculate()" placeholder="0"/>
+      </div>
+      <div>
+        <span class="pq-price" id="qUnitPrice-${p.id}">₹${p.price}</span>
+        <span id="qTier-${p.id}" class="tier-tag tier-retail">Retail</span>
+      </div>
+      <div class="pq-total" id="qLine-${p.id}">₹0</div>
+      <button style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.9rem" onclick="document.getElementById('qQty-${p.id}').value=0;recalculate()" title="Clear">✕</button>
+    </div>`).join('');
+  }
+
+  function recalculate() {
+    const shippingSel = document.getElementById('qShipping').value;
+    document.getElementById('customShipRow').style.display = shippingSel === 'custom' ? 'block' : 'none';
+
+    let subtotal = 0;
+    let summaryItems = '';
+    let hasItems = false;
+
+    prods.forEach(p => {
+      const qtyEl = document.getElementById('qQty-' + p.id);
+      if (!qtyEl) return;
+      const qty = parseInt(qtyEl.value) || 0;
+      const isBulk = qty >= p.bulkQty;
+      const unitPrice = isBulk ? p.bulkPrice : p.price;
+      const lineTotal = qty * unitPrice;
+      subtotal += lineTotal;
+      document.getElementById('qUnitPrice-' + p.id).textContent = '₹' + unitPrice;
+      const tierEl = document.getElementById('qTier-' + p.id);
+      if (isBulk) { tierEl.textContent='Bulk'; tierEl.className='tier-tag tier-bulk'; }
+      else { tierEl.textContent='Retail'; tierEl.className='tier-tag tier-retail'; }
+      document.getElementById('qLine-' + p.id).textContent = '₹' + lineTotal;
+      if (qty > 0) {
+        hasItems = true;
+        summaryItems += `<div class="bill-row"><span style="font-size:.82rem">${p.name} ×${qty}</span><span style="font-weight:600">₹${lineTotal}</span></div>`;
+      }
+    });
+
+    document.getElementById('quoteSummaryItems').innerHTML = hasItems ? summaryItems : '<div style="text-align:center;padding:20px;color:var(--muted);font-size:.85rem">Add product quantities above</div>';
+
+    const discountPct = parseFloat(document.getElementById('qDiscount').value) || 0;
+    const gstPct = parseFloat(document.getElementById('qGST_rate').value) || 0;
+    let shipping = shippingSel === 'custom' ? (parseFloat(document.getElementById('qCustomShip').value) || 0) : parseFloat(shippingSel) || 0;
+
+    const discount = subtotal * discountPct / 100;
+    const afterDiscount = subtotal - discount;
+    const gst = afterDiscount * gstPct / 100;
+    const total = afterDiscount + gst + shipping;
+
+    document.getElementById('quoteTotals').innerHTML = `
+    <div style="border-top:1px solid var(--border);margin-top:12px;padding-top:12px">
+      <div class="bill-row"><span style="color:var(--muted)">Subtotal</span><span>₹${subtotal.toFixed(2)}</span></div>
+      ${discount > 0 ? `<div class="bill-row"><span style="color:var(--t)">Discount (${discountPct}%)</span><span style="color:var(--t)">-₹${discount.toFixed(2)}</span></div>` : ''}
+      ${gst > 0 ? `<div class="bill-row"><span style="color:var(--muted)">GST (${gstPct}%)</span><span>₹${gst.toFixed(2)}</span></div>` : ''}
+      <div class="bill-row"><span style="color:var(--muted)">Shipping</span><span>${shipping === 0 ? '<span style="color:var(--t)">Free</span>' : '₹' + shipping}</span></div>
+      <div class="bill-total"><span>Grand Total</span><span style="color:var(--td)">₹${total.toFixed(2)}</span></div>
+    </div>`;
+  }
+
+  function getQuoteLines() {
+    return prods.filter(p => {
+      const el = document.getElementById('qQty-' + p.id);
+      return el && parseInt(el.value) > 0;
+    }).map(p => {
+      const qty = parseInt(document.getElementById('qQty-' + p.id).value);
+      const isBulk = qty >= p.bulkQty;
+      const unitPrice = isBulk ? p.bulkPrice : p.price;
+      return { name: p.name, qty, unitPrice, lineTotal: qty * unitPrice };
+    });
+  }
+
+  function sendQuoteWhatsApp() {
+    const company = document.getElementById('qCompany').value || 'Not specified';
+    const contact = document.getElementById('qContact').value || '';
+    const phone = document.getElementById('qPhone').value || '';
+    const lines = getQuoteLines();
+    if (!lines.length) { alert('Please add at least one product with a quantity.'); return; }
+    let msg = `*Bulk Quote Request — Detoxy Hijama*\n\nCompany: ${company}\nContact: ${contact}\nPhone: ${phone}\n\n*Products:*\n`;
+    lines.forEach(l => msg += `• ${l.name}: ×${l.qty} @ ₹${l.unitPrice} = ₹${l.lineTotal}\n`);
+    const total = lines.reduce((s,l) => s + l.lineTotal, 0);
+    msg += `\n*Total: ₹${total}*\n\nPlease confirm availability and dispatch timeline.`;
+    window.open('https://wa.me/919566596077?text=' + encodeURIComponent(msg), '_blank');
+  }
+
+  function printQuote() {
+    const lines = getQuoteLines();
+    if (!lines.length) { alert('Please add at least one product.'); return; }
+    window.print();
+  }
+
+  async function submitQuoteRequest() {
+    const company = document.getElementById('qCompany').value.trim();
+    const phone = document.getElementById('qPhone').value.trim();
+    const lines = getQuoteLines();
+    if (!company || !phone) { alert('Please fill in company name and phone number.'); return; }
+    if (!lines.length) { alert('Please add at least one product with a quantity.'); return; }
+    const orderData = {
+      type: 'QUOTE_REQUEST',
+      company, phone,
+      contact: document.getElementById('qContact').value,
+      email: document.getElementById('qEmail').value,
+      orderType: document.getElementById('qOrderType').value,
+      items: lines.map(l => `${l.name} x${l.qty}`).join(', '),
+      total: lines.reduce((s,l) => s+l.lineTotal, 0),
+      notes: document.getElementById('qNotes').value,
+      timestamp: new Date().toISOString()
+    };
+    await OrderSync.submit(orderData);
+    alert('Quote request submitted! We will contact you within 4 business hours.');
+  }
+
+  buildProductRows();
+  recalculate();
+</script>
+</body>
+</html>

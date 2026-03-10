@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Orders | Detoxy Hijama Admin</title>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link rel="stylesheet" href="../assets/style.css"/>
+  <style>
+    body{background:#f0f4f3}
+    .admin-wrap{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+    .admin-sidebar{background:var(--dark);padding:24px 16px;position:fixed;width:240px;height:100vh;overflow-y:auto;z-index:100}
+    .admin-main{margin-left:240px;padding:28px}
+    .sidebar-brand{display:flex;align-items:center;gap:10px;padding:0 8px 20px;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .sidebar-brand-text{font-family:'Cormorant Garamond',serif;font-size:1rem;color:#fff;font-weight:700}
+    .sidebar-label{font-size:.65rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.12em;font-weight:700;padding:14px 12px 6px}
+    .sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:rgba(255,255,255,.65);font-size:.83rem;font-weight:500;transition:all .2s;margin-bottom:2px;text-decoration:none}
+    .sidebar-link:hover,.sidebar-link.active{background:rgba(42,171,151,.15);color:var(--tl)}
+    .admin-card{background:#fff;border-radius:16px;padding:24px;border:1px solid var(--border);margin-bottom:20px}
+    table.orders-table{width:100%;border-collapse:collapse}
+    table.orders-table th{font-size:.7rem;text-transform:uppercase;color:var(--muted);font-weight:700;padding:10px 12px;text-align:left;border-bottom:2px solid var(--border);white-space:nowrap}
+    table.orders-table td{padding:11px 12px;border-bottom:1px solid var(--border);font-size:.82rem;vertical-align:top}
+    table.orders-table tr:last-child td{border-bottom:none}
+    table.orders-table tr:hover td{background:var(--cream)}
+    .sb{padding:3px 10px;border-radius:50px;font-size:.67rem;font-weight:700;display:inline-block}
+    .sb-New{background:#d1fae5;color:#065f46}
+    .sb-Processing{background:#fef3c7;color:#92400e}
+    .sb-Shipped{background:var(--tp);color:var(--td)}
+    .sb-Delivered{background:#e0f2fe;color:#0369a1}
+    .sb-Quote{background:#ede9fe;color:#5b21b6}
+    @media(max-width:900px){.admin-wrap{grid-template-columns:1fr}.admin-sidebar{display:none}.admin-main{margin-left:0}}
+  </style>
+</head>
+<body>
+<div class="admin-wrap">
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <svg width="28" height="28" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="18" fill="#2aab97"/><path d="M18 8c0 0-7 4.5-7 10.5 0 3.87 3.13 7 7 7s7-3.13 7-7C25 12.5 18 8 18 8z" fill="white" opacity=".9"/></svg>
+      <div class="sidebar-brand-text">Detoxy Admin</div>
+    </div>
+    <div class="sidebar-label">Main</div>
+    <a href="index.html" class="sidebar-link"><span>📊</span>Dashboard</a>
+    <a href="orders.html" class="sidebar-link active"><span>📦</span>Orders</a>
+    <div class="sidebar-label">Content</div>
+    <a href="products.html" class="sidebar-link"><span>🛒</span>Products</a>
+    <a href="blogs.html" class="sidebar-link"><span>📝</span>Blogs</a>
+    <a href="editor.html" class="sidebar-link"><span>✏️</span>Site Editor</a>
+    <div class="sidebar-label">Settings</div>
+    <a href="settings.html" class="sidebar-link"><span>⚙️</span>Settings</a>
+    <a href="sheets-setup.html" class="sidebar-link"><span>📋</span>Sheets Setup</a>
+    <div style="position:absolute;bottom:24px;left:16px;right:16px">
+      <a href="../index.html" class="sidebar-link"><span>🌐</span>View Website</a>
+      <button onclick="sessionStorage.removeItem('detoxy_admin');window.location.href='login.html'" class="sidebar-link" style="width:100%;background:none;border:none;cursor:pointer;text-align:left"><span>🚪</span>Logout</button>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+      <div>
+        <h1 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;color:var(--dark)">Orders</h1>
+        <p style="font-size:.83rem;color:var(--muted)">All locally saved orders. <a href="sheets-setup.html" style="color:var(--t)">Configure Google Sheets</a> for cloud sync.</p>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn--outline" onclick="exportCSV()">⬇️ Export CSV</button>
+        <button class="btn btn--outline" onclick="clearAllOrders()" style="color:var(--red);border-color:var(--red)">🗑️ Clear All</button>
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+        <input class="form-input" id="orderSearch" placeholder="Search name, phone, company..." oninput="renderOrders()" style="max-width:280px"/>
+        <select class="form-select" id="statusFilter" onchange="renderOrders()" style="max-width:170px">
+          <option value="">All Status</option>
+          <option value="New">New Orders</option>
+          <option value="Processing">Processing</option>
+          <option value="Shipped">Shipped</option>
+          <option value="Delivered">Delivered</option>
+          <option value="Quote">Quote Requests</option>
+        </select>
+        <span id="orderCount" style="font-size:.82rem;color:var(--muted);margin-left:auto"></span>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="orders-table" id="ordersTable">
+          <thead><tr>
+            <th>Order ID</th><th>Customer</th><th>Phone</th><th>Items</th>
+            <th>Total</th><th>Payment</th><th>Date</th><th>Status</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="ordersTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../config.js"></script>
+<script src="../shared.js"></script>
+<script>
+if (sessionStorage.getItem('detoxy_admin') !== 'true') window.location.href = 'login.html';
+
+let orders = OrderSync.getLocalOrders();
+const STATUSES = ['New','Processing','Shipped','Delivered'];
+
+function renderOrders() {
+  const q = (document.getElementById('orderSearch').value||'').toLowerCase();
+  const sf = document.getElementById('statusFilter').value;
+  let list = orders.filter(o => {
+    const matchQ = !q || (o.name||'').toLowerCase().includes(q) || (o.phone||'').includes(q) || (o.company||'').toLowerCase().includes(q) || (o.id||'').includes(q);
+    const matchS = !sf || o.status === sf || (sf==='Quote' && o.type==='QUOTE_REQUEST');
+    return matchQ && matchS;
+  }).slice().reverse();
+
+  document.getElementById('orderCount').textContent = list.length + ' orders';
+  const tbody = document.getElementById('ordersTbody');
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--muted)">No orders found.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = list.map((o, ri) => {
+    const realIdx = orders.length - 1 - orders.slice().reverse().findIndex(x => x.id === o.id);
+    const isQuote = o.type === 'QUOTE_REQUEST';
+    const status = isQuote ? 'Quote' : (o.status || 'New');
+    const sbClass = 'sb-' + (isQuote ? 'Quote' : (status));
+    const dateStr = o.savedAt ? new Date(o.savedAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'2-digit'}) : '—';
+    return `<tr>
+      <td style="font-family:monospace;font-size:.73rem;color:var(--muted)">${o.id||'—'}</td>
+      <td><div style="font-weight:600">${o.name||o.company||'—'}</div>${o.email?`<div style="font-size:.72rem;color:var(--muted)">${o.email}</div>`:''}</td>
+      <td><a href="tel:${o.phone}" style="color:var(--td)">${o.phone||'—'}</a></td>
+      <td style="max-width:180px;font-size:.77rem;color:var(--muted)">${(o.items||'').substring(0,60)}${(o.items||'').length>60?'…':''}</td>
+      <td style="font-weight:700;color:var(--td)">₹${o.subtotal||o.total||0}</td>
+      <td style="font-size:.78rem">${o.payment||'—'}</td>
+      <td style="font-size:.77rem;color:var(--muted)">${dateStr}</td>
+      <td>
+        <select class="form-select" style="padding:4px 8px;font-size:.75rem;border-radius:6px" onchange="updateStatus(${orders.indexOf(o)}, this.value)">
+          ${STATUSES.map(s=>`<option value="${s}" ${s===status?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
+      <td>
+        <button class="btn btn--outline" style="padding:4px 10px;font-size:.73rem" onclick="viewOrder(${orders.indexOf(o)})">View</button>
+        <button onclick="waOrder(${orders.indexOf(o)})" style="padding:4px 10px;font-size:.73rem;background:#25d366;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-left:4px" title="WhatsApp">💬</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function updateStatus(idx, newStatus) {
+  orders[idx].status = newStatus;
+  localStorage.setItem('detoxy_orders', JSON.stringify(orders));
+}
+
+function viewOrder(idx) {
+  const o = orders[idx];
+  alert(`ORDER DETAILS\n\nID: ${o.id}\nCustomer: ${o.name||o.company}\nPhone: ${o.phone}\nEmail: ${o.email||'—'}\nAddress: ${o.address||'—'}\n\nItems:\n${o.items}\n\nTotal: ₹${o.subtotal||o.total||0}\nPayment: ${o.payment||'—'}\nNotes: ${o.notes||'—'}\nStatus: ${o.status||'New'}\nDate: ${o.savedAt}`);
+}
+
+function waOrder(idx) {
+  const o = orders[idx];
+  const msg = encodeURIComponent(`*Order Update — Detoxy Hijama*\n\nDear ${o.name||o.company},\nYour Order ID: ${o.id}\nItems: ${o.items}\nTotal: ₹${o.subtotal||o.total||0}\nStatus: ${o.status||'Confirmed'}\n\nThank you for shopping with Detoxy Hijama!`);
+  window.open(`https://wa.me/${(o.phone||'').replace(/\D/g,'')}?text=${msg}`, '_blank');
+}
+
+function exportCSV() {
+  const headers = ['ID','Name','Phone','Email','Address','Items','Total','Payment','Status','Date'];
+  const rows = orders.map(o => [
+    o.id, o.name||o.company, o.phone, o.email, o.address, `"${(o.items||'').replace(/"/g,"'")}"`,
+    o.subtotal||o.total||0, o.payment, o.status||'New', o.savedAt
+  ]);
+  const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'detoxy-orders-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
+
+function clearAllOrders() {
+  if (!confirm('Clear ALL orders from local storage? This cannot be undone.')) return;
+  localStorage.removeItem('detoxy_orders');
+  orders = [];
+  renderOrders();
+}
+
+renderOrders();
+</script>
+</body>
+</html>

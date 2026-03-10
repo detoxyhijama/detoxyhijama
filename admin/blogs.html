@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Blog Management | Detoxy Hijama Admin</title>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link rel="stylesheet" href="../assets/style.css"/>
+  <style>
+    body{background:#f0f4f3}
+    .admin-wrap{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+    .admin-sidebar{background:var(--dark);padding:24px 16px;position:fixed;width:240px;height:100vh;overflow-y:auto;z-index:100}
+    .admin-main{margin-left:240px;padding:28px}
+    .sidebar-brand{display:flex;align-items:center;gap:10px;padding:0 8px 20px;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .sidebar-brand-text{font-family:'Cormorant Garamond',serif;font-size:1rem;color:#fff;font-weight:700}
+    .sidebar-label{font-size:.65rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.12em;font-weight:700;padding:14px 12px 6px}
+    .sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:rgba(255,255,255,.65);font-size:.83rem;font-weight:500;transition:all .2s;margin-bottom:2px;text-decoration:none}
+    .sidebar-link:hover,.sidebar-link.active{background:rgba(42,171,151,.15);color:var(--tl)}
+    .admin-card{background:#fff;border-radius:16px;padding:24px;border:1px solid var(--border);margin-bottom:20px}
+    .blog-row{border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
+    .modal-overlay.open{display:flex}
+    .modal-box{background:#fff;border-radius:20px;padding:32px;width:100%;max-width:760px;max-height:92vh;overflow-y:auto}
+    .modal-box h2{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:var(--dark);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+    .rich-editor{min-height:280px;border:1.5px solid var(--border);border-radius:10px;padding:14px;font-size:.88rem;line-height:1.75;outline:none;color:var(--text)}
+    .rich-editor:focus{border-color:var(--t)}
+    .editor-toolbar{display:flex;gap:6px;flex-wrap:wrap;padding:8px;border:1px solid var(--border);border-bottom:none;border-radius:10px 10px 0 0;background:var(--cream)}
+    .editor-toolbar button{padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:.78rem;font-weight:600;transition:all .2s}
+    .editor-toolbar button:hover{background:var(--t);color:#fff;border-color:var(--t)}
+    @media(max-width:900px){.admin-wrap{grid-template-columns:1fr}.admin-sidebar{display:none}.admin-main{margin-left:0}}
+  </style>
+</head>
+<body>
+<div class="admin-wrap">
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <svg width="28" height="28" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="18" fill="#2aab97"/><path d="M18 8c0 0-7 4.5-7 10.5 0 3.87 3.13 7 7 7s7-3.13 7-7C25 12.5 18 8 18 8z" fill="white" opacity="0.9"/></svg>
+      <div class="sidebar-brand-text">Detoxy Admin</div>
+    </div>
+    <div class="sidebar-label">Main</div>
+    <a href="index.html" class="sidebar-link"><span>📊</span>Dashboard</a>
+    <a href="orders.html" class="sidebar-link"><span>📦</span>Orders</a>
+    <div class="sidebar-label">Content</div>
+    <a href="products.html" class="sidebar-link"><span>🛒</span>Products</a>
+    <a href="blogs.html" class="sidebar-link active"><span>📝</span>Blogs</a>
+    <a href="editor.html" class="sidebar-link"><span>✏️</span>Site Editor</a>
+    <div class="sidebar-label">Settings</div>
+    <a href="settings.html" class="sidebar-link"><span>⚙️</span>Settings</a>
+    <a href="sheets-setup.html" class="sidebar-link"><span>📋</span>Sheets Setup</a>
+    <div style="position:absolute;bottom:24px;left:16px;right:16px">
+      <a href="../index.html" class="sidebar-link"><span>🌐</span>View Website</a>
+      <button onclick="sessionStorage.removeItem('detoxy_admin');window.location.href='login.html'" class="sidebar-link" style="width:100%;background:none;border:none;cursor:pointer;text-align:left"><span>🚪</span>Logout</button>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+      <div>
+        <h1 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;color:var(--dark)">Blog Management</h1>
+        <p style="font-size:.83rem;color:var(--muted)">Write, edit and publish blog articles for Detoxy Hijama</p>
+      </div>
+      <button class="btn btn--primary" onclick="openBlogModal()">+ Write New Blog</button>
+    </div>
+
+    <div class="admin-card">
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--dark);margin-bottom:16px">Published Blogs</h2>
+      <div id="blogList"></div>
+    </div>
+  </main>
+</div>
+
+<!-- BLOG MODAL -->
+<div class="modal-overlay" id="blogModal">
+  <div class="modal-box">
+    <h2 id="blogModalTitle">Write New Blog Post</h2>
+    <input type="hidden" id="blogEditId"/>
+    <div class="form-group">
+      <label class="form-label">Title <span class="req">*</span></label>
+      <input class="form-input" id="bTitle" placeholder="Blog post title" oninput="autoSlug()"/>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="form-group">
+        <label class="form-label">Slug (URL)</label>
+        <input class="form-input" id="bSlug" placeholder="auto-generated"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select class="form-select" id="bCategory">
+          <option value="Education">Hijama Education</option>
+          <option value="Product Guide">Product Guide</option>
+          <option value="Case Study">Case Study</option>
+          <option value="Research">Research & Evidence</option>
+          <option value="Practitioner Tips">Practitioner Tips</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Author</label>
+        <input class="form-input" id="bAuthor" value="Detoxy Hijama Team" placeholder="Author name"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Featured Image URL</label>
+        <input class="form-input" id="bImage" placeholder="https://... or ../assets/images/..."/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Meta Description (SEO)</label>
+      <textarea class="form-textarea" id="bMeta" rows="2" placeholder="Brief SEO description (160 chars)"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Content <span class="req">*</span></label>
+      <div class="editor-toolbar">
+        <button onclick="fmt('bold')"><b>B</b></button>
+        <button onclick="fmt('italic')"><i>I</i></button>
+        <button onclick="fmt('underline')"><u>U</u></button>
+        <button onclick="insertTag('h2')">H2</button>
+        <button onclick="insertTag('h3')">H3</button>
+        <button onclick="insertTag('p')">¶</button>
+        <button onclick="fmt('insertUnorderedList')">• List</button>
+        <button onclick="insertLink()">🔗 Link</button>
+        <button onclick="document.getElementById('bContent').innerHTML=''">Clear</button>
+      </div>
+      <div class="rich-editor" id="bContent" contenteditable="true"></div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+      <button class="btn btn--outline" onclick="closeBlogModal()">Cancel</button>
+      <button class="btn btn--dark" onclick="saveBlog('draft')">Save Draft</button>
+      <button class="btn btn--primary" onclick="saveBlog('published')">Publish →</button>
+    </div>
+  </div>
+</div>
+
+<script src="../config.js"></script>
+<script src="../shared.js"></script>
+<script>
+  if (sessionStorage.getItem('detoxy_admin') !== 'true') window.location.href = 'login.html';
+
+  let blogs = JSON.parse(localStorage.getItem('detoxy_blogs') || '[]');
+
+  function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
+  function autoSlug() {
+    const t = document.getElementById('bTitle').value;
+    document.getElementById('bSlug').value = slugify(t);
+  }
+  function fmt(cmd) { document.execCommand(cmd, false, null); document.getElementById('bContent').focus(); }
+  function insertTag(tag) {
+    const sel = window.getSelection();
+    if (sel.rangeCount) {
+      const el = document.createElement(tag);
+      el.textContent = sel.toString() || 'Your text here';
+      sel.getRangeAt(0).surroundContents(el);
+    }
+  }
+  function insertLink() {
+    const url = prompt('Enter URL:');
+    if (url) document.execCommand('createLink', false, url);
+  }
+
+  function renderBlogList() {
+    const el = document.getElementById('blogList');
+    if (!blogs.length) {
+      el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">No blog posts yet. Write your first one!</div>';
+      return;
+    }
+    el.innerHTML = blogs.slice().reverse().map((b, ri) => {
+      const i = blogs.length - 1 - ri;
+      return `
+      <div class="blog-row">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            <span class="trust-pill" style="font-size:.65rem">${b.category}</span>
+            <span style="font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:4px;background:${b.status==='published'?'#d1fae5':'#fef3c7'};color:${b.status==='published'?'#065f46':'#92400e'}">${b.status}</span>
+          </div>
+          <div style="font-weight:700;font-size:.95rem;color:var(--dark);margin-bottom:3px">${b.title}</div>
+          <div style="font-size:.75rem;color:var(--muted)">${b.author} · ${new Date(b.date).toLocaleDateString('en-IN')}</div>
+        </div>
+        <div style="display:flex;gap:8px;white-space:nowrap">
+          <a href="../blogs/${b.slug}.html" target="_blank" class="btn btn--outline" style="font-size:.75rem;padding:6px 12px">View</a>
+          <button class="btn btn--outline" style="font-size:.75rem;padding:6px 12px" onclick="editBlog(${i})">Edit</button>
+          <button class="btn" style="font-size:.75rem;padding:6px 12px;background:var(--red);color:#fff;border-radius:8px" onclick="deleteBlog(${i})">Delete</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function openBlogModal(b, idx) {
+    document.getElementById('blogModalTitle').textContent = b ? 'Edit Blog Post' : 'Write New Blog Post';
+    document.getElementById('blogEditId').value = idx !== undefined ? idx : '';
+    document.getElementById('bTitle').value = b?.title||'';
+    document.getElementById('bSlug').value = b?.slug||'';
+    document.getElementById('bCategory').value = b?.category||'Education';
+    document.getElementById('bAuthor').value = b?.author||'Detoxy Hijama Team';
+    document.getElementById('bImage').value = b?.image||'';
+    document.getElementById('bMeta').value = b?.meta||'';
+    document.getElementById('bContent').innerHTML = b?.content||'';
+    document.getElementById('blogModal').classList.add('open');
+  }
+  function closeBlogModal() { document.getElementById('blogModal').classList.remove('open'); }
+  function editBlog(idx) { openBlogModal(blogs[idx], idx); }
+  function deleteBlog(idx) {
+    if (!confirm('Delete this blog post?')) return;
+    blogs.splice(idx,1);
+    localStorage.setItem('detoxy_blogs', JSON.stringify(blogs));
+    renderBlogList();
+  }
+
+  function saveBlog(status) {
+    const title = document.getElementById('bTitle').value.trim();
+    if (!title) { alert('Title is required.'); return; }
+    const content = document.getElementById('bContent').innerHTML;
+    if (!content.trim() || content === '<br>') { alert('Content is required.'); return; }
+    const b = {
+      title, status,
+      slug: document.getElementById('bSlug').value || slugify(title),
+      category: document.getElementById('bCategory').value,
+      author: document.getElementById('bAuthor').value,
+      image: document.getElementById('bImage').value,
+      meta: document.getElementById('bMeta').value,
+      content, date: new Date().toISOString()
+    };
+    const editIdx = document.getElementById('blogEditId').value;
+    if (editIdx !== '') blogs[parseInt(editIdx)] = b;
+    else blogs.push(b);
+    localStorage.setItem('detoxy_blogs', JSON.stringify(blogs));
+    // Generate static blog page
+    generateBlogPage(b);
+    closeBlogModal();
+    renderBlogList();
+    if (status === 'published') alert(`Blog published! View at: ../blogs/${b.slug}.html\n\nNote: File has been prepared. Upload it to your server.`);
+    else alert('Draft saved!');
+  }
+
+  function generateBlogPage(b) {
+    // Store blog page HTML in localStorage for reference
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>${b.title} | Detoxy Hijama Blog</title>
+<meta name="description" content="${b.meta||b.title}"/>
+<link rel="stylesheet" href="../assets/style.css"/>
+</head>
+<body>
+<div class="page-wrapper">
+<div id="header-mount"></div>
+<article style="max-width:800px;margin:0 auto;padding:64px 5%">
+<nav class="breadcrumb"><a href="../index.html">Home</a><span class="breadcrumb-sep">›</span><a href="index.html">Blog</a><span class="breadcrumb-sep">›</span><span>${b.title}</span></nav>
+<span class="sec-tag">${b.category}</span>
+<h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;color:var(--dark);line-height:1.2;margin:12px 0 10px">${b.title}</h1>
+<div style="display:flex;gap:12px;align-items:center;margin-bottom:28px;font-size:.82rem;color:var(--muted)">
+<span>By ${b.author}</span><span>·</span><span>${new Date(b.date).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}</span>
+</div>
+${b.image ? `<img src="${b.image}" alt="${b.title}" style="width:100%;border-radius:16px;margin-bottom:36px;object-fit:cover;max-height:400px"/>` : ''}
+<div style="font-size:.95rem;line-height:1.9;color:var(--text)">${b.content}</div>
+<div style="margin-top:48px;padding-top:28px;border-top:1px solid var(--border);display:flex;gap:14px;flex-wrap:wrap">
+<a href="../products.html" class="btn btn--primary">Shop Products →</a>
+<a href="index.html" class="btn btn--outline">← More Articles</a>
+</div>
+</article>
+<div id="footer-mount"></div>
+</div>
+<script src="../config.js"><\/script>
+<script src="../shared.js"><\/script>
+<script>
+document.getElementById('header-mount').innerHTML=getNavHTML('Blogs');
+document.getElementById('footer-mount').innerHTML=getFooterHTML();
+<\/script>
+</body>
+</html>`;
+    localStorage.setItem('blog_page_' + b.slug, html);
+    console.log('Blog page HTML stored. Slug:', b.slug);
+  }
+
+  renderBlogList();
+</script>
+</body>
+</html>

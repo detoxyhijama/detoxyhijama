@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Google Sheets Setup | Detoxy Hijama Admin</title>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link rel="stylesheet" href="../assets/style.css"/>
+  <style>
+    body{background:#f0f4f3}
+    .admin-wrap{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+    .admin-sidebar{background:var(--dark);padding:24px 16px;position:fixed;width:240px;height:100vh;overflow-y:auto;z-index:100}
+    .admin-main{margin-left:240px;padding:28px}
+    .sidebar-brand{display:flex;align-items:center;gap:10px;padding:0 8px 20px;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .sidebar-brand-text{font-family:'Cormorant Garamond',serif;font-size:1rem;color:#fff;font-weight:700}
+    .sidebar-label{font-size:.65rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.12em;font-weight:700;padding:14px 12px 6px}
+    .sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:rgba(255,255,255,.65);font-size:.83rem;font-weight:500;transition:all .2s;margin-bottom:2px;text-decoration:none}
+    .sidebar-link:hover,.sidebar-link.active{background:rgba(42,171,151,.15);color:var(--tl)}
+    .setup-card{background:#fff;border-radius:16px;padding:28px;border:1px solid var(--border);margin-bottom:20px}
+    .setup-card h2{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:700;color:var(--dark);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+    .step{display:flex;gap:14px;margin-bottom:20px;align-items:flex-start}
+    .step-num{width:32px;height:32px;border-radius:50%;background:var(--t);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;flex-shrink:0}
+    .step-body{flex:1}
+    .step-title{font-weight:700;color:var(--dark);margin-bottom:5px}
+    .step-desc{font-size:.84rem;color:var(--muted);line-height:1.65}
+    pre{background:var(--dark);color:#a7f3d0;padding:18px;border-radius:10px;font-size:.78rem;overflow-x:auto;margin-top:10px;line-height:1.6}
+    @media(max-width:900px){.admin-wrap{grid-template-columns:1fr}.admin-sidebar{display:none}.admin-main{margin-left:0}}
+  </style>
+</head>
+<body>
+<div class="admin-wrap">
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <svg width="28" height="28" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="18" fill="#2aab97"/><path d="M18 8c0 0-7 4.5-7 10.5 0 3.87 3.13 7 7 7s7-3.13 7-7C25 12.5 18 8 18 8z" fill="white" opacity=".9"/></svg>
+      <div class="sidebar-brand-text">Detoxy Admin</div>
+    </div>
+    <div class="sidebar-label">Main</div>
+    <a href="index.html" class="sidebar-link"><span>📊</span>Dashboard</a>
+    <a href="orders.html" class="sidebar-link"><span>📦</span>Orders</a>
+    <div class="sidebar-label">Content</div>
+    <a href="products.html" class="sidebar-link"><span>🛒</span>Products</a>
+    <a href="blogs.html" class="sidebar-link"><span>📝</span>Blogs</a>
+    <a href="editor.html" class="sidebar-link"><span>✏️</span>Site Editor</a>
+    <div class="sidebar-label">Settings</div>
+    <a href="settings.html" class="sidebar-link"><span>⚙️</span>Settings</a>
+    <a href="sheets-setup.html" class="sidebar-link active"><span>📋</span>Sheets Setup</a>
+    <div style="position:absolute;bottom:24px;left:16px;right:16px">
+      <a href="../index.html" class="sidebar-link"><span>🌐</span>View Website</a>
+      <button onclick="sessionStorage.removeItem('detoxy_admin');window.location.href='login.html'" class="sidebar-link" style="width:100%;background:none;border:none;cursor:pointer;text-align:left"><span>🚪</span>Logout</button>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div style="margin-bottom:24px">
+      <h1 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;color:var(--dark)">Google Sheets Sync Setup</h1>
+      <p style="font-size:.83rem;color:var(--muted)">Follow these steps to sync all orders automatically to your Google Sheet.</p>
+    </div>
+
+    <div id="currentStatus" class="setup-card"></div>
+
+    <div class="setup-card">
+      <h2>Step-by-Step Setup Guide</h2>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Create a Google Sheet</div>
+          <div class="step-desc">Go to <a href="https://sheets.google.com" target="_blank" style="color:var(--t)">sheets.google.com</a> → Create a new blank spreadsheet. Name it <strong>Detoxy Hijama Orders</strong>. Add these column headers in Row 1:<br><br>
+          <code style="background:var(--tp);padding:4px 8px;border-radius:6px;font-size:.8rem">timestamp | name | phone | email | address | items | subtotal | payment | notes | status | id | type</code></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Open Apps Script</div>
+          <div class="step-desc">In your Google Sheet → click <strong>Extensions</strong> → <strong>Apps Script</strong>. Delete any existing code and paste this:</div>
+          <pre>function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var data = JSON.parse(e.postData.contents);
+    sheet.appendRow([
+      data.timestamp || new Date().toISOString(),
+      data.name || data.company || '',
+      data.phone || '',
+      data.email || '',
+      data.address || '',
+      data.items || '',
+      data.subtotal || data.total || 0,
+      data.payment || data.type || '',
+      data.notes || '',
+      data.status || 'New',
+      data.id || '',
+      data.type || 'ORDER'
+    ]);
+    return ContentService
+      .createTextOutput(JSON.stringify({success: true}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({error: err.message}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  return ContentService
+    .createTextOutput('Detoxy Hijama Orders API — OK')
+    .setMimeType(ContentService.MimeType.TEXT);
+}</pre>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Deploy as Web App</div>
+          <div class="step-desc">Click <strong>Deploy</strong> → <strong>New Deployment</strong> → Choose type: <strong>Web App</strong><br>
+          • Execute as: <strong>Me</strong><br>
+          • Who has access: <strong>Anyone</strong><br>
+          Click <strong>Deploy</strong>. Authorise when prompted. Copy the <strong>Web App URL</strong>.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Paste the URL below</div>
+          <div class="step-desc">Enter your Web App URL here. It will be saved and used for all future order submissions.</div>
+          <div style="display:flex;gap:10px;margin-top:12px">
+            <input class="form-input" id="sheetsURL" placeholder="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec" style="flex:1"/>
+            <button class="btn btn--primary" onclick="saveURL()">Save URL</button>
+          </div>
+          <div id="urlSaveAlert" style="margin-top:10px"></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Test the connection</div>
+          <div class="step-desc">Click the button below to send a test order to your Google Sheet.</div>
+          <button class="btn btn--outline" style="margin-top:10px;font-size:.82rem" onclick="testConnection()">🧪 Send Test Order</button>
+          <div id="testAlert" style="margin-top:10px"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="setup-card">
+      <h2>Resync Local Orders to Sheets</h2>
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:16px">If orders were placed before Sheets was configured, resync them here.</p>
+      <button class="btn btn--primary" onclick="resyncAll()">↑ Resync All Local Orders to Google Sheets</button>
+      <div id="resyncAlert" style="margin-top:12px"></div>
+    </div>
+  </main>
+</div>
+
+<script src="../config.js"></script>
+<script src="../shared.js"></script>
+<script>
+if (sessionStorage.getItem('detoxy_admin') !== 'true') window.location.href = 'login.html';
+
+const cfg = window.DETOXY_CONFIG || {};
+const savedURL = localStorage.getItem('detoxy_sheets_url') || cfg.googleSheetsURL || '';
+document.getElementById('sheetsURL').value = savedURL;
+
+const isConfigured = savedURL && !savedURL.includes('YOUR_SCRIPT_ID');
+document.getElementById('currentStatus').innerHTML = isConfigured
+  ? `<div class="alert alert--success">✅ Google Sheets is configured. URL: <code style="font-size:.76rem">${savedURL.substring(0,60)}...</code></div>`
+  : `<div class="alert alert--error">⚠️ Google Sheets URL not yet configured. Follow the steps below to set it up.</div>`;
+
+function saveURL() {
+  const url = document.getElementById('sheetsURL').value.trim();
+  if (!url || url.includes('YOUR_SCRIPT_ID')) {
+    document.getElementById('urlSaveAlert').innerHTML = '<div class="alert alert--error">Please enter a valid Apps Script Web App URL.</div>';
+    return;
+  }
+  localStorage.setItem('detoxy_sheets_url', url);
+  // Also update config at runtime
+  if (window.DETOXY_CONFIG) window.DETOXY_CONFIG.googleSheetsURL = url;
+  document.getElementById('urlSaveAlert').innerHTML = '<div class="alert alert--success">✅ URL saved! New orders will now sync to Google Sheets.</div>';
+}
+
+async function testConnection() {
+  const url = localStorage.getItem('detoxy_sheets_url') || cfg.googleSheetsURL;
+  if (!url || url.includes('YOUR_SCRIPT_ID')) {
+    document.getElementById('testAlert').innerHTML = '<div class="alert alert--error">Save a valid URL first.</div>';
+    return;
+  }
+  document.getElementById('testAlert').innerHTML = '<div class="alert alert--info">Sending test order...</div>';
+  try {
+    await fetch(url, {
+      method: 'POST', mode: 'no-cors',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({timestamp: new Date().toISOString(), name:'TEST ORDER', phone:'0000000000', items:'Test Item x1', subtotal:0, payment:'Test', status:'Test', id:'TEST-'+Date.now(), type:'TEST'})
+    });
+    document.getElementById('testAlert').innerHTML = '<div class="alert alert--success">✅ Test sent! Check your Google Sheet — a new row should appear within 10 seconds.</div>';
+  } catch(e) {
+    document.getElementById('testAlert').innerHTML = `<div class="alert alert--error">Error: ${e.message}. Check your URL.</div>`;
+  }
+}
+
+async function resyncAll() {
+  const orders = OrderSync.getLocalOrders();
+  const url = localStorage.getItem('detoxy_sheets_url') || cfg.googleSheetsURL;
+  if (!url || url.includes('YOUR_SCRIPT_ID')) {
+    document.getElementById('resyncAlert').innerHTML = '<div class="alert alert--error">Configure Sheets URL first.</div>';
+    return;
+  }
+  document.getElementById('resyncAlert').innerHTML = `<div class="alert alert--info">Syncing ${orders.length} orders...</div>`;
+  let count = 0;
+  for (const o of orders) {
+    try {
+      await fetch(url, {method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)});
+      count++;
+    } catch(e) {}
+  }
+  document.getElementById('resyncAlert').innerHTML = `<div class="alert alert--success">✅ Synced ${count}/${orders.length} orders to Google Sheets.</div>`;
+}
+</script>
+</body>
+</html>

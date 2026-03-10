@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Confirmed | Detoxy Hijama</title>
+  <link rel="stylesheet" href="../assets/style.css"/>
+</head>
+<body>
+<div class="page-wrapper">
+  <div id="header-mount"></div>
+  <section class="sec">
+    <div class="sec-inner" style="max-width:600px;text-align:center;padding:80px 5%">
+      <div style="width:80px;height:80px;border-radius:50%;background:var(--tp);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.5rem">✅</div>
+      <h1 style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--dark);margin-bottom:10px">Order Placed!</h1>
+      <p style="font-size:.93rem;color:var(--muted);margin-bottom:28px;line-height:1.75">Thank you for your order. We've received it and will dispatch within 24 hours. You'll receive updates via WhatsApp/SMS.</p>
+      <div id="orderId" style="background:var(--tp);border:1px solid var(--border);border-radius:12px;padding:14px 20px;margin-bottom:28px;font-weight:600;color:var(--td)"></div>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+        <a href="../products.html" class="btn btn--primary">Continue Shopping</a>
+        <a href="https://wa.me/919566596077" class="btn btn--outline" target="_blank">💬 Track on WhatsApp</a>
+      </div>
+    </div>
+  </section>
+  <div id="footer-mount"></div>
+</div>
+<script src="../config.js"></script>
+<script src="../shared.js"></script>
+<script>
+  document.getElementById('header-mount').innerHTML = getNavHTML('');
+  document.getElementById('footer-mount').innerHTML = getFooterHTML();
+  const id = new URLSearchParams(window.location.search).get('id');
+  if (id) document.getElementById('orderId').textContent = 'Order ID: ' + id;
+</script>
+</body>
+</html>

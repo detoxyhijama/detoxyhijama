@@ -2,256 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Checkout — Detoxy Hijama</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout | Detoxy Hijama</title>
   <link rel="stylesheet" href="assets/style.css"/>
   <style>
-    .checkout-layout { display: grid; grid-template-columns: 1fr 380px; gap: 32px; padding: 40px 0 80px; align-items: flex-start; }
-    .checkout-form-wrap { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; }
-    .step-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 24px; color: var(--dark); padding-bottom: 16px; border-bottom: 1px solid var(--border); }
-    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .payment-options { display: flex; flex-direction: column; gap: 12px; margin: 8px 0; }
-    .payment-option {
-      display: flex; align-items: center; gap: 14px;
-      padding: 14px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-      cursor: pointer; transition: var(--transition);
-    }
-    .payment-option:has(input:checked), .payment-option.selected { border-color: var(--td); background: rgba(45,212,191,.04); }
-    .payment-option input[type=radio] { width: 18px; height: 18px; accent-color: var(--td); }
-    .payment-icon { font-size: 1.4rem; }
-    .payment-label { font-size: .9rem; font-weight: 500; }
-    .payment-sub { font-size: .78rem; color: var(--muted); }
-    /* ORDER SUMMARY SIDEBAR */
-    .checkout-summary { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; position: sticky; top: 90px; }
-    .summary-item { display: flex; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
-    .summary-item:last-of-type { border-bottom: none; }
-    .summary-item-img { width: 52px; height: 52px; border-radius: var(--radius-sm); background: var(--cream); object-fit: contain; padding: 4px; border: 1px solid var(--border); flex-shrink: 0; }
-    .summary-item-name { font-size: .85rem; font-weight: 500; color: var(--text); flex: 1; line-height: 1.4; }
-    .summary-item-qty { font-size: .78rem; color: var(--muted); }
-    .summary-item-price { font-family: 'Cormorant Garamond', serif; font-weight: 700; color: var(--dark); font-size: 1rem; }
-    .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
-    @media (max-width: 900px) { .checkout-layout { grid-template-columns: 1fr; } .checkout-summary { position: static; } }
-    @media (max-width: 480px) { .form-grid-2 { grid-template-columns: 1fr; } }
+    .checkout-grid{display:grid;grid-template-columns:1fr 360px;gap:32px;align-items:start}
+    .checkout-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:20px}
+    .checkout-card h3{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:700;color:var(--dark);margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .pay-option{display:flex;align-items:center;gap:12px;padding:14px;border:1.5px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s;margin-bottom:10px}
+    .pay-option.selected{border-color:var(--t);background:var(--tp)}
+    .pay-option input{accent-color:var(--t)}
+    .pay-label{font-weight:600;font-size:.9rem;color:var(--dark)}
+    .pay-sub{font-size:.75rem;color:var(--muted)}
+    .order-item{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+    .order-item:last-child{border-bottom:none}
+    .order-thumb{width:48px;height:48px;object-fit:contain;border-radius:8px;background:var(--cream);border:1px solid var(--border);padding:3px;flex-shrink:0}
+    @media(max-width:900px){.checkout-grid{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
 <div class="page-wrapper">
   <div id="header-mount"></div>
-
-  <div style="background: var(--dark); padding: 40px 0 28px;">
-    <div class="container">
-      <nav class="breadcrumb" style="color:rgba(255,255,255,.4)">
-        <a href="cart.html" style="color:rgba(255,255,255,.5)">Cart</a>
-        <span class="breadcrumb-sep">›</span>
-        <span style="color:#fff">Checkout</span>
-        <span class="breadcrumb-sep">›</span>
-        <span>Confirmation</span>
-      </nav>
-      <h1 style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:#fff;margin-top:8px">Checkout</h1>
-    </div>
-  </div>
-
-  <div class="container" id="emptyMsg" style="display:none">
-    <div class="empty-state">
-      <div class="empty-icon">🛒</div>
-      <div class="empty-title">Your cart is empty</div>
-      <a href="products.html" class="btn btn--primary">Browse Products</a>
-    </div>
-  </div>
-
-  <div class="container" id="checkoutContent">
-    <div class="checkout-layout">
-      <!-- LEFT: FORM -->
-      <div>
-        <div class="checkout-form-wrap" id="checkoutForm">
-          <div class="step-title">📋 Delivery Information</div>
-          <div class="form-grid-2">
-            <div class="form-group">
-              <label class="form-label">First Name <span class="req">*</span></label>
-              <input type="text" class="form-input" id="firstName" placeholder="Mohamed"/>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Last Name <span class="req">*</span></label>
-              <input type="text" class="form-input" id="lastName" placeholder="Aasiq"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Email Address <span class="req">*</span></label>
-            <input type="email" class="form-input" id="email" placeholder="you@example.com"/>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Mobile Number <span class="req">*</span></label>
-            <input type="tel" class="form-input" id="phone" placeholder="+91 98765 43210"/>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Address Line 1 <span class="req">*</span></label>
-            <input type="text" class="form-input" id="address1" placeholder="House / Flat / Building No., Street"/>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Address Line 2</label>
-            <input type="text" class="form-input" id="address2" placeholder="Area, Landmark (optional)"/>
-          </div>
-          <div class="form-grid-2">
-            <div class="form-group">
-              <label class="form-label">City <span class="req">*</span></label>
-              <input type="text" class="form-input" id="city" placeholder="Chennai"/>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Pincode <span class="req">*</span></label>
-              <input type="text" class="form-input" id="pincode" placeholder="600001" maxlength="6"/>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">State <span class="req">*</span></label>
-            <select class="form-select" id="state">
-              <option value="">Select State</option>
-              <option>Andhra Pradesh</option><option>Arunachal Pradesh</option><option>Assam</option>
-              <option>Bihar</option><option>Chhattisgarh</option><option>Goa</option>
-              <option>Gujarat</option><option>Haryana</option><option>Himachal Pradesh</option>
-              <option>Jharkhand</option><option>Karnataka</option><option>Kerala</option>
-              <option>Madhya Pradesh</option><option>Maharashtra</option><option>Manipur</option>
-              <option>Meghalaya</option><option>Mizoram</option><option>Nagaland</option>
-              <option>Odisha</option><option>Punjab</option><option>Rajasthan</option>
-              <option>Sikkim</option><option selected>Tamil Nadu</option><option>Telangana</option>
-              <option>Tripura</option><option>Uttar Pradesh</option><option>Uttarakhand</option>
-              <option>West Bengal</option><option>Delhi</option><option>Jammu & Kashmir</option>
-              <option>Ladakh</option><option>Puducherry</option><option>Chandigarh</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Order Notes <span style="color:var(--muted)">(optional)</span></label>
-            <textarea class="form-textarea" id="notes" placeholder="Any special instructions for your order..."></textarea>
-          </div>
-
-          <div style="height:1px;background:var(--border);margin:28px 0"></div>
-          <div class="step-title" style="border:none;margin-bottom:16px;padding:0">💳 Payment Method</div>
-          <div class="payment-options">
-            <label class="payment-option">
-              <input type="radio" name="payment" value="upi" checked/>
-              <span class="payment-icon">📱</span>
-              <div>
-                <div class="payment-label">UPI / Google Pay / PhonePe</div>
-                <div class="payment-sub">Pay directly via UPI — instant & secure</div>
-              </div>
-            </label>
-            <label class="payment-option">
-              <input type="radio" name="payment" value="card"/>
-              <span class="payment-icon">💳</span>
-              <div>
-                <div class="payment-label">Debit / Credit Card</div>
-                <div class="payment-sub">Visa, Mastercard, RuPay accepted</div>
-              </div>
-            </label>
-            <label class="payment-option">
-              <input type="radio" name="payment" value="netbanking"/>
-              <span class="payment-icon">🏦</span>
-              <div>
-                <div class="payment-label">Net Banking</div>
-                <div class="payment-sub">All major Indian banks supported</div>
-              </div>
-            </label>
-            <label class="payment-option">
-              <input type="radio" name="payment" value="cod"/>
-              <span class="payment-icon">💵</span>
-              <div>
-                <div class="payment-label">Cash on Delivery</div>
-                <div class="payment-sub">Pay when your order arrives (+₹40 COD fee)</div>
-              </div>
-            </label>
-          </div>
-
-          <div id="formError" class="alert alert--error hidden" style="margin-top:20px"></div>
-
-          <button class="btn btn--primary btn--full btn--lg" style="margin-top:24px;border-radius:var(--radius-sm)" onclick="placeOrder()" id="placeBtn">
-            Place Order — <span id="orderTotalBtn">₹0</span>
-          </button>
-          <p style="text-align:center;font-size:.78rem;color:var(--muted);margin-top:12px">🔒 Your information is encrypted and secure</p>
-        </div>
-      </div>
-
-      <!-- RIGHT: ORDER SUMMARY -->
-      <div class="checkout-summary">
-        <div class="summary-title" style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;margin-bottom:16px;color:var(--dark)">
-          Your Order (<span id="itemCount">0</span> items)
-        </div>
-        <div id="summaryItems"></div>
-        <hr class="divider"/>
-        <div style="display:flex;justify-content:space-between;font-size:.9rem;margin-bottom:8px">
-          <span style="color:var(--muted)">Subtotal</span>
-          <span id="sumSubtotal" style="font-weight:600">₹0</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;font-size:.9rem;margin-bottom:8px">
-          <span style="color:var(--muted)">Shipping</span>
-          <span id="sumShipping" style="font-weight:600">₹80</span>
-        </div>
-        <div id="codRow" style="display:none;justify-content:space-between;font-size:.9rem;margin-bottom:8px">
-          <span style="color:var(--muted)">COD Fee</span>
-          <span style="font-weight:600">₹40</span>
-        </div>
-        <hr class="divider"/>
-        <div style="display:flex;justify-content:space-between;font-size:1.05rem;font-weight:700;color:var(--dark)">
-          <span>Total</span>
-          <span id="sumTotal" style="font-family:'Cormorant Garamond',serif;font-size:1.4rem">₹0</span>
-        </div>
-        <div style="margin-top:20px;background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);border-radius:var(--radius-sm);padding:12px;font-size:.82rem;color:#065f46;line-height:1.6">
-          🚚 <strong>Delivery:</strong> 3–7 business days via Speed Post / Blue Dart
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- CHECKOUT TRUST FOOTER -->
-  <section style="background:#fff;padding:48px 5%;border-top:1px solid var(--border)">
-    <div style="max-width:1200px;margin:0 auto">
-      <div style="text-align:center;margin-bottom:32px">
-        <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:var(--dark)">Your Order Is <span style="color:var(--t)">Safe With Us</span></h3>
-        <p style="color:var(--muted);font-size:.86rem;margin-top:6px">Every order from Detoxy Hijama is backed by our quality guarantee and fast delivery promise.</p>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:20px;text-align:center">
-        <div style="padding:20px 12px">
-          <div style="font-size:1.8rem;margin-bottom:8px">🔒</div>
-          <div style="font-size:.8rem;font-weight:700;color:var(--dark);margin-bottom:3px">SSL Secured</div>
-          <div style="font-size:.72rem;color:var(--muted)">256-bit encryption on all transactions</div>
-        </div>
-        <div style="padding:20px 12px">
-          <div style="font-size:1.8rem;margin-bottom:8px">🏭</div>
-          <div style="font-size:.8rem;font-weight:700;color:var(--dark);margin-bottom:3px">Direct Factory</div>
-          <div style="font-size:.72rem;color:var(--muted)">Shipped from Pollachi, Coimbatore</div>
-        </div>
-        <div style="padding:20px 12px">
-          <div style="font-size:1.8rem;margin-bottom:8px">⚡</div>
-          <div style="font-size:.8rem;font-weight:700;color:var(--dark);margin-bottom:3px">Same Day Dispatch</div>
-          <div style="font-size:.72rem;color:var(--muted)">For orders placed before 4 PM IST</div>
-        </div>
-        <div style="padding:20px 12px">
-          <div style="font-size:1.8rem;margin-bottom:8px">🔄</div>
-          <div style="font-size:.8rem;font-weight:700;color:var(--dark);margin-bottom:3px">7-Day Returns</div>
-          <div style="font-size:.72rem;color:var(--muted)">Hassle-free on unused items</div>
-        </div>
-        <div style="padding:20px 12px">
-          <div style="font-size:1.8rem;margin-bottom:8px">📞</div>
-          <div style="font-size:.8rem;font-weight:700;color:var(--dark);margin-bottom:3px">24/7 Support</div>
-          <div style="font-size:.72rem;color:var(--muted)">Call +91 95665 96077</div>
-        </div>
-      </div>
-      <div style="margin-top:32px;padding:20px 28px;background:var(--cream);border-radius:14px;border:1px solid var(--border);display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-        <div style="font-size:1.5rem">💳</div>
-        <div style="flex:1">
-          <div style="font-size:.84rem;font-weight:700;color:var(--dark);margin-bottom:2px">We accept all major payment methods</div>
-          <div style="font-size:.76rem;color:var(--muted)">UPI (GPay, PhonePe, Paytm) · Debit Card · Credit Card · Net Banking · Cash on Delivery</div>
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <span style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:.74rem;font-weight:600;color:var(--dark)">UPI</span>
-          <span style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:.74rem;font-weight:600;color:var(--dark)">Visa</span>
-          <span style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:.74rem;font-weight:600;color:var(--dark)">Mastercard</span>
-          <span style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:.74rem;font-weight:600;color:var(--dark)">Net Banking</span>
-          <span style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:.74rem;font-weight:600;color:var(--dark)">COD</span>
-        </div>
-      </div>
+  <section class="sec">
+    <div class="sec-inner">
+      <nav class="breadcrumb"><a href="index.html">Home</a><span class="breadcrumb-sep">›</span><a href="cart.html">Cart</a><span class="breadcrumb-sep">›</span><span>Checkout</span></nav>
+      <div id="checkoutContent"></div>
     </div>
   </section>
-
   <div id="footer-mount"></div>
 </div>
 <script src="config.js"></script>
@@ -260,133 +38,115 @@
   document.getElementById('header-mount').innerHTML = getNavHTML('');
   document.getElementById('footer-mount').innerHTML = getFooterHTML();
 
-  // Handle ?buy=productId — add item to cart first
-  const urlP = new URLSearchParams(location.search);
-  const buyId = urlP.get('buy');
-  if (buyId) {
-    Cart.add(buyId, 1);
-  }
+  const prods = (window.DETOXY_CONFIG || {}).products || [];
 
-  const items = Cart.get();
-  if (items.length === 0) {
-    document.getElementById('emptyMsg').style.display = 'block';
-    document.getElementById('checkoutContent').style.display = 'none';
-  } else {
-    renderSummary();
-  }
-
-  // COD fee toggle
-  document.querySelectorAll('input[name=payment]').forEach(r => r.addEventListener('change', renderSummary));
-
-  function getCOD() { return document.querySelector('input[name=payment]:checked')?.value === 'cod' ? 40 : 0; }
-
-  function renderSummary() {
+  function renderCheckout() {
     const items = Cart.get();
-    const subtotal = Cart.subtotal();
-    const shipping = Cart.shipping();
-    const cod = getCOD();
-    const total = subtotal + shipping + cod;
-
-    document.getElementById('itemCount').textContent = Cart.count();
-    document.getElementById('summaryItems').innerHTML = items.map(item => `
-      <div class="summary-item">
-        <img class="summary-item-img" src="${item.image}" alt="${item.name}"
-             onerror="this.src='https://placehold.co/52x52/1a3d35/2dd4bf?text=+'">
-        <div class="summary-item-name">${item.name} <div class="summary-item-qty">Qty: ${item.qty}</div></div>
-        <div class="summary-item-price">₹${(item.price * item.qty).toLocaleString('en-IN')}</div>
-      </div>
-    `).join('');
-
-    document.getElementById('sumSubtotal').textContent = '₹' + subtotal.toLocaleString('en-IN');
-    document.getElementById('sumShipping').innerHTML = shipping === 0 ? '<span style="color:#10b981">FREE</span>' : '₹' + shipping;
-    document.getElementById('sumTotal').textContent = '₹' + total.toLocaleString('en-IN');
-    document.getElementById('orderTotalBtn').textContent = '₹' + total.toLocaleString('en-IN');
-    document.getElementById('codRow').style.display = cod > 0 ? 'flex' : 'none';
-  }
-
-  function validate() {
-    const fields = [
-      { id: 'firstName', label: 'First Name' },
-      { id: 'lastName', label: 'Last Name' },
-      { id: 'email', label: 'Email', type: 'email' },
-      { id: 'phone', label: 'Mobile Number' },
-      { id: 'address1', label: 'Address' },
-      { id: 'city', label: 'City' },
-      { id: 'pincode', label: 'Pincode', len: 6 },
-      { id: 'state', label: 'State' },
-    ];
-    for (const f of fields) {
-      const v = document.getElementById(f.id).value.trim();
-      if (!v) return `Please fill in ${f.label}`;
-      if (f.type === 'email' && !/\S+@\S+\.\S+/.test(v)) return 'Please enter a valid email';
-      if (f.len && v.length !== f.len) return `${f.label} must be ${f.len} digits`;
-    }
-    return null;
-  }
-
-  async function placeOrder() {
-    const err = validate();
-    const errEl = document.getElementById('formError');
-    if (err) {
-      errEl.textContent = err;
-      errEl.classList.remove('hidden');
-      errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const el = document.getElementById('checkoutContent');
+    if (!items.length) {
+      el.innerHTML = `<div class="empty-state"><div class="empty-icon">🛒</div><div class="empty-title">Your cart is empty</div><a href="products.html" class="btn btn--primary">Browse Products</a></div>`;
       return;
     }
-    errEl.classList.add('hidden');
-
-    const btn = document.getElementById('placeBtn');
-    btn.disabled = true;
-    btn.textContent = 'Placing Order...';
-
-    const items = Cart.get();
-    const subtotal = Cart.subtotal();
-    const shipping = Cart.shipping();
-    const cod = getCOD();
-    const total = subtotal + shipping + cod;
-    const orderNum = 'DH-' + Date.now().toString().slice(-8);
-
-    const orderData = {
-      orderNumber: orderNum,
-      customer: {
-        firstName: document.getElementById('firstName').value.trim(),
-        lastName: document.getElementById('lastName').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        phone: document.getElementById('phone').value.trim(),
-      },
-      shipping: {
-        address1: document.getElementById('address1').value.trim(),
-        address2: document.getElementById('address2').value.trim(),
-        city: document.getElementById('city').value.trim(),
-        pincode: document.getElementById('pincode').value.trim(),
-        state: document.getElementById('state').value,
-      },
-      items,
-      payment: document.querySelector('input[name=payment]:checked')?.value || 'upi',
-      notes: document.getElementById('notes').value.trim(),
-      subtotal, shippingCost: shipping, codFee: cod, total,
-      createdAt: new Date().toISOString(),
-      status: 'Pending',
-    };
-
-    // Save locally FIRST so confirmation page always works
-    localStorage.setItem('dh_last_order', JSON.stringify(orderData));
-
-    try {
-      btn.textContent = 'Syncing with server...';
-      const result = await Orders.place(orderData);
-      if (result && result.success === false && result.raw) {
-        // Sync failed — order is saved locally, warn user but proceed
-        console.warn('Order sync warning:', result);
-      }
-    } catch(e) {
-      // Network error — order still saved locally, proceed to confirmation
-      console.error('Order sync error (non-fatal):', e);
-    }
-
-    Cart.clear();
-    window.location.href = 'confirmation.html';
+    let subtotal = 0;
+    const orderItems = items.map(item => {
+      const p = prods.find(x => x.id === item.id);
+      if (!p) return null;
+      subtotal += p.price * item.qty;
+      return { ...p, qty: item.qty, lineTotal: p.price * item.qty };
+    }).filter(Boolean);
+    const shipping = subtotal >= 999 ? 0 : 60;
+    const total = subtotal + shipping;
+    const itemsHTML = orderItems.map(i => `
+      <div class="order-item">
+        <img class="order-thumb" src="${i.images && i.images[0] || ''}" alt="${i.name}" onerror="this.src='https://placehold.co/48x48/1a3d35/2dd4bf?text=P'">
+        <div style="flex:1"><div style="font-weight:600;font-size:.85rem;color:var(--dark)">${i.name}</div><div style="font-size:.75rem;color:var(--muted)">₹${i.price} × ${i.qty}</div></div>
+        <div style="font-weight:700;color:var(--td);font-size:.9rem">₹${i.lineTotal}</div>
+      </div>`).join('');
+    el.innerHTML = `
+    <h1 class="sec-h2" style="margin-bottom:28px">Checkout</h1>
+    <div class="checkout-grid">
+      <div>
+        <div class="checkout-card">
+          <h3>Shipping Details</h3>
+          <div id="orderAlert"></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">First Name <span class="req">*</span></label><input class="form-input" id="cFirst" placeholder="First name"/></div>
+            <div class="form-group"><label class="form-label">Last Name <span class="req">*</span></label><input class="form-input" id="cLast" placeholder="Last name"/></div>
+          </div>
+          <div class="form-group"><label class="form-label">Phone <span class="req">*</span></label><input class="form-input" id="cPhone" type="tel" placeholder="+91 xxxxx xxxxx"/></div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="cEmail" type="email" placeholder="your@email.com"/></div>
+          <div class="form-group"><label class="form-label">Address <span class="req">*</span></label><input class="form-input" id="cAddr" placeholder="Street, area"/></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">City <span class="req">*</span></label><input class="form-input" id="cCity" placeholder="City"/></div>
+            <div class="form-group"><label class="form-label">State</label><input class="form-input" id="cState" placeholder="State"/></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">PIN Code <span class="req">*</span></label><input class="form-input" id="cPin" placeholder="6-digit PIN"/></div>
+            <div class="form-group"><label class="form-label">Country</label><input class="form-input" id="cCountry" value="India"/></div>
+          </div>
+          <div class="form-group"><label class="form-label">Order Notes</label><textarea class="form-textarea" id="cNotes" rows="2" placeholder="Any special instructions?"></textarea></div>
+        </div>
+        <div class="checkout-card">
+          <h3>Payment Method</h3>
+          <label class="pay-option" onclick="selectPay(this)"><input type="radio" name="pay" value="UPI" checked><div><div class="pay-label">📱 UPI / QR Payment</div><div class="pay-sub">PhonePe, GPay, Paytm — instant</div></div></label>
+          <label class="pay-option" onclick="selectPay(this)"><input type="radio" name="pay" value="Card"><div><div class="pay-label">💳 Debit / Credit Card</div><div class="pay-sub">All major cards accepted</div></div></label>
+          <label class="pay-option" onclick="selectPay(this)"><input type="radio" name="pay" value="COD"><div><div class="pay-label">💵 Cash on Delivery</div><div class="pay-sub">Pay when order arrives</div></div></label>
+          <label class="pay-option" onclick="selectPay(this)"><input type="radio" name="pay" value="Bank Transfer"><div><div class="pay-label">🏦 Bank Transfer / NEFT</div><div class="pay-sub">For large orders — contact us</div></div></label>
+        </div>
+      </div>
+      <div>
+        <div class="summary-card" style="position:sticky;top:80px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px">
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:var(--dark);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">Order Summary</h3>
+          ${itemsHTML}
+          <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+            <div style="display:flex;justify-content:space-between;font-size:.87rem;margin-bottom:8px"><span style="color:var(--muted)">Subtotal</span><span>₹${subtotal}</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:.87rem;margin-bottom:12px"><span style="color:var(--muted)">Shipping</span><span>${shipping === 0 ? '<span style="color:var(--t)">FREE</span>' : '₹' + shipping}</span></div>
+            <div style="display:flex;justify-content:space-between;font-weight:700;font-size:1.05rem;color:var(--dark)"><span>Total</span><span style="color:var(--td)">₹${total}</span></div>
+          </div>
+          <button class="btn btn--primary btn--full" style="margin-top:18px" id="placeOrderBtn" onclick="placeOrder(${total},${JSON.stringify(orderItems).replace(/"/g,'&quot;')})">
+            Place Order →
+          </button>
+          <div style="text-align:center;margin-top:12px"><span class="trust-pill">🔒 Secure Checkout</span></div>
+        </div>
+      </div>
+    </div>`;
+    // init first pay option selected
+    document.querySelectorAll('.pay-option')[0].classList.add('selected');
   }
+
+  function selectPay(label) {
+    document.querySelectorAll('.pay-option').forEach(l => l.classList.remove('selected'));
+    label.classList.add('selected');
+  }
+
+  async function placeOrder(total, items) {
+    const get = id => document.getElementById(id)?.value?.trim() || '';
+    const first = get('cFirst'), last = get('cLast'), phone = get('cPhone'), addr = get('cAddr'), city = get('cCity'), pin = get('cPin');
+    const alertEl = document.getElementById('orderAlert');
+    if (!first || !last || !phone || !addr || !city || !pin) {
+      alertEl.innerHTML = '<div class="alert alert--error">Please fill all required fields.</div>';
+      return;
+    }
+    const btn = document.getElementById('placeOrderBtn');
+    btn.disabled = true; btn.textContent = 'Placing order...';
+    const payMethod = document.querySelector('input[name="pay"]:checked')?.value || 'COD';
+    const orderData = {
+      timestamp: new Date().toISOString(),
+      name: first + ' ' + last,
+      phone, email: get('cEmail'),
+      address: addr + ', ' + city + ', ' + get('cState') + ' - ' + pin + ', ' + (get('cCountry') || 'India'),
+      items: items.map(i => `${i.name} x${i.qty} (₹${i.lineTotal})`).join(' | '),
+      subtotal: total,
+      payment: payMethod,
+      notes: get('cNotes'),
+      status: 'New'
+    };
+    const result = await OrderSync.submit(orderData);
+    Cart.clear();
+    window.location.href = 'confirmation/index.html?id=' + encodeURIComponent(orderData.id || Date.now());
+  }
+
+  renderCheckout();
 </script>
 </body>
 </html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hijama Blog | Detoxy Hijama — Education, Guides & Tips</title>
+  <meta name="description" content="Read expert articles about hijama therapy, cupping techniques, product guides, and clinical tips from Detoxy Hijama — India's leading hijama equipment manufacturer."/>
+  <link rel="stylesheet" href="../assets/style.css"/>
+  <style>
+    .blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px}
+    .blog-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:transform .2s,box-shadow .2s;text-decoration:none;display:flex;flex-direction:column}
+    .blog-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+    .blog-card-img{height:190px;overflow:hidden;background:linear-gradient(135deg,var(--dark),var(--mid));position:relative;display:flex;align-items:center;justify-content:center}
+    .blog-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
+    .blog-card:hover .blog-card-img img{transform:scale(1.05)}
+    .blog-card-placeholder{font-size:3rem;opacity:.3}
+    .blog-card-body{padding:20px;flex:1;display:flex;flex-direction:column}
+    .blog-card-cat{font-size:.68rem;font-weight:700;color:var(--t);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+    .blog-card-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:var(--dark);line-height:1.3;margin-bottom:8px;flex:1}
+    .blog-card-meta{font-size:.75rem;color:var(--muted)}
+    .blog-card-excerpt{font-size:.83rem;color:var(--muted);line-height:1.6;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+
+    /* Seed articles */
+    .featured-post{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:grid;grid-template-columns:1.2fr 1fr;align-items:center;margin-bottom:36px}
+    .featured-post-img{height:300px;background:linear-gradient(135deg,var(--dark),var(--mid));display:flex;align-items:center;justify-content:center;font-size:5rem;opacity:.4}
+    .featured-post-body{padding:36px}
+    @media(max-width:700px){.featured-post{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="page-wrapper">
+  <div id="header-mount"></div>
+
+  <section style="background:linear-gradient(135deg,var(--tp),var(--cream));padding:64px 5% 48px;text-align:center">
+    <span class="sec-tag">Knowledge Centre</span>
+    <h1 class="sec-h2">Hijama <span>Blog & Education</span></h1>
+    <p class="sec-sub" style="margin:0 auto;max-width:520px">Expert articles on hijama therapy, cupping techniques, product guides, and clinical practice tips from the Detoxy Hijama team.</p>
+  </section>
+
+  <section class="sec">
+    <div class="sec-inner">
+      <!-- Static seed posts (always visible) -->
+      <div class="featured-post">
+        <div class="featured-post-img">🫙</div>
+        <div class="featured-post-body">
+          <span class="sec-tag">Featured</span>
+          <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--dark);line-height:1.3;margin-bottom:10px">The Complete Guide to Choosing Hijama Cups: Standard vs Premium vs Silicone</h2>
+          <p style="font-size:.87rem;color:var(--muted);line-height:1.7;margin-bottom:16px">Not all hijama cups are created equal. This comprehensive guide breaks down the differences between standard PVC, premium transparent, curve, and silicone cups — helping you choose the right type for your practice and budget.</p>
+          <div style="font-size:.75rem;color:var(--muted);margin-bottom:16px">By Detoxy Hijama Team · Product Guides</div>
+          <a href="hijama-cups-guide.html" class="btn btn--primary" style="font-size:.82rem">Read Article →</a>
+        </div>
+      </div>
+
+      <h2 class="sec-h2" style="margin-bottom:24px">All Articles</h2>
+      <div class="blog-grid" id="blogGrid">
+        <!-- Seed static posts -->
+        <a href="hijama-cups-guide.html" class="blog-card">
+          <div class="blog-card-img"><div class="blog-card-placeholder">🫙</div></div>
+          <div class="blog-card-body">
+            <div class="blog-card-cat">Product Guide</div>
+            <div class="blog-card-title">Choosing the Right Hijama Cup: Standard vs Premium vs Silicone</div>
+            <div class="blog-card-excerpt">A detailed comparison of all cup types to help practitioners make informed purchasing decisions for their clinics.</div>
+            <div class="blog-card-meta">Detoxy Hijama Team · Product Guide</div>
+          </div>
+        </a>
+        <a href="bulk-hijama-supply.html" class="blog-card">
+          <div class="blog-card-img"><div class="blog-card-placeholder">📦</div></div>
+          <div class="blog-card-body">
+            <div class="blog-card-cat">Clinic Business</div>
+            <div class="blog-card-title">How to Order Hijama Supplies in Bulk and Save 30–40%</div>
+            <div class="blog-card-excerpt">Smart procurement strategies for hijama clinic owners — when to buy in bulk, what minimum quantities make sense, and how to negotiate with manufacturers.</div>
+            <div class="blog-card-meta">Detoxy Hijama Team · Clinic Business</div>
+          </div>
+        </a>
+        <a href="wet-cupping-technique.html" class="blog-card">
+          <div class="blog-card-img"><div class="blog-card-placeholder">💉</div></div>
+          <div class="blog-card-body">
+            <div class="blog-card-cat">Practitioner Tips</div>
+            <div class="blog-card-title">Wet Hijama Technique: A Step-by-Step Clinical Protocol</div>
+            <div class="blog-card-excerpt">From patient assessment to aftercare — a thorough walkthrough of the standard wet hijama procedure for qualified practitioners.</div>
+            <div class="blog-card-meta">Detoxy Hijama Team · Education</div>
+          </div>
+        </a>
+        <a href="sterilisation-guide.html" class="blog-card">
+          <div class="blog-card-img"><div class="blog-card-placeholder">🧼</div></div>
+          <div class="blog-card-body">
+            <div class="blog-card-cat">Infection Control</div>
+            <div class="blog-card-title">Hijama Equipment Sterilisation: The Complete Infection Control Guide</div>
+            <div class="blog-card-excerpt">Proper sterilisation is non-negotiable. This guide covers chemical disinfection, autoclave protocols, single-use policies, and documentation requirements.</div>
+            <div class="blog-card-meta">Detoxy Hijama Team · Safety</div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Dynamic posts from admin -->
+      <div id="dynamicBlogGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;margin-top:24px"></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div style="background:linear-gradient(135deg,var(--dark),var(--mid));padding:60px 5%;text-align:center;color:#fff">
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;margin-bottom:10px">Ready to Stock Your Clinic?</h2>
+    <p style="opacity:.75;font-size:.93rem;margin-bottom:22px">Browse our complete range of clinical-grade hijama equipment at factory direct prices.</p>
+    <a href="../products.html" class="btn btn--primary btn--lg">Shop All Products →</a>
+  </div>
+
+  <div id="footer-mount"></div>
+</div>
+<script src="../config.js"></script>
+<script src="../shared.js"></script>
+<script>
+  document.getElementById('header-mount').innerHTML = getNavHTML('Blogs');
+  document.getElementById('footer-mount').innerHTML = getFooterHTML();
+
+  // Load dynamically created blogs
+  const blogs = JSON.parse(localStorage.getItem('detoxy_blogs') || '[]')
+    .filter(b => b.status === 'published');
+
+  if (blogs.length) {
+    document.getElementById('dynamicBlogGrid').innerHTML = blogs.map(b => `
+    <a href="${b.slug}.html" class="blog-card">
+      <div class="blog-card-img">
+        ${b.image ? `<img src="${b.image}" alt="${b.title}" onerror="this.parentElement.innerHTML='<div class=blog-card-placeholder>📝</div>'">` : '<div class="blog-card-placeholder">📝</div>'}
+      </div>
+      <div class="blog-card-body">
+        <div class="blog-card-cat">${b.category}</div>
+        <div class="blog-card-title">${b.title}</div>
+        <div class="blog-card-excerpt">${b.meta || ''}</div>
+        <div class="blog-card-meta">${b.author} · ${new Date(b.date).toLocaleDateString('en-IN')}</div>
+      </div>
+    </a>`).join('');
+  }
+</script>
+</body>
+</html>

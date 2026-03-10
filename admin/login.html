@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Login | Detoxy Hijama</title>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link rel="stylesheet" href="../assets/style.css"/>
+  <style>
+    body{background:var(--dark);display:flex;align-items:center;justify-content:center;min-height:100vh}
+    .login-card{background:#fff;border-radius:24px;padding:44px 36px;width:100%;max-width:400px;text-align:center}
+    .admin-logo{width:60px;height:60px;border-radius:50%;background:var(--tp);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.8rem}
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <div class="admin-logo">🔐</div>
+    <h1 style="font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--dark);margin-bottom:4px">Admin Panel</h1>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:28px">Detoxy Hijama — Secure Access</p>
+    <div id="loginAlert"></div>
+    <div class="form-group" style="text-align:left">
+      <label class="form-label">Password</label>
+      <input type="password" class="form-input" id="adminPass" placeholder="Enter admin password" onkeypress="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <button class="btn btn--primary btn--full" onclick="doLogin()">Login →</button>
+    <p style="margin-top:16px;font-size:.75rem;color:var(--muted)"><a href="../index.html" style="color:var(--t)">← Back to website</a></p>
+  </div>
+<script src="../config.js"></script>
+<script>
+  // Check if already logged in
+  if (sessionStorage.getItem('detoxy_admin') === 'true') window.location.href = 'index.html';
+  function doLogin() {
+    const pass = document.getElementById('adminPass').value;
+    const correct = (window.DETOXY_CONFIG || {}).adminPassword || 'detoxy2024admin';
+    if (pass === correct) {
+      sessionStorage.setItem('detoxy_admin', 'true');
+      window.location.href = 'index.html';
+    } else {
+      document.getElementById('loginAlert').innerHTML = '<div class="alert alert--error">Incorrect password. Please try again.</div>';
+    }
+  }
+</script>
+</body>
+</html>

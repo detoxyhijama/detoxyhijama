@@ -2,168 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Shopping Cart — Detoxy Hijama</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cart | Detoxy Hijama</title>
   <link rel="stylesheet" href="assets/style.css"/>
   <style>
-    .cart-layout { display: grid; grid-template-columns: 1fr 360px; gap: 32px; padding: 40px 0 80px; align-items: flex-start; }
-    .cart-table-wrap { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-    .cart-table { width: 100%; border-collapse: collapse; }
-    .cart-table th { padding: 16px 20px; font-size: .78rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); background: var(--cream); text-align: left; border-bottom: 1px solid var(--border); }
-    .cart-row { border-bottom: 1px solid var(--border); }
-    .cart-row:last-child { border-bottom: none; }
-    .cart-td { padding: 20px; vertical-align: middle; }
-    .cart-product { display: flex; align-items: center; gap: 16px; }
-    .cart-img { width: 64px; height: 64px; border-radius: var(--radius-sm); background: var(--cream); object-fit: contain; padding: 6px; border: 1px solid var(--border); flex-shrink: 0; }
-    .cart-product-name { font-weight: 600; font-size: .9rem; color: var(--dark); line-height: 1.4; }
-    .cart-product-unit { font-size: .78rem; color: var(--muted); margin-top: 2px; }
-    .cart-price { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: var(--dark); white-space: nowrap; }
-    .cart-total-cell { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: var(--td); white-space: nowrap; }
-    .cart-remove { color: var(--muted); transition: color .2s; }
-    .cart-remove:hover { color: var(--red); }
-    /* ORDER SUMMARY */
-    .order-summary { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; position: sticky; top: 90px; }
-    .summary-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 24px; color: var(--dark); }
-    .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: .9rem; }
-    .summary-row:last-of-type { border-bottom: none; }
-    .summary-row.total { font-size: 1.1rem; font-weight: 700; padding-top: 16px; border-top: 2px solid var(--dark); }
-    .summary-label { color: var(--muted); }
-    .summary-value { font-weight: 600; color: var(--dark); }
-    .summary-free { color: #10b981; font-weight: 600; }
-    .coupon-row { display: flex; gap: 8px; margin: 16px 0; }
-    .coupon-input { flex: 1; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: .85rem; }
-    .coupon-btn { padding: 10px 16px; background: var(--dark); color: #fff; border-radius: var(--radius-sm); font-size: .83rem; font-weight: 600; white-space: nowrap; }
-    .free-shipping-progress { margin: 12px 0; }
-    .progress-bar { height: 6px; background: var(--cream); border-radius: 3px; overflow: hidden; margin-top: 6px; }
-    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--td), var(--t)); border-radius: 3px; transition: width .4s ease; }
-    .progress-text { font-size: .78rem; color: var(--muted); }
-    @media (max-width: 900px) { .cart-layout { grid-template-columns: 1fr; } .order-summary { position: static; } }
-    @media (max-width: 640px) { .cart-table thead { display: none; } .cart-row { display: block; padding: 16px 0; } .cart-td { display: block; padding: 6px 16px; } .cart-product { flex-direction: column; align-items: flex-start; } }
+    .cart-layout{display:grid;grid-template-columns:1fr 340px;gap:32px;align-items:start}
+    .cart-table{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+    .cart-row{display:grid;grid-template-columns:64px 1fr auto auto;align-items:center;gap:16px;padding:18px 20px;border-bottom:1px solid var(--border)}
+    .cart-row:last-child{border-bottom:none}
+    .cart-thumb{width:64px;height:64px;object-fit:contain;border-radius:10px;background:var(--cream);border:1px solid var(--border);padding:4px}
+    .cart-name{font-weight:600;font-size:.9rem;color:var(--dark)}
+    .cart-unit{font-size:.76rem;color:var(--muted)}
+    .cart-line-price{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--td);text-align:right;min-width:70px}
+    .cart-remove{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem;padding:4px;transition:color .2s}
+    .cart-remove:hover{color:var(--red)}
+    .summary-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px;position:sticky;top:80px}
+    .summary-row{display:flex;justify-content:space-between;font-size:.9rem;margin-bottom:10px}
+    .summary-total{border-top:1px solid var(--border);margin-top:14px;padding-top:14px;display:flex;justify-content:space-between;font-weight:700;font-size:1.05rem;color:var(--dark)}
+    @media(max-width:768px){.cart-layout{grid-template-columns:1fr}.cart-row{grid-template-columns:48px 1fr auto}}
   </style>
 </head>
 <body>
 <div class="page-wrapper">
   <div id="header-mount"></div>
-
-  <div style="background: var(--dark); padding: 40px 0 28px;">
-    <div class="container">
-      <h1 style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:#fff">Shopping Cart</h1>
-    </div>
-  </div>
-
-  <div class="container">
-    <div id="emptyCart" class="empty-state hidden">
-      <div class="empty-icon">🛒</div>
-      <div class="empty-title">Your cart is empty</div>
-      <div class="empty-sub">Looks like you haven't added any products yet.</div>
-      <a href="products.html" class="btn btn--primary">Browse Products</a>
-    </div>
-
-    <div class="cart-layout" id="cartLayout">
-      <div>
-        <div class="cart-table-wrap">
-          <table class="cart-table">
-            <thead>
-              <tr>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Qty</th>
-                <th>Total</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="cartItems"></tbody>
-          </table>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px">
-          <a href="products.html" class="btn btn--outline">← Continue Shopping</a>
-          <button onclick="Cart.clear(); renderCart();" class="btn" style="color:var(--muted);font-size:.85rem">Remove All</button>
-        </div>
-      </div>
-
-      <div class="order-summary">
-        <div class="summary-title">Order Summary</div>
-        <div class="free-shipping-progress" id="shippingProgress">
-          <div class="progress-text" id="progressText"></div>
-          <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-        </div>
-        <div class="summary-row">
-          <span class="summary-label">Subtotal</span>
-          <span class="summary-value" id="summarySubtotal">₹0</span>
-        </div>
-        <div class="summary-row">
-          <span class="summary-label">Shipping</span>
-          <span id="summaryShipping" class="summary-value">₹80</span>
-        </div>
-        <div class="summary-row total">
-          <span>Total</span>
-          <span id="summaryTotal">₹0</span>
-        </div>
-        <a href="checkout.html" class="btn btn--primary btn--full" style="margin-top:20px;border-radius:var(--radius-sm)" id="checkoutBtn">
-          Proceed to Checkout →
-        </a>
-        <div style="display:flex;justify-content:center;gap:16px;margin-top:16px">
-          <span style="font-size:.75rem;color:var(--muted)">🔒 Secure Checkout</span>
-          <span style="font-size:.75rem;color:var(--muted)">↩️ Easy Returns</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- REASSURANCE STRIP BELOW CART -->
-  <section style="background:#fff;padding:48px 5%;border-top:1px solid var(--border)">
-    <div style="max-width:1200px;margin:0 auto">
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px">
-        <div style="text-align:center;padding:24px 16px;border:1px solid var(--border);border-radius:16px;background:var(--cream)">
-          <div style="font-size:2rem;margin-bottom:10px">🚚</div>
-          <div style="font-weight:700;color:var(--dark);font-size:.9rem;margin-bottom:4px">Free Shipping</div>
-          <div style="font-size:.78rem;color:var(--muted);line-height:1.5">On orders above ₹999. Pan-India delivery in 2–5 business days.</div>
-        </div>
-        <div style="text-align:center;padding:24px 16px;border:1px solid var(--border);border-radius:16px;background:var(--cream)">
-          <div style="font-size:2rem;margin-bottom:10px">🔒</div>
-          <div style="font-weight:700;color:var(--dark);font-size:.9rem;margin-bottom:4px">Secure Checkout</div>
-          <div style="font-size:.78rem;color:var(--muted);line-height:1.5">SSL encrypted. Pay via UPI, card, net banking or COD.</div>
-        </div>
-        <div style="text-align:center;padding:24px 16px;border:1px solid var(--border);border-radius:16px;background:var(--cream)">
-          <div style="font-size:2rem;margin-bottom:10px">🔄</div>
-          <div style="font-weight:700;color:var(--dark);font-size:.9rem;margin-bottom:4px">Easy Returns</div>
-          <div style="font-size:.78rem;color:var(--muted);line-height:1.5">7-day hassle-free return on unused items. No questions asked.</div>
-        </div>
-        <div style="text-align:center;padding:24px 16px;border:1px solid var(--border);border-radius:16px;background:var(--cream)">
-          <div style="font-size:2rem;margin-bottom:10px">🏭</div>
-          <div style="font-weight:700;color:var(--dark);font-size:.9rem;margin-bottom:4px">Direct from Factory</div>
-          <div style="font-size:.78rem;color:var(--muted);line-height:1.5">No markup, no middlemen. True factory price every time.</div>
-        </div>
-      </div>
+  <section class="sec">
+    <div class="sec-inner">
+      <h1 class="sec-h2" style="margin-bottom:28px">Your <span>Cart</span></h1>
+      <div id="cartContent"></div>
     </div>
   </section>
-
-  <!-- YOU MAY ALSO LIKE -->
-  <section style="padding:64px 5%;background:var(--cream)">
-    <div style="max-width:1200px;margin:0 auto">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px">
-        <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--dark)">You May Also <span style="color:var(--t)">Like</span></h2>
-        <a href="products.html" style="color:var(--t);font-size:.84rem;font-weight:600;text-decoration:none">See all products →</a>
-      </div>
-      <div class="products-grid" id="suggestedProducts"></div>
-    </div>
-  </section>
-
-  <!-- BULK ORDER CTA -->
-  <section style="padding:0 5% 64px;background:var(--cream)">
-    <div style="max-width:1200px;margin:0 auto">
-      <div style="background:linear-gradient(135deg,var(--dark),var(--mid));border-radius:20px;padding:36px 44px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap">
-        <div>
-          <div style="font-size:.7rem;color:var(--tl);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">🏭 B2B & Wholesale</div>
-          <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:6px">Ordering for a Clinic or Institution?</h3>
-          <p style="color:rgba(255,255,255,.6);font-size:.86rem;line-height:1.6;max-width:480px">Get bulk pricing, private labelling and dedicated account support. We supply 5,000+ B2B clients across India with factory-direct pricing.</p>
-        </div>
-        <a href="mailto:detoxyhijama@gmail.com" style="display:inline-flex;align-items:center;gap:8px;background:var(--t);color:#fff;padding:14px 24px;border-radius:12px;font-size:.9rem;font-weight:700;text-decoration:none;flex-shrink:0">📧 Contact for Bulk Order</a>
-      </div>
-    </div>
-  </section>
-
   <div id="footer-mount"></div>
 </div>
 <script src="config.js"></script>
@@ -171,69 +38,76 @@
 <script>
   document.getElementById('header-mount').innerHTML = getNavHTML('');
   document.getElementById('footer-mount').innerHTML = getFooterHTML();
-  // Suggested products
-  const sp = document.getElementById('suggestedProducts');
-  if(sp) sp.innerHTML = PRODUCTS.slice(0,4).map(renderProductCard).join('');
+
+  const prods = (window.DETOXY_CONFIG || {}).products || [];
 
   function renderCart() {
     const items = Cart.get();
-    const subtotal = Cart.subtotal();
-    const shipping = Cart.shipping();
-    const total = Cart.total();
-    const FREE_THRESHOLD = SITE.FREE_SHIPPING_ABOVE;
-
-    document.getElementById('emptyCart').classList.toggle('hidden', items.length > 0);
-    document.getElementById('cartLayout').classList.toggle('hidden', items.length === 0);
-
-    if (items.length === 0) return;
-
-    // Items
-    document.getElementById('cartItems').innerHTML = items.map(item => `
-      <tr class="cart-row">
-        <td class="cart-td">
-          <div class="cart-product">
-            <img class="cart-img" src="${item.image}" alt="${item.name}"
-                 onerror="this.src='https://placehold.co/64x64/1a3d35/2dd4bf?text=+'">
-            <div>
-              <div class="cart-product-name">${item.name}</div>
-              <div class="cart-product-unit">${item.unit}</div>
-            </div>
-          </div>
-        </td>
-        <td class="cart-td"><span class="cart-price">₹${item.price.toLocaleString('en-IN')}</span></td>
-        <td class="cart-td">
-          <div class="qty-control" style="width:fit-content">
-            <button class="qty-btn" onclick="Cart.update('${item.key}', ${item.qty - 1}); renderCart();">−</button>
-            <input type="number" class="qty-input" value="${item.qty}" min="1" style="width:48px"
-                   onchange="Cart.update('${item.key}', parseInt(this.value)||1); renderCart();">
-            <button class="qty-btn" onclick="Cart.update('${item.key}', ${item.qty + 1}); renderCart();">+</button>
-          </div>
-        </td>
-        <td class="cart-td"><span class="cart-total-cell">₹${(item.price * item.qty).toLocaleString('en-IN')}</span></td>
-        <td class="cart-td">
-          <button class="cart-remove" onclick="Cart.remove('${item.key}'); renderCart();" title="Remove">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-          </button>
-        </td>
-      </tr>
-    `).join('');
-
-    // Summary
-    document.getElementById('summarySubtotal').textContent = '₹' + subtotal.toLocaleString('en-IN');
-    document.getElementById('summaryShipping').innerHTML = shipping === 0 ? '<span class="summary-free">FREE</span>' : '₹' + shipping;
-    document.getElementById('summaryTotal').textContent = '₹' + total.toLocaleString('en-IN');
-
-    // Progress bar
-    const pct = Math.min(100, (subtotal / FREE_THRESHOLD) * 100);
-    document.getElementById('progressFill').style.width = pct + '%';
-    if (shipping === 0) {
-      document.getElementById('progressText').innerHTML = '🎉 You get <strong>FREE shipping!</strong>';
-    } else {
-      const rem = FREE_THRESHOLD - subtotal;
-      document.getElementById('progressText').textContent = `Add ₹${rem.toLocaleString('en-IN')} more for FREE shipping`;
+    const el = document.getElementById('cartContent');
+    if (!items.length) {
+      el.innerHTML = `<div class="empty-state"><div class="empty-icon">🛒</div><div class="empty-title">Your cart is empty</div><div class="empty-sub">Add some products to get started</div><a href="products.html" class="btn btn--primary">Browse Products</a></div>`;
+      return;
     }
+    let subtotal = 0;
+    const rows = items.map(item => {
+      const p = prods.find(x => x.id === item.id);
+      if (!p) return '';
+      const lineTotal = p.price * item.qty;
+      subtotal += lineTotal;
+      const img = (p.images && p.images[0]) || '';
+      return `
+      <div class="cart-row" id="crow-${p.id}">
+        <img class="cart-thumb" src="${img}" alt="${p.name}" onerror="this.src='https://placehold.co/64x64/1a3d35/2dd4bf?text=Item'">
+        <div>
+          <div class="cart-name"><a href="products/${p.id}.html">${p.name}</a></div>
+          <div class="cart-unit">₹${p.price} ${p.unit}</div>
+          <div class="qty-control" style="margin-top:8px;width:fit-content">
+            <button class="qty-btn" onclick="changeQty('${p.id}',-1)">−</button>
+            <input type="number" class="qty-input" value="${item.qty}" min="1" style="width:44px" onchange="setQty('${p.id}',this.value)">
+            <button class="qty-btn" onclick="changeQty('${p.id}',1)">+</button>
+          </div>
+        </div>
+        <div class="cart-line-price">₹${lineTotal}</div>
+        <button class="cart-remove" onclick="removeItem('${p.id}')" title="Remove">✕</button>
+      </div>`;
+    }).join('');
+    const shipping = subtotal >= 999 ? 0 : 60;
+    const total = subtotal + shipping;
+    el.innerHTML = `
+    <div class="cart-layout">
+      <div>
+        <div class="cart-table">${rows}</div>
+        <button onclick="Cart.clear();renderCart()" style="margin-top:14px;font-size:.8rem;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline">Clear cart</button>
+      </div>
+      <div class="summary-card">
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--dark);margin-bottom:18px">Order Summary</h3>
+        <div class="summary-row"><span style="color:var(--muted)">Subtotal</span><span>₹${subtotal}</span></div>
+        <div class="summary-row"><span style="color:var(--muted)">Shipping</span><span>${shipping === 0 ? '<span style="color:var(--t)">FREE</span>' : '₹' + shipping}</span></div>
+        ${shipping > 0 ? `<div style="font-size:.75rem;color:var(--muted);margin-bottom:8px">Add ₹${999-subtotal} more for free shipping</div>` : ''}
+        <div class="summary-total"><span>Total</span><span style="color:var(--td)">₹${total}</span></div>
+        <a href="checkout.html" class="btn btn--primary btn--full" style="margin-top:18px">Proceed to Checkout →</a>
+        <a href="products.html" class="btn btn--outline btn--full" style="margin-top:10px">Continue Shopping</a>
+      </div>
+    </div>`;
   }
 
+  function changeQty(id, d) {
+    const items = Cart.get();
+    const i = items.findIndex(x => x.id === id);
+    if (i > -1) {
+      items[i].qty = Math.max(1, items[i].qty + d);
+      Cart.save(items);
+    }
+    renderCart();
+  }
+  function setQty(id, val) {
+    Cart.updateQty(id, parseInt(val) || 1);
+    renderCart();
+  }
+  function removeItem(id) {
+    Cart.remove(id);
+    renderCart();
+  }
   renderCart();
 </script>
 </body>

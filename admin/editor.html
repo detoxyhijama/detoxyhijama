@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Site Editor | Detoxy Hijama Admin</title>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link rel="stylesheet" href="../assets/style.css"/>
+  <style>
+    body{background:#f0f4f3}
+    .admin-wrap{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+    .admin-sidebar{background:var(--dark);padding:24px 16px;position:fixed;width:240px;height:100vh;overflow-y:auto;z-index:100}
+    .admin-main{margin-left:240px;padding:28px}
+    .sidebar-brand{display:flex;align-items:center;gap:10px;padding:0 8px 20px;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .sidebar-brand-text{font-family:'Cormorant Garamond',serif;font-size:1rem;color:#fff;font-weight:700}
+    .sidebar-label{font-size:.65rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.12em;font-weight:700;padding:14px 12px 6px}
+    .sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:rgba(255,255,255,.65);font-size:.83rem;font-weight:500;transition:all .2s;margin-bottom:2px;text-decoration:none}
+    .sidebar-link:hover,.sidebar-link.active{background:rgba(42,171,151,.15);color:var(--tl)}
+    .editor-card{background:#fff;border-radius:16px;padding:28px;border:1px solid var(--border);margin-bottom:20px}
+    .editor-card h2{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:var(--dark);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+    .edit-section{border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px;transition:border-color .2s}
+    .edit-section:hover{border-color:var(--t)}
+    .edit-label{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+    @media(max-width:900px){.admin-wrap{grid-template-columns:1fr}.admin-sidebar{display:none}.admin-main{margin-left:0}}
+  </style>
+</head>
+<body>
+<div class="admin-wrap">
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <svg width="28" height="28" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="18" fill="#2aab97"/><path d="M18 8c0 0-7 4.5-7 10.5 0 3.87 3.13 7 7 7s7-3.13 7-7C25 12.5 18 8 18 8z" fill="white" opacity=".9"/></svg>
+      <div class="sidebar-brand-text">Detoxy Admin</div>
+    </div>
+    <div class="sidebar-label">Main</div>
+    <a href="index.html" class="sidebar-link"><span>📊</span>Dashboard</a>
+    <a href="orders.html" class="sidebar-link"><span>📦</span>Orders</a>
+    <div class="sidebar-label">Content</div>
+    <a href="products.html" class="sidebar-link"><span>🛒</span>Products</a>
+    <a href="blogs.html" class="sidebar-link"><span>📝</span>Blogs</a>
+    <a href="editor.html" class="sidebar-link active"><span>✏️</span>Site Editor</a>
+    <div class="sidebar-label">Settings</div>
+    <a href="settings.html" class="sidebar-link"><span>⚙️</span>Settings</a>
+    <a href="sheets-setup.html" class="sidebar-link"><span>📋</span>Sheets Setup</a>
+    <div style="position:absolute;bottom:24px;left:16px;right:16px">
+      <a href="../index.html" class="sidebar-link"><span>🌐</span>View Website</a>
+      <button onclick="sessionStorage.removeItem('detoxy_admin');window.location.href='login.html'" class="sidebar-link" style="width:100%;background:none;border:none;cursor:pointer;text-align:left"><span>🚪</span>Logout</button>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div style="margin-bottom:24px">
+      <h1 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;color:var(--dark)">Site Editor</h1>
+      <p style="font-size:.83rem;color:var(--muted)">Edit homepage content, contact info, announcements and footer text. Changes are saved to localStorage.</p>
+    </div>
+    <div id="saveAlert"></div>
+
+    <div class="editor-card">
+      <h2>📢 Announcement Bar</h2>
+      <div class="edit-section">
+        <div class="edit-label">Announcement Text (shown site-wide)</div>
+        <input class="form-input" id="announcementText" placeholder="e.g. 🎉 Free Shipping on orders above ₹999 | Use code HIJAMA10 for 10% off"/>
+        <div style="margin-top:8px;display:flex;gap:10px;align-items:center">
+          <label style="font-size:.82rem;display:flex;gap:6px;align-items:center">
+            <input type="checkbox" id="announcementEnabled"> Show announcement bar
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="editor-card">
+      <h2>🏠 Homepage Hero Section</h2>
+      <div class="edit-section">
+        <div class="edit-label">Hero Tagline (shown above main heading)</div>
+        <input class="form-input" id="heroTag" placeholder="🏭 Manufacturer Direct · No Middlemen"/>
+      </div>
+      <div class="edit-section">
+        <div class="edit-label">Hero Main Heading Line 1</div>
+        <input class="form-input" id="heroH1" placeholder="Premium Hijama"/>
+      </div>
+      <div class="edit-section">
+        <div class="edit-label">Hero Main Heading Line 2</div>
+        <input class="form-input" id="heroH2" placeholder="Equipment at"/>
+      </div>
+      <div class="edit-section">
+        <div class="edit-label">Hero Highlighted Word</div>
+        <input class="form-input" id="heroHighlight" placeholder="Factory Prices"/>
+      </div>
+      <div class="edit-section">
+        <div class="edit-label">Hero Subtitle / Description</div>
+        <textarea class="form-textarea" id="heroDesc" rows="3" placeholder="India's most trusted manufacturer..."></textarea>
+      </div>
+      <div class="edit-section">
+        <div class="edit-label">Hero Stats (format: label|value, one per line)</div>
+        <textarea class="form-textarea" id="heroStats" rows="3" placeholder="Products|15+&#10;Clinics Served|5000+&#10;Delivery|Pan India"></textarea>
+      </div>
+    </div>
+
+    <div class="editor-card">
+      <h2>📞 Contact Details</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="edit-section">
+          <div class="edit-label">Phone / WhatsApp</div>
+          <input class="form-input" id="ePhone" placeholder="+91 95665 96077"/>
+        </div>
+        <div class="edit-section">
+          <div class="edit-label">Email Address</div>
+          <input class="form-input" id="eEmail" placeholder="detoxyhijama@gmail.com"/>
+        </div>
+        <div class="edit-section" style="grid-column:1/-1">
+          <div class="edit-label">Address / Location</div>
+          <input class="form-input" id="eAddress" placeholder="DETOXY HIJAMA, Madurai, Tamil Nadu, India"/>
+        </div>
+        <div class="edit-section">
+          <div class="edit-label">Business Hours</div>
+          <input class="form-input" id="eHours" placeholder="Mon – Sat: 9 AM – 6 PM IST"/>
+        </div>
+        <div class="edit-section">
+          <div class="edit-label">GST Number</div>
+          <input class="form-input" id="eGST" placeholder="GST number"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="editor-card">
+      <h2>🔗 Social Media Links</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="edit-section">
+          <div class="edit-label">Instagram URL</div>
+          <input class="form-input" id="sInsta" placeholder="https://instagram.com/detoxyhijama_"/>
+        </div>
+        <div class="edit-section">
+          <div class="edit-label">Facebook URL</div>
+          <input class="form-input" id="sFB" placeholder="https://facebook.com/detoxyhijama"/>
+        </div>
+        <div class="edit-section">
+          <div class="edit-label">YouTube URL</div>
+          <input class="form-input" id="sYT" placeholder="https://youtube.com/@detoxyhijama"/>
+        </div>
+        <div class="edit-section">
+          <div class="edit-label">Telegram URL</div>
+          <input class="form-input" id="sTG" placeholder="https://t.me/detoxyhijama"/>
+        </div>
+        <div class="edit-section">
+          <div class="edit-label">LinkedIn URL</div>
+          <input class="form-input" id="sLI" placeholder="https://linkedin.com/company/detoxy-hijama"/>
+        </div>
+        <div class="edit-section">
+          <div class="edit-label">WhatsApp Number</div>
+          <input class="form-input" id="sWA" placeholder="https://wa.me/919566596077"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="editor-card">
+      <h2>🦶 Footer Text</h2>
+      <div class="edit-section">
+        <div class="edit-label">Footer Description (below logo)</div>
+        <textarea class="form-textarea" id="footerDesc" rows="2" placeholder="India's trusted manufacturer of premium Hijama equipment..."></textarea>
+      </div>
+      <div class="edit-section">
+        <div class="edit-label">Copyright Text</div>
+        <input class="form-input" id="footerCopy" placeholder="© 2025 Detoxy Hijama. All rights reserved."/>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:8px">
+      <button class="btn btn--outline" onclick="loadDefaults()">↺ Reset to Defaults</button>
+      <button class="btn btn--primary" onclick="saveEdits()">💾 Save All Changes</button>
+    </div>
+  </main>
+</div>
+
+<script src="../config.js"></script>
+<script src="../shared.js"></script>
+<script>
+if (sessionStorage.getItem('detoxy_admin') !== 'true') window.location.href = 'login.html';
+
+const cfg = window.DETOXY_CONFIG || {};
+
+function loadDefaults() {
+  document.getElementById('announcementText').value = localStorage.getItem('site_announcement') || '🚚 Free Shipping on orders above ₹999 | Call +91 95665 96077 for bulk quotes';
+  document.getElementById('announcementEnabled').checked = localStorage.getItem('site_announcement_on') === 'true';
+  document.getElementById('heroTag').value = localStorage.getItem('site_heroTag') || '🏭 Manufacturer Direct · No Middlemen';
+  document.getElementById('heroH1').value = localStorage.getItem('site_heroH1') || 'Premium Hijama';
+  document.getElementById('heroH2').value = localStorage.getItem('site_heroH2') || 'Equipment at';
+  document.getElementById('heroHighlight').value = localStorage.getItem('site_heroHL') || 'Factory Prices';
+  document.getElementById('heroDesc').value = localStorage.getItem('site_heroDesc') || 'India\'s most trusted manufacturer of clinical-grade hijama cups, cupping kits, and practice consumables. Bulk orders welcome — save up to 40% versus distributor pricing.';
+  document.getElementById('heroStats').value = localStorage.getItem('site_heroStats') || 'Products|15+\nClinics Served|5000+\nDelivery|Pan India';
+  document.getElementById('ePhone').value = localStorage.getItem('site_phone') || cfg.phone || '+91 95665 96077';
+  document.getElementById('eEmail').value = localStorage.getItem('site_email') || cfg.email || 'detoxyhijama@gmail.com';
+  document.getElementById('eAddress').value = localStorage.getItem('site_address') || cfg.address || 'DETOXY HIJAMA, Madurai, Tamil Nadu, India';
+  document.getElementById('eHours').value = localStorage.getItem('site_hours') || 'Mon – Sat: 9 AM – 6 PM IST';
+  document.getElementById('eGST').value = localStorage.getItem('site_gst') || cfg.gst || '';
+  const s = cfg.social || {};
+  document.getElementById('sInsta').value = localStorage.getItem('site_sInsta') || s.instagram || '';
+  document.getElementById('sFB').value = localStorage.getItem('site_sFB') || s.facebook || '';
+  document.getElementById('sYT').value = localStorage.getItem('site_sYT') || s.youtube || '';
+  document.getElementById('sTG').value = localStorage.getItem('site_sTG') || s.telegram || '';
+  document.getElementById('sLI').value = localStorage.getItem('site_sLI') || s.linkedin || '';
+  document.getElementById('sWA').value = localStorage.getItem('site_sWA') || s.whatsapp || '';
+  document.getElementById('footerDesc').value = localStorage.getItem('site_footerDesc') || 'India\'s trusted manufacturer of premium Hijama equipment. Direct factory prices. Pan India delivery from Coimbatore.';
+  document.getElementById('footerCopy').value = localStorage.getItem('site_footerCopy') || '© 2025 Detoxy Hijama. All rights reserved. Made in India 🇮🇳';
+}
+
+function saveEdits() {
+  const fields = {
+    site_announcement: 'announcementText', site_heroTag: 'heroTag',
+    site_heroH1: 'heroH1', site_heroH2: 'heroH2', site_heroHL: 'heroHighlight',
+    site_heroDesc: 'heroDesc', site_heroStats: 'heroStats',
+    site_phone: 'ePhone', site_email: 'eEmail', site_address: 'eAddress',
+    site_hours: 'eHours', site_gst: 'eGST',
+    site_sInsta: 'sInsta', site_sFB: 'sFB', site_sYT: 'sYT',
+    site_sTG: 'sTG', site_sLI: 'sLI', site_sWA: 'sWA',
+    site_footerDesc: 'footerDesc', site_footerCopy: 'footerCopy'
+  };
+  for (const [key, id] of Object.entries(fields)) {
+    const el = document.getElementById(id);
+    if (el) localStorage.setItem(key, el.value);
+  }
+  localStorage.setItem('site_announcement_on', document.getElementById('announcementEnabled').checked);
+  document.getElementById('saveAlert').innerHTML = '<div class="alert alert--success">✅ Changes saved! They will appear on your website immediately.</div>';
+  setTimeout(() => document.getElementById('saveAlert').innerHTML = '', 3000);
+}
+
+loadDefaults();
+</script>
+</body>
+</html>

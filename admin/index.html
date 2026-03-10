@@ -1,250 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Detoxy Hijama — Admin Panel</title>
-<meta name="robots" content="noindex,nofollow"/>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet"/>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--t:#2aab97;--td:#1d8a78;--tl:#3ecab5;--tp:#e8f8f5;--cream:#f4f9f8;--dark:#0b1f1c;--mid:#174840;--text:#2a4a45;--muted:#6b9990;--border:#ddecea;--red:#e53935;--green:#16a34a;--blue:#0369a1;--orange:#d97706;--sb:220px}
-body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-h1,h2,h3{font-family:'Cormorant Garamond',serif}
-a{text-decoration:none;color:inherit}
-#loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,var(--dark),var(--mid));display:flex;align-items:center;justify-content:center;z-index:9999}
-.lbox{background:#fff;border-radius:24px;padding:44px;width:420px;max-width:94vw;box-shadow:0 24px 80px rgba(0,0,0,.3)}
-.lfield{margin-bottom:14px}
-.lfield label{display:block;font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px}
-.lfield input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:.92rem;font-family:'Outfit',sans-serif;outline:none;transition:border-color .2s}
-.lfield input:focus{border-color:var(--t)}
-.lbtn{width:100%;background:var(--t);color:#fff;border:none;padding:13px;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;margin-top:6px;transition:background .2s}
-.lbtn:hover{background:var(--td)}
-.lerr{color:var(--red);font-size:.82rem;text-align:center;margin-top:10px;display:none}
-#app{display:none;height:100vh;overflow:hidden}
-.sb{position:fixed;left:0;top:0;bottom:0;width:var(--sb);background:var(--dark);display:flex;flex-direction:column;z-index:100}
-.sb-top{display:flex;align-items:center;gap:10px;padding:18px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
-.sb-top img{width:38px;height:38px;border-radius:50%;object-fit:cover}
-.sb-brand{font-family:'Cormorant Garamond',serif;font-size:.98rem;font-weight:700;color:#fff;display:block;line-height:1.1}
-.sb-sub{font-size:.58rem;color:var(--tl);text-transform:uppercase;letter-spacing:.1em;font-weight:600}
-.sb-nav{padding:10px 0;flex:1;overflow-y:auto}
-.sb-gl{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.25);font-weight:600;padding:10px 16px 5px}
-.sb-btn{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;cursor:pointer;color:rgba(255,255,255,.5);font-size:.83rem;font-weight:500;transition:all .2s;margin:1px 8px;background:none;border:none;width:calc(100% - 16px);text-align:left;font-family:'Outfit',sans-serif}
-.sb-btn:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
-.sb-btn.active{background:rgba(42,171,151,.2);color:var(--tl);font-weight:600}
-.sb-btn .ico{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.88rem;flex-shrink:0}
-.sb-btn.active .ico{background:rgba(42,171,151,.22)}
-.pill{margin-left:auto;background:var(--red);color:#fff;font-size:.58rem;padding:2px 7px;border-radius:50px;font-weight:700;display:none}
-.sb-foot{padding:14px 16px;border-top:1px solid rgba(255,255,255,.07)}
-.logout-btn{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.35);font-size:.8rem;cursor:pointer;background:none;border:none;font-family:'Outfit',sans-serif;padding:7px 10px;border-radius:8px;width:100%;transition:all .2s}
-.logout-btn:hover{color:var(--red);background:rgba(229,57,53,.08)}
-.main-area{margin-left:var(--sb);height:100vh;overflow-y:auto;display:flex;flex-direction:column}
-.topbar{background:#fff;border-bottom:1px solid var(--border);padding:13px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:10px}
-.topbar-ttl{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--dark)}
-.content{padding:24px 28px;flex:1}
-.stat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
-.sc{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;cursor:pointer;transition:all .2s}
-.sc:hover{box-shadow:0 4px 16px rgba(42,171,151,.12);transform:translateY(-2px)}
-.sc-ico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:10px}
-.ic-g{background:#dcfce7}.ic-b{background:#dbeafe}.ic-o{background:#fef3c7}.ic-r{background:#fee2e2}.ic-t{background:var(--tp)}
-.sc-val{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:700;color:var(--dark);line-height:1}
-.sc-lbl{font-size:.72rem;color:var(--muted);margin-top:3px}
-.tcard{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:20px}
-.tcard-hd{padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);gap:10px;flex-wrap:wrap}
-.tcard-ttl{font-weight:700;color:var(--dark);font-size:.93rem}
-table{width:100%;border-collapse:collapse}
-th{background:var(--cream);padding:9px 14px;font-size:.71rem;font-weight:600;color:var(--muted);text-align:left;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
-td{padding:11px 14px;font-size:.83rem;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:#fafffe}
-.bx{display:inline-flex;align-items:center;padding:3px 10px;border-radius:50px;font-size:.67rem;font-weight:600;white-space:nowrap}
-.bx.g{background:#dcfce7;color:var(--green)}.bx.r{background:#fee2e2;color:var(--red)}.bx.o{background:#fef3c7;color:var(--orange)}.bx.b{background:#dbeafe;color:var(--blue)}.bx.t{background:var(--tp);color:var(--td)}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;font-size:.82rem;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;transition:all .2s}
-.btn.pri{background:var(--t);color:#fff}.btn.pri:hover{background:var(--td)}
-.btn.sec{background:var(--tp);color:var(--td)}.btn.sec:hover{background:var(--t);color:#fff}
-.btn.red{background:#fee2e2;color:var(--red)}.btn.red:hover{background:var(--red);color:#fff}
-.btn.sm{padding:5px 11px;font-size:.74rem}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.frow{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
-.sinput{flex:1;min-width:200px;padding:9px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:.86rem;font-family:'Outfit',sans-serif;outline:none}
-.sinput:focus{border-color:var(--t)}
-.fsel{padding:9px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:.84rem;font-family:'Outfit',sans-serif;background:#fff;outline:none}
-.moverlay{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
-.moverlay.open{display:flex}
-.mdal{background:#fff;border-radius:20px;padding:32px;width:560px;max-width:100%;max-height:90vh;overflow-y:auto}
-.mdal h2{font-size:1.35rem;color:var(--dark);margin-bottom:20px}
-.fg{margin-bottom:14px}
-.fg label{display:block;font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:5px}
-.fg input,.fg select,.fg textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.88rem;font-family:'Outfit',sans-serif;color:var(--text);background:#fff;outline:none}
-.fg input:focus,.fg select:focus{border-color:var(--t)}
-.loading{display:flex;align-items:center;justify-content:center;padding:60px;gap:14px;color:var(--muted);font-size:.9rem}
-.spin{width:30px;height:30px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--t);animation:spin .7s linear infinite;flex-shrink:0}
-@keyframes spin{to{transform:rotate(360deg)}}
-.empty{text-align:center;padding:48px;color:var(--muted)}
-.empty-ico{font-size:2.5rem;display:block;margin-bottom:8px}
-.err-box{background:#fee2e2;color:var(--red);border:1px solid #fca5a5;border-radius:12px;padding:16px 20px;margin-bottom:20px;font-size:.86rem;line-height:1.6}
-.toast{position:fixed;bottom:24px;right:24px;background:var(--dark);color:#fff;padding:12px 20px;border-radius:12px;font-size:.86rem;font-weight:500;z-index:9999;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;max-width:320px}
-.toast.show{opacity:1;transform:translateY(0)}
-@media(max-width:900px){.stat-grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:768px){:root{--sb:0px}.sb{transform:translateX(-220px);transition:transform .3s;width:220px}.sb.open{transform:translateX(0)}.main-area{margin-left:0}.content{padding:14px 16px}.stat-grid{grid-template-columns:1fr 1fr}#mmbtn{display:block!important}}
-</style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard | Detoxy Hijama</title>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link rel="stylesheet" href="../assets/style.css"/>
+  <style>
+    body{background:#f0f4f3}
+    .admin-wrap{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+    .admin-sidebar{background:var(--dark);padding:24px 16px;position:fixed;width:240px;height:100vh;overflow-y:auto;z-index:100}
+    .admin-main{margin-left:240px;padding:28px;min-height:100vh}
+    .sidebar-brand{display:flex;align-items:center;gap:10px;padding:0 8px 20px;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .sidebar-brand-text{font-family:'Cormorant Garamond',serif;font-size:1rem;color:#fff;font-weight:700}
+    .sidebar-label{font-size:.65rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.12em;font-weight:700;padding:14px 12px 6px}
+    .sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:rgba(255,255,255,.65);font-size:.83rem;font-weight:500;transition:all .2s;margin-bottom:2px;text-decoration:none}
+    .sidebar-link:hover,.sidebar-link.active{background:rgba(42,171,151,.15);color:var(--tl)}
+    .sidebar-link .icon{width:20px;text-align:center;flex-shrink:0}
+    .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+    .stat-card{background:#fff;border-radius:16px;padding:20px;border:1px solid var(--border)}
+    .stat-val{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--dark);line-height:1}
+    .stat-lbl{font-size:.75rem;color:var(--muted);margin-top:4px}
+    .stat-icon{width:40px;height:40px;border-radius:12px;background:var(--tp);display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:10px}
+    .admin-card{background:#fff;border-radius:16px;padding:24px;border:1px solid var(--border);margin-bottom:20px}
+    .admin-card h2{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:var(--dark);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+    .order-row{display:grid;grid-template-columns:120px 1fr 80px 100px 80px;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:.83rem}
+    .order-row:last-child{border-bottom:none}
+    .status-badge{padding:3px 10px;border-radius:50px;font-size:.68rem;font-weight:700}
+    .status-new{background:#d1fae5;color:#065f46}
+    .status-processing{background:#fef3c7;color:#92400e}
+    .status-shipped{background:var(--tp);color:var(--td)}
+    @media(max-width:900px){.admin-wrap{grid-template-columns:1fr}.admin-sidebar{display:none}.admin-main{margin-left:0}.stat-grid{grid-template-columns:repeat(2,1fr)}}
+  </style>
 </head>
 <body>
-<div id="loginScreen">
-  <div class="lbox">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
-      <img src="../assets/logo.jpg" style="width:52px;height:52px;border-radius:50%;object-fit:cover" onerror="this.src='../assets/logo.png'" alt="Detoxy"/>
-      <div><h2 style="font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--dark)">Admin Panel</h2><p style="font-size:.82rem;color:var(--muted)">Detoxy Hijama Cups</p></div>
+<div class="admin-wrap">
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand">
+      <svg width="28" height="28" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="18" fill="#2aab97"/><path d="M18 8c0 0-7 4.5-7 10.5 0 3.87 3.13 7 7 7s7-3.13 7-7C25 12.5 18 8 18 8z" fill="white" opacity="0.9"/></svg>
+      <div class="sidebar-brand-text">Detoxy Admin</div>
     </div>
-    <div class="lfield"><label>Password</label><input id="lPass" type="password" placeholder="Enter admin password"/></div>
-    <button class="lbtn" onclick="doLogin()">Sign In →</button>
-    <div class="lerr" id="lErr">Incorrect password.</div>
-  </div>
-</div>
-<div id="app">
-  <aside class="sb" id="sb">
-    <div class="sb-top">
-      <img src="../assets/logo.jpg" alt="logo" onerror="this.src='../assets/logo.png'"/>
-      <div><span class="sb-brand">Detoxy Hijama</span><span class="sb-sub">Admin Panel</span></div>
-    </div>
-    <nav class="sb-nav">
-      <div class="sb-gl">Dashboard</div>
-      <button class="sb-btn active" onclick="nav('dashboard',this)"><span class="ico">📊</span>Overview</button>
-      <div class="sb-gl">Orders</div>
-      <button class="sb-btn" onclick="nav('all',this)"><span class="ico">📋</span>All Orders <span class="pill" id="pillAll">0</span></button>
-      <button class="sb-btn" onclick="nav('pending',this)"><span class="ico">🕐</span>Pending <span class="pill" id="pillPending">0</span></button>
-      <button class="sb-btn" onclick="nav('processing',this)"><span class="ico">⚙️</span>Processing</button>
-      <button class="sb-btn" onclick="nav('dispatched',this)"><span class="ico">🚚</span>Dispatched</button>
-      <button class="sb-btn" onclick="nav('delivered',this)"><span class="ico">✅</span>Delivered</button>
-      <div class="sb-gl">Tools</div>
-      <button class="sb-btn" onclick="window.open('../shipper/index.html','_blank')"><span class="ico">🚚</span>Shipper Panel ↗</button>
-    </nav>
-    <div class="sb-foot">
-      <div style="font-size:.7rem;color:rgba(255,255,255,.2);padding:0 10px 8px">Synced: <span id="syncTime">—</span></div>
-      <button class="logout-btn" onclick="logout()">🚪 Sign Out</button>
+    <div class="sidebar-label">Main</div>
+    <a href="index.html" class="sidebar-link active"><span class="icon">📊</span>Dashboard</a>
+    <a href="orders.html" class="sidebar-link"><span class="icon">📦</span>Orders</a>
+    <div class="sidebar-label">Content</div>
+    <a href="products.html" class="sidebar-link"><span class="icon">🛒</span>Products</a>
+    <a href="blogs.html" class="sidebar-link"><span class="icon">📝</span>Blogs</a>
+    <a href="editor.html" class="sidebar-link"><span class="icon">✏️</span>Site Editor</a>
+    <div class="sidebar-label">Settings</div>
+    <a href="settings.html" class="sidebar-link"><span class="icon">⚙️</span>Settings</a>
+    <a href="sheets-setup.html" class="sidebar-link"><span class="icon">📋</span>Sheets Setup</a>
+    <div style="position:absolute;bottom:24px;left:16px;right:16px">
+      <a href="../index.html" class="sidebar-link"><span class="icon">🌐</span>View Website</a>
+      <button onclick="sessionStorage.removeItem('detoxy_admin');window.location.href='login.html'" class="sidebar-link" style="width:100%;background:none;border:none;cursor:pointer;text-align:left"><span class="icon">🚪</span>Logout</button>
     </div>
   </aside>
-  <main class="main-area">
-    <div class="topbar">
-      <div style="display:flex;align-items:center;gap:12px">
-        <button id="mmbtn" style="display:none;background:none;border:none;font-size:1.3rem;cursor:pointer" onclick="document.getElementById('sb').classList.toggle('open')">☰</button>
-        <div class="topbar-ttl" id="pgTitle">Overview</div>
+
+  <main class="admin-main">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+      <div>
+        <h1 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;color:var(--dark)">Dashboard</h1>
+        <p style="font-size:.83rem;color:var(--muted)" id="dashDate"></p>
       </div>
-      <button class="btn sec sm" onclick="refresh()">🔄 Refresh</button>
+      <a href="orders.html" class="btn btn--primary" style="font-size:.82rem">View Orders →</a>
     </div>
-    <div class="content" id="pgContent"><div class="loading"><div class="spin"></div> Loading…</div></div>
+
+    <div class="stat-grid" id="statsGrid"></div>
+
+    <div class="admin-card">
+      <h2>Recent Orders</h2>
+      <div id="recentOrders"></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div class="admin-card">
+        <h2>Quick Actions</h2>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <a href="products.html" class="btn btn--outline btn--full">+ Add New Product</a>
+          <a href="blogs.html" class="btn btn--outline btn--full">+ Write New Blog</a>
+          <a href="orders.html" class="btn btn--outline btn--full">📦 Manage Orders</a>
+          <a href="editor.html" class="btn btn--outline btn--full">✏️ Edit Website Content</a>
+          <a href="sheets-setup.html" class="btn btn--outline btn--full">📋 Setup Google Sheets</a>
+        </div>
+      </div>
+      <div class="admin-card">
+        <h2>Google Sheets Sync Status</h2>
+        <div id="sheetStatus"></div>
+      </div>
+    </div>
   </main>
 </div>
-<div class="moverlay" id="moverlay" onclick="if(event.target===this)closeModal()"><div class="mdal" id="modalBody"></div></div>
-<div class="toast" id="toast"></div>
+<script src="../config.js"></script>
+<script src="../shared.js"></script>
 <script>
-const API='https://script.google.com/macros/s/AKfycbzbfUn4idCR-xItPwdQUXINhdv_0CzxffJnEitYA-qr2VG8zwBbo7K8bhcVV6EXQSFa/exec';
-const PASS='detoxy2025';
-let ORDERS=[],CUR='dashboard';
-function doLogin(){if(document.getElementById('lPass').value===PASS){sessionStorage.setItem('dh_admin','1');document.getElementById('loginScreen').style.display='none';document.getElementById('app').style.display='flex';fetchOrders().then(()=>renderDashboard());}else document.getElementById('lErr').style.display='block';}
-function logout(){sessionStorage.removeItem('dh_admin');location.reload();}
-document.addEventListener('DOMContentLoaded',()=>{if(sessionStorage.getItem('dh_admin')){document.getElementById('loginScreen').style.display='none';document.getElementById('app').style.display='flex';fetchOrders().then(()=>renderDashboard());}document.getElementById('lPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});});
-// Use text/plain to avoid CORS preflight — Apps Script ignores OPTIONS requests
-async function callAPI(action,data={}){
-  const r=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,...data})});
-  const txt=await r.text();
-  try{return JSON.parse(txt);}catch(e){console.warn('Non-JSON from Apps Script:',txt.slice(0,300));return{success:false,raw:txt.slice(0,300)};}
-}
-async function fetchOrders(){
-  setHTML('<div class="loading"><div class="spin"></div> Fetching from Google Sheet…</div>');
-  try{
-    const res=await callAPI('getOrders');
-    // Handle all response shapes Apps Script might return
-    if(Array.isArray(res)) ORDERS=res;
-    else if(res.orders&&Array.isArray(res.orders)) ORDERS=res.orders;
-    else if(res.data&&Array.isArray(res.data)) ORDERS=res.data;
-    else if(res.success===false){
-      ORDERS=[];
-      const hint=res.raw?`<pre style="font-size:.72rem;opacity:.6;white-space:pre-wrap;margin-top:8px">${res.raw}</pre>`:'';
-      setHTML('<div class="err-box">⚠️ <strong>Apps Script returned an error.</strong><br>Check that:<br>• Script is deployed as <em>"Anyone"</em> (not "Anyone with Google account")<br>• Deployment type is <em>"Web App"</em><br>• doPost() function exists in script'+hint+'</div>');
-      return;
-    } else ORDERS=[];
-    document.getElementById('syncTime').textContent=new Date().toLocaleTimeString('en-IN');
-    updatePills();
-  }catch(err){
-    ORDERS=[];
-    setHTML('<div class="err-box">⚠️ <strong>Could not connect to Google Sheet.</strong><br>'+
-      'Possible causes:<br>• Apps Script URL is incorrect or expired<br>• Script not deployed as "Anyone" access<br>• Network/CORS issue<br>'+
-      '<small style="opacity:.7;display:block;margin-top:6px">Error: '+err.message+'</small>'+
-      '<button onclick="fetchOrders()" style="margin-top:12px;padding:8px 16px;background:var(--t);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.82rem">Retry</button>'+
-      '</div>');
-  }
-}
-async function refresh(){await fetchOrders();nav(CUR,null);showToast('Refreshed ✓');}
-function updatePills(){const p=ORDERS.filter(o=>norm(o.status)==='pending').length,a=ORDERS.length;const pp=document.getElementById('pillPending'),pa=document.getElementById('pillAll');pp.textContent=p;pp.style.display=p>0?'flex':'none';pa.textContent=a;pa.style.display=a>0?'flex':'none';}
-function norm(s){return(s||'pending').toLowerCase().replace(/[\s_-]+/g,'_');}
-function fmtD(d){if(!d)return'—';try{return new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'2-digit',hour:'2-digit',minute:'2-digit'});}catch(e){return d;}}
-function fmtM(n){return'₹'+(+n||0).toLocaleString('en-IN');}
-function gv(o,...k){for(const key of k){const v=o[key];if(v!==undefined&&v!==null&&v!=='')return v;}return'—';}
-function setHTML(h){document.getElementById('pgContent').innerHTML=h;}
-function openModal(h){document.getElementById('modalBody').innerHTML=h;document.getElementById('moverlay').classList.add('open');}
-function closeModal(){document.getElementById('moverlay').classList.remove('open');}
-function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200);}
-function oid(o){return gv(o,'orderNumber','orderId','order_id','id');}
-function oname(o){const f=gv(o,'firstName','customerFirstName'),l=o.lastName||o.customerLastName||'';return(f+' '+l).trim()||gv(o,'customerName','name');}
-function ophone(o){return gv(o,'phone','customerPhone','mobile');}
-function ocity(o){return gv(o,'city','shippingCity','customerCity');}
-function oitems(o){return Array.isArray(o.items)?o.items.map(i=>(i.name||i.productId||i.id)+' ×'+(i.qty||1)).join(', '):(o.itemsSummary||o.items_summary||'—');}
-function ototal(o){return+(gv(o,'total','orderTotal','amount')||0)||0;}
-function opay(o){return gv(o,'payment','paymentMethod','paymentType');}
-function odate(o){return gv(o,'createdAt','timestamp','date','orderDate');}
-const SC={pending:'o',processing:'b',dispatched:'b',in_transit:'b',out_for_delivery:'b',delivered:'g',cancelled:'r',returned:'r',failed:'r'};
-function badge(s){const k=norm(s);return'<span class="bx '+(SC[k]||'t')+'">'+(s||'Pending')+'</span>';}
-function nav(pg,btn){CUR=pg;document.querySelectorAll('.sb-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');const T={dashboard:'Overview',all:'All Orders',pending:'Pending',processing:'Processing',dispatched:'Dispatched',delivered:'Delivered'};document.getElementById('pgTitle').textContent=T[pg]||pg;const A={dashboard:renderDashboard,all:()=>renderOrders([]),pending:()=>renderOrders(['pending']),processing:()=>renderOrders(['processing']),dispatched:()=>renderOrders(['dispatched','in_transit','out_for_delivery']),delivered:()=>renderOrders(['delivered'])};if(A[pg])A[pg]();}
-function renderDashboard(){
-  const rev=ORDERS.reduce((s,o)=>s+ototal(o),0);
-  const pending=ORDERS.filter(o=>norm(o.status)==='pending');
-  const inprog=ORDERS.filter(o=>['processing','dispatched','in_transit','out_for_delivery'].includes(norm(o.status)));
-  const done=ORDERS.filter(o=>norm(o.status)==='delivered');
-  const today=ORDERS.filter(o=>{try{return new Date(odate(o)).toDateString()===new Date().toDateString();}catch(e){return false;}});
-  setHTML(`<div class="stat-grid"><div class="sc" onclick="nav('all',null)"><div class="sc-ico ic-t">📦</div><div class="sc-val">${ORDERS.length}</div><div class="sc-lbl">Total Orders</div></div><div class="sc" onclick="nav('pending',null)"><div class="sc-ico ic-o">🕐</div><div class="sc-val">${pending.length}</div><div class="sc-lbl">Pending</div></div><div class="sc" onclick="nav('dispatched',null)"><div class="sc-ico ic-b">🚚</div><div class="sc-val">${inprog.length}</div><div class="sc-lbl">In Progress</div></div><div class="sc" onclick="nav('delivered',null)"><div class="sc-ico ic-g">✅</div><div class="sc-val">${done.length}</div><div class="sc-lbl">Delivered</div></div><div class="sc"><div class="sc-ico ic-g">💰</div><div class="sc-val" style="font-size:1.5rem">${fmtM(rev)}</div><div class="sc-lbl">Total Revenue</div></div></div>${pending.length?`<div class="tcard"><div class="tcard-hd"><span class="tcard-ttl">🔴 Pending — Action Required (${pending.length})</span><button class="btn sec sm" onclick="nav('pending',null)">View All →</button></div><div style="overflow-x:auto">${buildTable(pending.slice(0,8),'ptbl')}</div></div>`:'<div class="tcard"><div class="empty"><span class="empty-ico">✅</span>All caught up!</div></div>'}<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px"><div class="tcard"><div class="tcard-hd"><span class="tcard-ttl">📅 Today (${today.length})</span></div><div style="overflow-x:auto"><table><thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Status</th></tr></thead><tbody>${today.length?today.slice(0,6).map(o=>'<tr><td><strong style="color:var(--t);font-size:.8rem">'+oid(o)+'</strong></td><td style="font-size:.84rem">'+oname(o)+'</td><td style="font-weight:600;color:var(--td)">'+fmtM(ototal(o))+'</td><td>'+badge(o.status)+'</td></tr>').join(''):'<tr><td colspan="4" class="empty" style="padding:20px">No orders today</td></tr>'}</tbody></table></div></div><div class="tcard"><div class="tcard-hd"><span class="tcard-ttl">🚚 In Progress (${inprog.length})</span><button class="btn sec sm" onclick="nav(\'dispatched\',null)">View →</button></div><div style="overflow-x:auto"><table><thead><tr><th>Order</th><th>Customer</th><th>Tracking</th><th>Status</th></tr></thead><tbody>${inprog.length?inprog.slice(0,6).map(o=>'<tr><td><strong style="color:var(--t);font-size:.8rem">'+oid(o)+'</strong></td><td style="font-size:.84rem">'+oname(o)+'</td><td style="font-size:.78rem;color:var(--muted)">'+gv(o,'trackingNumber','tracking_no','awb')+'</td><td>'+badge(o.status)+'</td></tr>').join(''):'<tr><td colspan="4" class="empty" style="padding:20px">None in transit</td></tr>'}</tbody></table></div></div></div>`);
-}
-function renderOrders(statuses){
-  const list=statuses.length?ORDERS.filter(o=>statuses.includes(norm(o.status))):ORDERS;
-  const cur=statuses.length===1?statuses[0]:(statuses.length>1?'dispatched':'');
-  setHTML(`<div class="frow"><input class="sinput" placeholder="Search order, name, phone…" oninput="filterTbl(this,'otbl')"/><select class="fsel" onchange="nav(this.value||'all',null)"><option value="">All</option><option value="pending" ${cur==='pending'?'selected':''}>Pending</option><option value="processing" ${cur==='processing'?'selected':''}>Processing</option><option value="dispatched" ${cur==='dispatched'?'selected':''}>Dispatched</option><option value="delivered" ${cur==='delivered'?'selected':''}>Delivered</option></select><button class="btn sec" onclick="refresh()">🔄 Refresh</button><span style="font-size:.82rem;color:var(--muted);align-self:center">${list.length} orders</span></div><div class="tcard"><div style="overflow-x:auto">${list.length?buildTable(list,'otbl'):'<div class="empty"><span class="empty-ico">📭</span>No orders in this category</div>'}</div></div>`);
-}
-function filterTbl(inp,tid){const q=inp.value.toLowerCase();document.querySelectorAll('#'+tid+' tbody tr').forEach(r=>{r.style.display=(!q||(r.dataset.s||'').includes(q))?'':'none';});}
-function buildTable(list,tid){
-  return'<table id="'+tid+'"><thead><tr><th>Order ID</th><th>Customer</th><th>City</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>'+
-  list.map(o=>{const id=oid(o),name=oname(o),phone=ophone(o),city=ocity(o),itms=oitems(o),pay=opay(o),s=(id+' '+name+' '+phone+' '+city).toLowerCase();
-  return'<tr data-s="'+s+'"><td><strong style="color:var(--t);font-size:.8rem">'+id+'</strong></td><td><div style="font-weight:600;font-size:.85rem">'+name+'</div><div style="font-size:.74rem;color:var(--muted)">'+phone+'</div></td><td style="font-size:.81rem">'+city+'</td><td style="font-size:.74rem;color:var(--muted);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+itms+'">'+itms+'</td><td style="font-weight:600;color:var(--td)">'+fmtM(ototal(o))+'</td><td><span class="bx '+(pay.toLowerCase()==='cod'?'o':'b')+'">'+pay.toUpperCase()+'</span></td><td>'+badge(o.status)+'</td><td style="font-size:.77rem;color:var(--muted)">'+fmtD(odate(o))+'</td><td><div style="display:flex;gap:4px"><button class="btn sm pri" onclick="viewOrder(\''+id+'\')">View</button><button class="btn sm sec" onclick="statusModal(\''+id+'\',\''+encodeURIComponent(o.status||'Pending')+'\')">Status</button></div></td></tr>';
-  }).join('')+'</tbody></table>';
-}
-function viewOrder(id){
-  const o=ORDERS.find(x=>oid(x)===id);if(!o)return;
-  const phone=ophone(o),email=gv(o,'email','customerEmail'),tracking=gv(o,'trackingNumber','tracking_no','awb'),carrier=gv(o,'carrier','courierName');
-  const addr=[gv(o,'address1','shippingAddress1'),gv(o,'address2','shippingAddress2'),ocity(o),gv(o,'pincode','shippingPincode'),gv(o,'state','shippingState')].filter(x=>x&&x!=='—').join(', ');
-  const items=Array.isArray(o.items)?o.items:[];
-  openModal(`<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;gap:12px;flex-wrap:wrap"><h2 style="margin:0">Order ${id}</h2><div style="display:flex;gap:8px;align-items:center">${badge(o.status)}<button class="btn sm red" onclick="closeModal()">✕</button></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px"><div style="background:var(--cream);border-radius:12px;padding:14px"><div style="font-size:.68rem;font-weight:600;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Customer</div><div style="font-weight:700;margin-bottom:4px">${oname(o)}</div><div style="font-size:.83rem;color:var(--muted)">${phone}</div><div style="font-size:.82rem;color:var(--muted)">${email}</div></div><div style="background:var(--cream);border-radius:12px;padding:14px"><div style="font-size:.68rem;font-weight:600;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Delivery Address</div><div style="font-size:.83rem;line-height:1.65">${addr||'Not provided'}</div></div></div>${items.length?`<div style="background:var(--cream);border-radius:12px;padding:14px;margin-bottom:14px"><div style="font-size:.68rem;font-weight:600;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Items</div>${items.map(i=>'<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:.84rem"><span>'+(i.name||i.productId||i.id)+' <span style="color:var(--muted)">×'+(i.qty||1)+'</span></span><span style="font-weight:600">'+fmtM((i.price||0)*(i.qty||1))+'</span></div>').join('')}<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:.84rem;color:var(--muted)"><span>Subtotal</span><span>${fmtM(o.subtotal)}</span></div><div style="display:flex;justify-content:space-between;padding:4px 0;font-size:.84rem;color:var(--muted)"><span>Shipping</span><span>${fmtM(o.shippingCost||0)}</span></div>${+(o.codFee||0)>0?'<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:.84rem;color:var(--orange)"><span>COD Fee</span><span>'+fmtM(o.codFee)+'</span></div>':''}<div style="display:flex;justify-content:space-between;padding:8px 0;font-size:.95rem;font-weight:700;border-top:2px solid var(--border)"><span>Total</span><span style="color:var(--td)">${fmtM(ototal(o))}</span></div></div>`:''}<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px"><div style="background:var(--cream);border-radius:10px;padding:12px"><div style="font-size:.68rem;color:var(--muted);margin-bottom:3px">Payment</div><div style="font-weight:600">${opay(o).toUpperCase()}</div></div><div style="background:var(--cream);border-radius:10px;padding:12px"><div style="font-size:.68rem;color:var(--muted);margin-bottom:3px">Order Date</div><div style="font-weight:600;font-size:.84rem">${fmtD(odate(o))}</div></div>${tracking!=='—'?'<div style="background:var(--tp);border-radius:10px;padding:12px"><div style="font-size:.68rem;color:var(--muted);margin-bottom:3px">Carrier</div><div style="font-weight:600">'+carrier+'</div></div><div style="background:var(--tp);border-radius:10px;padding:12px"><div style="font-size:.68rem;color:var(--muted);margin-bottom:3px">Tracking</div><div style="font-weight:600;font-size:.84rem">'+tracking+'</div></div>':''}</div>${o.notes&&o.notes!=='—'?'<div style="background:#fef3c7;border-radius:10px;padding:12px;margin-bottom:14px;font-size:.84rem"><strong>Notes:</strong> '+o.notes+'</div>':''}${o.shipperNotes?'<div style="background:var(--tp);border-radius:10px;padding:12px;margin-bottom:14px;font-size:.84rem"><strong>Shipper Note:</strong> '+o.shipperNotes+'</div>':''}<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn pri" onclick="closeModal();statusModal('${id}','${encodeURIComponent(o.status||'Pending')}')">Update Status</button><a href="tel:${phone}" class="btn sec">📞 Call</a><button class="btn sec" onclick="closeModal()">Close</button></div>`);
-}
-function statusModal(id,curEnc){
-  const cur=decodeURIComponent(curEnc);
-  openModal(`<h2>Update Status</h2><div style="background:var(--tp);border-radius:10px;padding:12px;margin-bottom:16px;font-size:.85rem;color:var(--td)">Order: <strong>${id}</strong> — Current: <strong>${cur}</strong></div><div class="fg"><label>New Status *</label><select id="nst" onchange="document.getElementById('trackBlock').style.display=this.value==='Dispatched'?'':'none'"><option value="Pending" ${cur==='Pending'?'selected':''}>Pending</option><option value="Processing" ${cur==='Processing'?'selected':''}>Processing</option><option value="Dispatched" ${cur==='Dispatched'?'selected':''}>Dispatched</option><option value="Delivered" ${cur==='Delivered'?'selected':''}>Delivered</option><option value="Cancelled" ${cur==='Cancelled'?'selected':''}>Cancelled</option><option value="Returned" ${cur==='Returned'?'selected':''}>Returned</option></select></div><div id="trackBlock" style="display:none"><div class="fg"><label>Carrier</label><select id="tcar"><option value="">— Choose —</option><option>DTDC</option><option>Delhivery</option><option>BlueDart</option><option>Ekart Logistics</option><option>India Post</option><option>Shadowfax</option><option>Ecom Express</option><option>XpressBees</option></select></div><div class="fg"><label>AWB / Tracking Number</label><input id="tnum" placeholder="Enter tracking number"/></div></div><div class="fg"><label>Admin Note (optional)</label><input id="anote" placeholder="Internal note…"/></div><div style="display:flex;gap:10px"><button class="btn pri" id="saveBtn" onclick="saveStatus('${id}')">✓ Save</button><button class="btn sec" onclick="closeModal()">Cancel</button></div>`);
-}
-async function saveStatus(id){
-  const status=document.getElementById('nst').value;
-  const carrier=document.getElementById('tcar')?.value||'';
-  const tracking=document.getElementById('tnum')?.value||'';
-  const note=document.getElementById('anote').value;
-  const btn=document.getElementById('saveBtn');
-  btn.disabled=true;btn.textContent='Saving…';
-  const updates={status,updatedAt:new Date().toISOString()};
-  if(carrier)updates.carrier=carrier;
-  if(tracking)updates.trackingNumber=tracking;
-  if(note)updates.adminNote=note;
-  try{
-    await callAPI('updateOrder',{id,updates});
-    const idx=ORDERS.findIndex(o=>oid(o)===id);
-    if(idx!==-1)Object.assign(ORDERS[idx],updates);
-    updatePills();closeModal();showToast('✓ '+id+' → '+status);nav(CUR,null);
-  }catch(err){closeModal();showToast('⚠ Sent — verify in sheet');nav(CUR,null);}
-}
+  // Auth check
+  if (sessionStorage.getItem('detoxy_admin') !== 'true') window.location.href = 'login.html';
+  document.getElementById('dashDate').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  const orders = OrderSync.getLocalOrders();
+  const products = (window.DETOXY_CONFIG || {}).products || [];
+
+  // Stats
+  const totalRevenue = orders.filter(o=>o.type!=='QUOTE_REQUEST').reduce((s,o)=>s+(parseFloat(o.subtotal)||0),0);
+  const newOrders = orders.filter(o=>o.status==='New'||o.type==='QUOTE_REQUEST').length;
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-val">${orders.length}</div><div class="stat-lbl">Total Orders (Local)</div></div>
+    <div class="stat-card"><div class="stat-icon">🔔</div><div class="stat-val">${newOrders}</div><div class="stat-lbl">New / Pending</div></div>
+    <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-val">₹${totalRevenue.toLocaleString()}</div><div class="stat-lbl">Revenue (Local Orders)</div></div>
+    <div class="stat-card"><div class="stat-icon">🛒</div><div class="stat-val">${products.length}</div><div class="stat-lbl">Products Listed</div></div>`;
+
+  // Recent orders
+  const recent = orders.slice(-10).reverse();
+  document.getElementById('recentOrders').innerHTML = recent.length ? `
+    <div class="order-row" style="font-weight:700;font-size:.72rem;color:var(--muted);text-transform:uppercase;border-bottom:2px solid var(--border)">
+      <span>Order ID</span><span>Customer</span><span>Total</span><span>Payment</span><span>Status</span>
+    </div>
+    ${recent.map(o => `
+    <div class="order-row">
+      <span style="font-family:monospace;font-size:.75rem">${o.id||'—'}</span>
+      <div><div style="font-weight:600">${o.name||o.company||'—'}</div><div style="font-size:.72rem;color:var(--muted)">${o.phone||''}</div></div>
+      <span style="font-weight:700;color:var(--td)">₹${o.subtotal||o.total||0}</span>
+      <span style="font-size:.75rem">${o.payment||o.type||'—'}</span>
+      <span class="status-badge ${o.type==='QUOTE_REQUEST'?'status-processing':(o.status==='New'?'status-new':'status-shipped')}">${o.type==='QUOTE_REQUEST'?'Quote':o.status||'New'}</span>
+    </div>`).join('')}` : '<div style="text-align:center;padding:32px;color:var(--muted)">No orders yet. They will appear here once customers place orders.</div>';
+
+  // Sheets status
+  const cfg = window.DETOXY_CONFIG || {};
+  const isConfigured = cfg.googleSheetsURL && !cfg.googleSheetsURL.includes('YOUR_SCRIPT_ID');
+  document.getElementById('sheetStatus').innerHTML = isConfigured
+    ? `<div class="alert alert--success">✅ Google Sheets URL is configured. Orders will sync automatically.</div><a href="sheets-setup.html" class="btn btn--outline" style="font-size:.8rem">Manage Setup</a>`
+    : `<div class="alert alert--error">⚠️ Google Sheets URL not configured. Orders are being saved locally only.</div><a href="sheets-setup.html" class="btn btn--primary" style="font-size:.8rem;margin-top:10px;display:inline-flex">Configure Now →</a>`;
 </script>
 </body>
 </html>
