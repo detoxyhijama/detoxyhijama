@@ -145,9 +145,15 @@
   function insertTag(tag) {
     const sel = window.getSelection();
     if (sel.rangeCount) {
-      const el = document.createElement(tag);
-      el.textContent = sel.toString() || 'Your text here';
-      sel.getRangeAt(0).surroundContents(el);
+      try {
+        const el = document.createElement(tag);
+        el.textContent = sel.toString() || 'Your text here';
+        sel.getRangeAt(0).surroundContents(el);
+      } catch(e) {
+        // surroundContents fails on multi-element selections; fall back to insertHTML
+        document.execCommand('insertHTML', false, `<${tag}>${sel.toString() || 'Your text here'}</${tag}>`);
+      }
+      document.getElementById('bContent').focus();
     }
   }
   function insertLink() {
@@ -207,7 +213,8 @@
     const title = document.getElementById('bTitle').value.trim();
     if (!title) { alert('Title is required.'); return; }
     const content = document.getElementById('bContent').innerHTML;
-    if (!content.trim() || content === '<br>') { alert('Content is required.'); return; }
+    const contentText = document.getElementById('bContent').innerText || document.getElementById('bContent').textContent || '';
+    if (!contentText.trim()) { alert('Content is required.'); return; }
     const b = {
       title, status,
       slug: document.getElementById('bSlug').value || slugify(title),
