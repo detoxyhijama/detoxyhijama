@@ -12,7 +12,7 @@
     /* GALLERY */
     .product-gallery {}
     .main-image-wrap {
-      aspect-ratio: 1; background: var(--cream); border-radius: var(--radius);
+      aspect-ratio: 1; background: var(--cream); border-radius: 18px;
       overflow: hidden; position: relative; border: 1px solid var(--border);
       display: flex; align-items: center; justify-content: center;
     }
@@ -20,18 +20,18 @@
     .badge-overlay { position: absolute; top: 16px; left: 16px; display: flex; flex-direction: column; gap: 8px; }
     /* INFO */
     .product-info {}
-    .product-category { font-size: .75rem; font-weight: 600; color: var(--teal-dark); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px; }
+    .product-category { font-size: .75rem; font-weight: 600; color: var(--td); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px; }
     .product-title { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 700; line-height: 1.2; color: var(--dark); margin-bottom: 14px; }
     .product-rating { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
     .rating-num { font-weight: 600; font-size: .9rem; color: var(--text); }
-    .rating-link { font-size: .83rem; color: var(--teal-dark); }
+    .rating-link { font-size: .83rem; color: var(--td); }
     /* PRICE BOX */
     .price-box {
-      background: var(--dark); border-radius: var(--radius); padding: 24px;
+      background: var(--dark); border-radius: 18px; padding: 24px;
       margin-bottom: 24px;
     }
     .price-row { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; }
-    .price-main { font-family: 'Cormorant Garamond', serif; font-size: 2.6rem; font-weight: 700; color: var(--teal); }
+    .price-main { font-family: 'Cormorant Garamond', serif; font-size: 2.6rem; font-weight: 700; color: var(--t); }
     .price-per { font-size: .85rem; color: rgba(255,255,255,.5); }
     .price-mrp-line { font-size: .88rem; color: rgba(255,255,255,.4); }
     .price-mrp-line s { color: rgba(255,255,255,.35); }
@@ -47,17 +47,17 @@
     .qty-btn:hover { background: var(--cream); }
     .qty-input { width: 56px; height: 42px; border: none; border-left: 1.5px solid var(--border); border-right: 1.5px solid var(--border); text-align: center; font-size: .95rem; font-weight: 600; color: var(--dark); outline: none; background: #fff; }
     .btn-cart { flex: 1; }
-    .btn-buy { background: var(--teal-dark); color: #fff; }
+    .btn-buy { background: var(--td); color: #fff; }
     .btn-buy:hover { background: var(--mid); }
     /* FEATURES */
     .feature-list { list-style: none; margin: 20px 0; display: flex; flex-direction: column; gap: 10px; }
     .feature-item { display: flex; align-items: center; gap: 10px; font-size: .9rem; color: var(--text); }
-    .feature-check { width: 20px; height: 20px; border-radius: 50%; background: rgba(45,212,191,.12); color: var(--teal-dark); display: flex; align-items: center; justify-content: center; font-size: .7rem; font-weight: 700; flex-shrink: 0; }
+    .feature-check { width: 20px; height: 20px; border-radius: 50%; background: rgba(45,212,191,.12); color: var(--td); display: flex; align-items: center; justify-content: center; font-size: .7rem; font-weight: 700; flex-shrink: 0; }
     /* TABS */
     .tabs { margin-top: 56px; }
     .tab-nav { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 0; }
     .tab-btn { padding: 14px 24px; font-size: .88rem; font-weight: 600; color: var(--muted); transition: var(--transition); border-bottom: 2px solid transparent; margin-bottom: -2px; cursor: pointer; }
-    .tab-btn.active { color: var(--teal-dark); border-bottom-color: var(--teal-dark); }
+    .tab-btn.active { color: var(--td); border-bottom-color: var(--td); }
     .tab-pane { display: none; padding: 28px 0; }
     .tab-pane.active { display: block; }
     .spec-table { width: 100%; border-collapse: collapse; }
@@ -213,7 +213,7 @@
     <!-- RELATED -->
     
     <div style="margin-top:64px">
-      <h2 class="section-title" style="margin-bottom:0">You May Also Like</h2>
+      <h2 class="sec-h2" style="margin-bottom:0">You May Also Like</h2>
       <div class="related-grid">
     <a href="silicone-facial-7.html" class="related-card">
       <div class="related-img-wrap">

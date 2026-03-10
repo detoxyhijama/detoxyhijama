@@ -16,8 +16,8 @@
       padding: 14px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
       cursor: pointer; transition: var(--transition);
     }
-    .payment-option:has(input:checked), .payment-option.selected { border-color: var(--teal-dark); background: rgba(45,212,191,.04); }
-    .payment-option input[type=radio] { width: 18px; height: 18px; accent-color: var(--teal-dark); }
+    .payment-option:has(input:checked), .payment-option.selected { border-color: var(--td); background: rgba(45,212,191,.04); }
+    .payment-option input[type=radio] { width: 18px; height: 18px; accent-color: var(--td); }
     .payment-icon { font-size: 1.4rem; }
     .payment-label { font-size: .9rem; font-weight: 500; }
     .payment-sub { font-size: .78rem; color: var(--muted); }
@@ -47,7 +47,7 @@
         <span class="breadcrumb-sep">›</span>
         <span>Confirmation</span>
       </nav>
-      <h1 class="section-title section-title--white" style="font-size:2rem;margin-top:8px">Checkout</h1>
+      <h1 style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:#fff;margin-top:8px">Checkout</h1>
     </div>
   </div>
 
@@ -208,6 +208,13 @@
   document.getElementById('header-mount').innerHTML = getNavHTML('');
   document.getElementById('footer-mount').innerHTML = getFooterHTML();
 
+  // Handle ?buy=productId — add item to cart first
+  const urlP = new URLSearchParams(location.search);
+  const buyId = urlP.get('buy');
+  if (buyId) {
+    Cart.add(buyId, 1);
+  }
+
   const items = Cart.get();
   if (items.length === 0) {
     document.getElementById('emptyMsg').style.display = 'block';
@@ -239,7 +246,7 @@
     `).join('');
 
     document.getElementById('sumSubtotal').textContent = '₹' + subtotal.toLocaleString('en-IN');
-    document.getElementById('sumShipping').innerHTML = shipping === 0 ? '<span style="color:var(--green)">FREE</span>' : '₹' + shipping;
+    document.getElementById('sumShipping').innerHTML = shipping === 0 ? '<span style="color:#10b981">FREE</span>' : '₹' + shipping;
     document.getElementById('sumTotal').textContent = '₹' + total.toLocaleString('en-IN');
     document.getElementById('orderTotalBtn').textContent = '₹' + total.toLocaleString('en-IN');
     document.getElementById('codRow').style.display = cod > 0 ? 'flex' : 'none';
@@ -305,7 +312,7 @@
       items,
       payment: document.querySelector('input[name=payment]:checked')?.value || 'upi',
       notes: document.getElementById('notes').value.trim(),
-      subtotal, shipping, codFee: cod, total,
+      subtotal, shippingCost: shipping, codFee: cod, total,
       createdAt: new Date().toISOString(),
       status: 'Pending',
     };

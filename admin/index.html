@@ -23,7 +23,7 @@
       cursor: pointer; transition: var(--transition); border-left: 3px solid transparent;
     }
     .admin-nav-item:hover { color: #fff; background: rgba(255,255,255,.05); }
-    .admin-nav-item.active { color: var(--teal); border-left-color: var(--teal); background: rgba(45,212,191,.05); }
+    .admin-nav-item.active { color: var(--t); border-left-color: var(--t); background: rgba(42,171,151,.05); }
     .admin-main { padding: 28px; }
     .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
     .admin-title { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 700; color: var(--dark); }
@@ -249,7 +249,7 @@
   function renderOrders(orders) {
     document.getElementById('noOrdersMsg').classList.toggle('hidden', orders.length > 0);
     document.getElementById('ordersCount').textContent = orders.length + ' orders';
-    document.getElementById('ordersBody').innerHTML = orders.map(o => `
+    document.getElementById('ordersBody').innerHTML = orders.map((o) => `
       <tr>
         <td style="font-weight:600;font-family:'Cormorant Garamond',serif">${o.orderNumber || '—'}</td>
         <td>
@@ -261,7 +261,7 @@
         <td style="font-family:'Cormorant Garamond',serif;font-weight:700">₹${parseFloat(o.total || 0).toLocaleString('en-IN')}</td>
         <td style="font-size:.8rem;text-transform:capitalize">${o.payment || '—'}</td>
         <td><span class="status-badge status-${o.status || 'Pending'}">${o.status || 'Pending'}</span></td>
-        <td><button class="btn-view" onclick='viewOrder(${JSON.stringify(JSON.stringify(o))})'>View</button></td>
+        <td><button class="btn-view" onclick='viewOrder(${allOrders.indexOf(o)})'>View</button></td>
       </tr>
     `).join('') || '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--muted)">No orders found</td></tr>';
   }
@@ -276,8 +276,10 @@
     renderOrders(filtered);
   }
 
-  function viewOrder(jsonStr) {
-    const o = JSON.parse(jsonStr);
+  let _viewingOrder = null;
+  function viewOrder(idx) {
+    const o = allOrders[idx] || {};
+    _viewingOrder = o;
     document.getElementById('modalOrderNum').textContent = o.orderNumber || '—';
     document.getElementById('orderModal').classList.remove('hidden');
     document.getElementById('modalBody').innerHTML = `
@@ -330,7 +332,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'updateOrder', id: orderNum, updates: { status } })
       });
-      const o = allOrders.find(x => x.orderNumber === orderNum);
+      const o = allOrders.find(x => (x.orderNumber || x.id) === orderNum);
       if (o) o.status = status;
       closeModal();
       renderOrders(allOrders);
@@ -346,9 +348,9 @@
         <td style="font-weight:500">${p.name}</td>
         <td style="font-size:.82rem;text-transform:capitalize">${p.category}</td>
         <td style="font-family:'Cormorant Garamond',serif;font-weight:700">₹${p.price} <span style="font-size:.75rem;font-family:'DM Sans';font-weight:400;color:var(--muted)">${p.unit}</span></td>
-        <td style="font-family:'Cormorant Garamond',serif;font-weight:700;color:var(--teal-dark)">₹${p.bulkPrice}</td>
+        <td style="font-family:'Cormorant Garamond',serif;font-weight:700;color:var(--td)">₹${p.bulkPrice}</td>
         <td>⭐ ${p.rating} (${p.reviews})</td>
-        <td><span style="color:var(--green);font-weight:600">${p.inStock?'✓ In Stock':'✗ Out'}</span></td>
+        <td><span style="color:#10b981;font-weight:600">${p.inStock?'✓ In Stock':'✗ Out'}</span></td>
       </tr>
     `).join('');
   }

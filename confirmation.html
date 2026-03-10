@@ -7,12 +7,12 @@
   <link rel="stylesheet" href="assets/style.css"/>
   <style>
     .confirm-wrap { max-width: 680px; margin: 0 auto; padding: 60px 24px 80px; }
-    .confirm-icon { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--teal-dark), var(--teal)); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 2.2rem; box-shadow: 0 12px 40px rgba(45,212,191,.3); }
+    .confirm-icon { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--td), var(--tl)); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 2.2rem; box-shadow: 0 12px 40px rgba(45,212,191,.3); }
     .confirm-title { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 700; text-align: center; margin-bottom: 10px; }
     .confirm-sub { text-align: center; color: var(--muted); font-size: .95rem; margin-bottom: 36px; }
     .order-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 24px; }
     .order-card-header { background: var(--dark); color: #fff; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; }
-    .order-number { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: var(--teal); }
+    .order-number { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: var(--tl); }
     .order-status { background: rgba(16,185,129,.2); color: #6ee7b7; font-size: .75rem; font-weight: 700; padding: 4px 12px; border-radius: 12px; text-transform: uppercase; letter-spacing: .06em; }
     .order-card-body { padding: 24px; }
     .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
@@ -33,7 +33,7 @@
     .track-step::after { content: ''; position: absolute; top: 16px; left: 50%; right: -50%; height: 2px; background: var(--border); z-index: 0; }
     .track-step:last-child::after { display: none; }
     .track-dot { width: 32px; height: 32px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: .8rem; position: relative; z-index: 1; }
-    .track-step.done .track-dot { background: var(--teal); color: var(--dark); }
+    .track-step.done .track-dot { background: var(--tl); color: var(--dark); }
     .track-step.active .track-dot { background: var(--dark); color: #fff; box-shadow: 0 0 0 4px rgba(45,212,191,.2); }
     .track-label { font-size: .72rem; color: var(--muted); font-weight: 500; }
     .track-step.done .track-label, .track-step.active .track-label { color: var(--dark); font-weight: 600; }
@@ -128,7 +128,7 @@
     const codLine = order.codFee > 0 ? `<div class="totals-row"><span style="color:var(--muted)">COD Fee</span><span>₹${order.codFee}</span></div>` : '';
     document.getElementById('orderTotals').innerHTML = `
       <div class="totals-row"><span style="color:var(--muted)">Subtotal</span><span>₹${order.subtotal?.toLocaleString('en-IN')}</span></div>
-      <div class="totals-row"><span style="color:var(--muted)">Shipping</span><span>${order.shipping === 0 ? 'FREE' : '₹' + order.shipping}</span></div>
+      <div class="totals-row"><span style="color:var(--muted)">Shipping</span><span>${order.shippingCost === 0 ? 'FREE' : '₹' + order.shippingCost}</span></div>
       ${codLine}
       <div class="totals-row grand"><span>Total Paid</span><span style="font-family:'Cormorant Garamond',serif;font-size:1.3rem">₹${order.total?.toLocaleString('en-IN')}</span></div>
     `;

@@ -342,9 +342,9 @@ const Cart = {
   total() { return this.subtotal() + this.shipping(); },
   updateBadge() {
     document.querySelectorAll('.cart-count').forEach(b => {
-      const c = this.count();
-      b.textContent = c;
-      b.style.display = c > 0 ? 'flex' : 'none';
+      const cnt = this.count();
+      b.textContent = cnt;
+      b.style.display = cnt > 0 ? 'flex' : 'none';
     });
   },
   toast(msg) {
@@ -352,7 +352,7 @@ const Cart = {
     if (!t) {
       t = document.createElement('div');
       t.id = 'dh-toast';
-      t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#0f1a18;color:#fff;padding:14px 20px;border-radius:12px;font-size:.85rem;z-index:99999;box-shadow:0 8px 32px rgba(0,0,0,.4);opacity:0;transform:translateY(8px);transition:all .3s;font-family:DM Sans,sans-serif;border-left:3px solid #2dd4bf;max-width:300px;pointer-events:none;';
+      t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#0b1f1c;color:#fff;padding:13px 20px;border-radius:12px;font-size:.84rem;z-index:99999;box-shadow:0 8px 32px rgba(0,0,0,.35);opacity:0;transform:translateY(8px);transition:all .3s;font-family:Outfit,sans-serif;border-left:3px solid #2aab97;max-width:300px;pointer-events:none;';
       document.body.appendChild(t);
     }
     t.innerHTML = `<span style="margin-right:8px">✓</span>${msg}`;
