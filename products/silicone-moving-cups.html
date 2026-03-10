@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Detoxy Hijama Silicone Moving Cup Set of 4 | ₹700</title>
-  <meta name="description" content="Buy silicone moving cup set of 4 at ₹700. Soft cups for gliding massage and lymphatic drainage. No pump needed, 4 sizes included. Pan India delivery."/>
-  <meta name="keywords" content="silicone moving cup set India, gliding cupping cups, massage silicone cups buy online, soft silicone hijama cups, detoxy hijama silicone cups"/>
+  <title>Silicone Moving Cups | Sliding Cupping Therapy Set — Detoxy Hijama</title>
+  <meta name="description" content="Soft silicone moving/sliding cups for massage cupping therapy. Ideal for back, thigh and shoulder massage cupping. Easy glide design for smooth therapy."/>
+  <meta name="keywords" content="silicone moving cups India, sliding cupping cups, massage cupping set, glide cupping therapy, silicone sliding cups buy, moving cups hijama"/>
   <meta name="robots" content="index, follow"/>
   <meta property="og:type" content="product"/>
   <meta property="og:url" content="https://detoxyhijama.github.io/products/silicone-moving-cups.html"/>
@@ -238,8 +238,8 @@
 <script src="../config.js"></script>
 <script src="../shared.js"></script>
 <script>
-  document.getElementById('header-mount').innerHTML = getNavHTML('Products');
-  document.getElementById('footer-mount').innerHTML = getFooterHTML();
+  document.getElementById('header-mount').innerHTML = getNavHTML('Products','../');
+  document.getElementById('footer-mount').innerHTML = getFooterHTML('../');
 
   // Gallery
   const images = ["../assets/images/products/silicone-moving-cups/main.jpg"];
@@ -281,5 +281,38 @@
     document.querySelectorAll('.tab-pane').forEach(p => p.classList.toggle('active', p.id==='tab-'+id));
   }
 </script>
+
+<script>
+(function(){
+  // Scroll reveal
+  var els = document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale');
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    },{threshold:0.12});
+    els.forEach(function(el){ obs.observe(el); });
+  } else {
+    els.forEach(function(el){ el.classList.add('visible'); });
+  }
+  // Auto-add reveal to common elements if not already set
+  var autoReveal = document.querySelectorAll(
+    '.card:not(.reveal):not(.reveal-scale),' +
+    '.prod-card:not(.reveal):not(.reveal-scale),' +
+    '.why-card:not(.reveal):not(.reveal-scale),' +
+    '.cat-card:not(.reveal):not(.reveal-scale),' +
+    '.blog-card:not(.reveal):not(.reveal-scale),' +
+    '.set-card:not(.reveal):not(.reveal-scale),' +
+    '.admin-card:not(.reveal):not(.reveal-scale)'
+  );
+  autoReveal.forEach(function(el,i){
+    el.classList.add('reveal-scale');
+    el.style.transitionDelay = (i%5)*0.08 + 's';
+    obs && obs.observe(el);
+  });
+})();
+</script>
+
 </body>
 </html>

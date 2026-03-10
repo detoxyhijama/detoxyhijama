@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Detoxy Hijama Premium Transparent Cup | ₹12/cup</title>
-  <meta name="description" content="Buy premium transparent hijama cups at ₹12/cup. Ultra-clear clinic-grade, 6 sizes. Direct factory price, bulk discounts. Pan India delivery."/>
-  <meta name="keywords" content="premium transparent hijama cup, hijama cups buy online India, clinic grade hijama cups, bulk hijama cups price, detoxy hijama premium cups, cupping therapy cups"/>
+  <title>Premium Hijama Cups | Medical Grade Cupping Set — Detoxy Hijama</title>
+  <meta name="description" content="Premium hijama cupping cups crafted from medical-grade materials. Multi-size set for full-body hijama therapy. Trusted by clinics across India."/>
+  <meta name="keywords" content="premium cupping cups India, medical hijama cups, professional cupping set, multi-size hijama cups, best hijama cups buy, premium cupping therapy set India"/>
   <meta name="robots" content="index, follow"/>
   <meta property="og:type" content="product"/>
   <meta property="og:url" content="https://detoxyhijama.github.io/products/premium-cups.html"/>
@@ -238,8 +238,8 @@
 <script src="../config.js"></script>
 <script src="../shared.js"></script>
 <script>
-  document.getElementById('header-mount').innerHTML = getNavHTML('Products');
-  document.getElementById('footer-mount').innerHTML = getFooterHTML();
+  document.getElementById('header-mount').innerHTML = getNavHTML('Products','../');
+  document.getElementById('footer-mount').innerHTML = getFooterHTML('../');
 
   // Gallery
   const images = ["../assets/images/products/premium-cups/main.jpg", "../assets/images/products/premium-cups/image2.jpg", "../assets/images/products/premium-cups/image3.jpg", "../assets/images/products/premium-cups/image4.jpg", "../assets/images/products/premium-cups/image5.jpg", "../assets/images/products/premium-cups/image6.jpg"];
@@ -281,5 +281,38 @@
     document.querySelectorAll('.tab-pane').forEach(p => p.classList.toggle('active', p.id==='tab-'+id));
   }
 </script>
+
+<script>
+(function(){
+  // Scroll reveal
+  var els = document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale');
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    },{threshold:0.12});
+    els.forEach(function(el){ obs.observe(el); });
+  } else {
+    els.forEach(function(el){ el.classList.add('visible'); });
+  }
+  // Auto-add reveal to common elements if not already set
+  var autoReveal = document.querySelectorAll(
+    '.card:not(.reveal):not(.reveal-scale),' +
+    '.prod-card:not(.reveal):not(.reveal-scale),' +
+    '.why-card:not(.reveal):not(.reveal-scale),' +
+    '.cat-card:not(.reveal):not(.reveal-scale),' +
+    '.blog-card:not(.reveal):not(.reveal-scale),' +
+    '.set-card:not(.reveal):not(.reveal-scale),' +
+    '.admin-card:not(.reveal):not(.reveal-scale)'
+  );
+  autoReveal.forEach(function(el,i){
+    el.classList.add('reveal-scale');
+    el.style.transitionDelay = (i%5)*0.08 + 's';
+    obs && obs.observe(el);
+  });
+})();
+</script>
+
 </body>
 </html>

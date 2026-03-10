@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Detoxy Hijama Electric Smart Vacuum Cup | ₹750</title>
-  <meta name="description" content="Buy electric smart vacuum cup at ₹750. USB rechargeable, 5 suction levels, LCD display. No manual pumping needed. Pan India delivery."/>
-  <meta name="keywords" content="electric smart vacuum cup India, USB rechargeable cupping cup, automatic hijama cup, electric cupping therapy device, detoxy hijama electric cup"/>
+  <title>Electric Smart Cup | Automatic Hijama Cupping Machine — Detoxy Hijama</title>
+  <meta name="description" content="Buy Detoxy Hijama electric smart cup — automatic suction hijama cupping machine with adjustable pressure. Perfect for clinics and home use. Rechargeable, easy to clean."/>
+  <meta name="keywords" content="electric hijama cup India, automatic cupping machine, smart hijama cup buy, rechargeable cupping cup, electric suction cup hijama, electric cupping device price India, hijama electric pump"/>
   <meta name="robots" content="index, follow"/>
   <meta property="og:type" content="product"/>
   <meta property="og:url" content="https://detoxyhijama.github.io/products/electric-smart-cup.html"/>
@@ -238,8 +238,8 @@
 <script src="../config.js"></script>
 <script src="../shared.js"></script>
 <script>
-  document.getElementById('header-mount').innerHTML = getNavHTML('Products');
-  document.getElementById('footer-mount').innerHTML = getFooterHTML();
+  document.getElementById('header-mount').innerHTML = getNavHTML('Products','../');
+  document.getElementById('footer-mount').innerHTML = getFooterHTML('../');
 
   // Gallery
   const images = ["../assets/images/products/electric-smart-cup/main.jpg", "../assets/images/products/electric-smart-cup/image2.jpg", "../assets/images/products/electric-smart-cup/image3.jpg", "../assets/images/products/electric-smart-cup/image4.jpg", "../assets/images/products/electric-smart-cup/image5.jpg"];
@@ -281,5 +281,38 @@
     document.querySelectorAll('.tab-pane').forEach(p => p.classList.toggle('active', p.id==='tab-'+id));
   }
 </script>
+
+<script>
+(function(){
+  // Scroll reveal
+  var els = document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale');
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    },{threshold:0.12});
+    els.forEach(function(el){ obs.observe(el); });
+  } else {
+    els.forEach(function(el){ el.classList.add('visible'); });
+  }
+  // Auto-add reveal to common elements if not already set
+  var autoReveal = document.querySelectorAll(
+    '.card:not(.reveal):not(.reveal-scale),' +
+    '.prod-card:not(.reveal):not(.reveal-scale),' +
+    '.why-card:not(.reveal):not(.reveal-scale),' +
+    '.cat-card:not(.reveal):not(.reveal-scale),' +
+    '.blog-card:not(.reveal):not(.reveal-scale),' +
+    '.set-card:not(.reveal):not(.reveal-scale),' +
+    '.admin-card:not(.reveal):not(.reveal-scale)'
+  );
+  autoReveal.forEach(function(el,i){
+    el.classList.add('reveal-scale');
+    el.style.transitionDelay = (i%5)*0.08 + 's';
+    obs && obs.observe(el);
+  });
+})();
+</script>
+
 </body>
 </html>

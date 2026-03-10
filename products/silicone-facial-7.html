@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Detoxy Hijama Silicone Facial Cup Set of 7 | ₹600</title>
-  <meta name="description" content="Buy silicone facial cupping set of 7 at ₹600. Complete kit for face lifting, anti-aging and lymphatic drainage therapy. Food-grade silicone. Pan India delivery."/>
-  <meta name="keywords" content="silicone facial cupping set 7 India, facial cupping cups buy online, face lifting cups, anti-aging cupping set, detoxy hijama facial cups"/>
+  <title>7-Piece Silicone Facial Cupping Set | Complete Face Hijama Kit — Detoxy Hijama</title>
+  <meta name="description" content="Complete 7-piece silicone facial cupping kit with varied cup sizes for face, jaw, forehead and neck. Gentle suction for anti-aging and lymphatic therapy."/>
+  <meta name="keywords" content="silicone facial cups 7 piece, complete face cupping kit, facial hijama set India, 7 cup facial therapy set, buy silicone face cups India"/>
   <meta name="robots" content="index, follow"/>
   <meta property="og:type" content="product"/>
   <meta property="og:url" content="https://detoxyhijama.github.io/products/silicone-facial-7.html"/>
@@ -238,8 +238,8 @@
 <script src="../config.js"></script>
 <script src="../shared.js"></script>
 <script>
-  document.getElementById('header-mount').innerHTML = getNavHTML('Products');
-  document.getElementById('footer-mount').innerHTML = getFooterHTML();
+  document.getElementById('header-mount').innerHTML = getNavHTML('Products','../');
+  document.getElementById('footer-mount').innerHTML = getFooterHTML('../');
 
   // Gallery
   const images = ["../assets/images/products/silicone-facial-7/main.jpg"];
@@ -281,5 +281,38 @@
     document.querySelectorAll('.tab-pane').forEach(p => p.classList.toggle('active', p.id==='tab-'+id));
   }
 </script>
+
+<script>
+(function(){
+  // Scroll reveal
+  var els = document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale');
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    },{threshold:0.12});
+    els.forEach(function(el){ obs.observe(el); });
+  } else {
+    els.forEach(function(el){ el.classList.add('visible'); });
+  }
+  // Auto-add reveal to common elements if not already set
+  var autoReveal = document.querySelectorAll(
+    '.card:not(.reveal):not(.reveal-scale),' +
+    '.prod-card:not(.reveal):not(.reveal-scale),' +
+    '.why-card:not(.reveal):not(.reveal-scale),' +
+    '.cat-card:not(.reveal):not(.reveal-scale),' +
+    '.blog-card:not(.reveal):not(.reveal-scale),' +
+    '.set-card:not(.reveal):not(.reveal-scale),' +
+    '.admin-card:not(.reveal):not(.reveal-scale)'
+  );
+  autoReveal.forEach(function(el,i){
+    el.classList.add('reveal-scale');
+    el.style.transitionDelay = (i%5)*0.08 + 's';
+    obs && obs.observe(el);
+  });
+})();
+</script>
+
 </body>
 </html>

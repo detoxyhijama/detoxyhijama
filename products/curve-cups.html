@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Detoxy Hijama Curve Cup Size 3 & 4 | ₹12/cup</title>
-  <meta name="description" content="Buy ergonomic curved hijama cups at ₹12/cup. Designed for shoulders, knees and contoured body areas. Strong seal, clear PVC. Pan India delivery."/>
-  <meta name="keywords" content="curve hijama cup size 3 4, ergonomic hijama cups India, contoured cupping cups, bulk curve cups price, detoxy hijama curved cups"/>
+  <title>Curve Hijama Cups | Ergonomic Cupping Therapy Set — Detoxy Hijama</title>
+  <meta name="description" content="Specially curved ergonomic hijama cupping cups for contoured areas. Designed for shoulder, neck and knee hijama. Multi-size set for professional use."/>
+  <meta name="keywords" content="curve cupping cups India, ergonomic hijama cups, contoured cupping set, shoulder cupping cups, specialty hijama cups buy"/>
   <meta name="robots" content="index, follow"/>
   <meta property="og:type" content="product"/>
   <meta property="og:url" content="https://detoxyhijama.github.io/products/curve-cups.html"/>
@@ -238,8 +238,8 @@
 <script src="../config.js"></script>
 <script src="../shared.js"></script>
 <script>
-  document.getElementById('header-mount').innerHTML = getNavHTML('Products');
-  document.getElementById('footer-mount').innerHTML = getFooterHTML();
+  document.getElementById('header-mount').innerHTML = getNavHTML('Products','../');
+  document.getElementById('footer-mount').innerHTML = getFooterHTML('../');
 
   // Gallery
   const images = ["../assets/images/products/curve-cups/main.jpg"];
@@ -281,5 +281,38 @@
     document.querySelectorAll('.tab-pane').forEach(p => p.classList.toggle('active', p.id==='tab-'+id));
   }
 </script>
+
+<script>
+(function(){
+  // Scroll reveal
+  var els = document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale');
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    },{threshold:0.12});
+    els.forEach(function(el){ obs.observe(el); });
+  } else {
+    els.forEach(function(el){ el.classList.add('visible'); });
+  }
+  // Auto-add reveal to common elements if not already set
+  var autoReveal = document.querySelectorAll(
+    '.card:not(.reveal):not(.reveal-scale),' +
+    '.prod-card:not(.reveal):not(.reveal-scale),' +
+    '.why-card:not(.reveal):not(.reveal-scale),' +
+    '.cat-card:not(.reveal):not(.reveal-scale),' +
+    '.blog-card:not(.reveal):not(.reveal-scale),' +
+    '.set-card:not(.reveal):not(.reveal-scale),' +
+    '.admin-card:not(.reveal):not(.reveal-scale)'
+  );
+  autoReveal.forEach(function(el,i){
+    el.classList.add('reveal-scale');
+    el.style.transitionDelay = (i%5)*0.08 + 's';
+    obs && obs.observe(el);
+  });
+})();
+</script>
+
 </body>
 </html>

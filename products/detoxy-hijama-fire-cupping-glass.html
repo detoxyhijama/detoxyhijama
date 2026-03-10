@@ -3,13 +3,55 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Redirecting...</title>
+  <title>Fire Cupping Glass Set | Traditional Hijama Glass Cups — Detoxy Hijama</title>
   <link rel="canonical" href="https://detoxyhijama.github.io/products/fire-cupping-glass.html"/>
   <meta http-equiv="refresh" content="0; url=fire-cupping-glass.html"/>
   <meta name="robots" content="noindex"/>
+  <meta name="keywords" content="fire cupping glass India, glass hijama cups, traditional cupping set, borosilicate cupping glass, fire glass cups hijama, buy fire cupping India, cupping glass set price"/>
+  <meta property="og:type" content="product"/>
+  <meta property="og:title" content="Fire Cupping Glass | Detoxy Hijama"/>
+  <meta property="og:description" content="Traditional fire cupping glass sets for authentic hijama therapy. Heat-resistant borosilicate."/>
+  <meta property="og:image" content="https://detoxyhijama.github.io/assets/logo.png"/>
+  <meta property="og:url" content="https://detoxyhijama.github.io/products/detoxy-hijama-fire-cupping-glass.html"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Fire Cupping Glass | Detoxy Hijama"/>
+  <meta name="twitter:description" content="Traditional fire cupping glass sets for authentic hijama therapy. Heat-resistant borosilicate."/>
 </head>
 <body>
   <p>Redirecting... <a href="fire-cupping-glass.html">Click here if not redirected</a></p>
   <script>window.location.replace('fire-cupping-glass.html');</script>
+
+<script>
+(function(){
+  // Scroll reveal
+  var els = document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale');
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    },{threshold:0.12});
+    els.forEach(function(el){ obs.observe(el); });
+  } else {
+    els.forEach(function(el){ el.classList.add('visible'); });
+  }
+  // Auto-add reveal to common elements if not already set
+  var autoReveal = document.querySelectorAll(
+    '.card:not(.reveal):not(.reveal-scale),' +
+    '.prod-card:not(.reveal):not(.reveal-scale),' +
+    '.why-card:not(.reveal):not(.reveal-scale),' +
+    '.cat-card:not(.reveal):not(.reveal-scale),' +
+    '.blog-card:not(.reveal):not(.reveal-scale),' +
+    '.set-card:not(.reveal):not(.reveal-scale),' +
+    '.admin-card:not(.reveal):not(.reveal-scale)'
+  );
+  autoReveal.forEach(function(el,i){
+    el.classList.add('reveal-scale');
+    el.style.transitionDelay = (i%5)*0.08 + 's';
+    obs && obs.observe(el);
+  });
+})();
+</script>
+
 </body>
 </html>
