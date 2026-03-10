@@ -24,6 +24,7 @@
   <style>
     body{background:linear-gradient(135deg,#0d1f1b 0%,#1a3d35 100%);display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
     .login-card{background:#fff;border-radius:24px;padding:44px 40px;width:100%;max-width:420px;box-shadow:0 32px 80px rgba(0,0,0,.25)}
+    @media(max-width:420px){.login-card{padding:32px 22px;border-radius:18px}}
     .form-group{margin-bottom:14px}
     .form-label{display:block;font-size:.77rem;font-weight:600;color:#4a6660;margin-bottom:5px}
     .form-input{width:100%;padding:10px 14px;border:1.5px solid #d1ddd9;border-radius:10px;font-size:.88rem;color:#0d1f1b;font-family:"Outfit",sans-serif;transition:border-color .18s}
@@ -42,7 +43,7 @@
     <div id="loginAlert"></div>
     <div class="form-group">
       <label class="form-label">Admin Password</label>
-      <input type="password" class="form-input" id="adminPass" placeholder="Enter admin password" onkeypress="if(event.key==='Enter')doLogin()"/>
+      <input type="password" class="form-input" id="adminPass" placeholder="Enter admin password"/>
     </div>
     <button class="btn-primary" onclick="doLogin()">
       Sign In →
@@ -54,6 +55,12 @@
 <script src="../config.js"></script>
 <script>
   if (sessionStorage.getItem("detoxy_admin")==="true") window.location.href="index.html";
+
+  // Fix 5: keydown replaces deprecated onkeypress — fires reliably on all browsers/mobile
+  document.getElementById("adminPass").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") doLogin();
+  });
+
   function doLogin() {
     const pass = document.getElementById("adminPass").value;
     const correct = localStorage.getItem("detoxy_admin_pass") || (window.DETOXY_CONFIG||{}).adminPassword || "detoxy2025";
