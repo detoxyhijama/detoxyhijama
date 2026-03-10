@@ -228,45 +228,80 @@ window.Cart = {
 
 /* ─── GOOGLE SHEETS SYNC ─── */
 window.OrderSync = {
+  _queueKey: 'detoxy_sync_queue',
+
   async submit(orderData) {
     const cfg = window.DETOXY_CONFIG || {};
-    // Check localStorage override first (set via admin/sheets-setup.html), then config
     const url = localStorage.getItem('detoxy_sheets_url') || cfg.googleSheetsURL;
-    // Assign ID before saving so it's available to caller
-    if (!orderData.id) {
-      orderData.id = 'ORD-' + Date.now();
-      orderData.savedAt = new Date().toISOString();
-    }
+    if (!orderData.id) orderData.id = 'ORD-' + Date.now();
+    if (!orderData.savedAt) orderData.savedAt = new Date().toISOString();
+    if (!orderData.timestamp) orderData.timestamp = orderData.savedAt;
     this._saveLocal(orderData);
-    if (!url || url.includes('YOUR_SCRIPT_ID')) {
-      console.warn('Google Sheets URL not configured. Order saved locally only.');
+    if (!url || url.includes('YOUR_SCRIPT_ID') || !url.trim()) {
+      console.warn('[OrderSync] Google Sheets URL not configured. Saved locally.');
       return { success: true, local: true };
     }
+    const ok = await this._send(url, orderData);
+    if (!ok) this._queue(orderData);
+    return { success: true };
+  },
+
+  async _send(url, data) {
     try {
       await fetch(url, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderData)
+        body: JSON.stringify({
+          timestamp:  data.timestamp || data.savedAt || new Date().toISOString(),
+          id:         data.id,
+          name:       data.name || data.company || '',
+          phone:      data.phone || '',
+          email:      data.email || '',
+          address:    data.address || '',
+          city:       data.city || '',
+          state:      data.state || '',
+          pincode:    data.pincode || '',
+          items:      data.items || '',
+          subtotal:   data.subtotal || data.total || 0,
+          payment:    data.payment || '',
+          notes:      data.notes || '',
+          status:     data.status || 'New',
+          type:       data.type || 'ORDER'
+        })
       });
-      return { success: true };
+      return true;
     } catch(e) {
-      console.error('Sheets sync failed:', e);
-      return { success: false, error: e.message };
+      console.error('[OrderSync] Sync failed:', e.message);
+      return false;
     }
   },
+
+  _queue(order) {
+    const q = JSON.parse(localStorage.getItem(this._queueKey) || '[]');
+    if (!q.find(o => o.id === order.id)) q.push(order);
+    localStorage.setItem(this._queueKey, JSON.stringify(q));
+  },
+
+  async retryQueue() {
+    const cfg = window.DETOXY_CONFIG || {};
+    const url = localStorage.getItem('detoxy_sheets_url') || cfg.googleSheetsURL;
+    if (!url || url.includes('YOUR_SCRIPT_ID')) return;
+    const q = JSON.parse(localStorage.getItem(this._queueKey) || '[]');
+    if (!q.length) return;
+    const failed = [];
+    for (const o of q) { if (!(await this._send(url, o))) failed.push(o); }
+    localStorage.setItem(this._queueKey, JSON.stringify(failed));
+    if (failed.length < q.length) console.log('[OrderSync] Retried', q.length - failed.length, 'queued orders');
+  },
+
   _saveLocal(order) {
     const orders = JSON.parse(localStorage.getItem('detoxy_orders') || '[]');
-    if (!order.id) {
-      order.id = 'ORD-' + Date.now();
-      order.savedAt = new Date().toISOString();
-    }
-    // Update existing or push new
     const idx = orders.findIndex(o => o.id === order.id);
-    if (idx > -1) orders[idx] = order;
-    else orders.push(order);
+    if (idx > -1) orders[idx] = order; else orders.push(order);
     localStorage.setItem('detoxy_orders', JSON.stringify(orders));
   },
+
   getLocalOrders() {
     return JSON.parse(localStorage.getItem('detoxy_orders') || '[]');
   }
@@ -277,6 +312,8 @@ document.addEventListener('DOMContentLoaded', () => {
   Cart.init();
   const h = document.getElementById('siteHeader');
   if (h) window.addEventListener('scroll', () => h.classList.toggle('scrolled', window.scrollY > 10));
+  // Auto-retry any orders that failed to sync on last visit
+  setTimeout(() => OrderSync.retryQueue(), 3000);
 });
 
 /* ─── MOBILE NAV ─── */
