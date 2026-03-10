@@ -243,6 +243,8 @@ function renderOrders(){
 function updateStatus(idx,newStatus){
   orders[idx].status=newStatus;
   localStorage.setItem("detoxy_orders",JSON.stringify(orders));
+  // Sync updated status to Google Sheets
+  if (window.OrderSync) OrderSync.submit(orders[idx]);
   renderOrders();
 }
 

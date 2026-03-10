@@ -131,7 +131,8 @@
     const pass = document.getElementById('loginPass').value;
     if (!id || !pass) { showAlert('Please enter your phone/email and password.', 'error'); return; }
     const users = JSON.parse(localStorage.getItem('detoxy_customers') || '[]');
-    const user = users.find(u => (u.phone === id || u.email === id) && u.password === pass);
+    const hashedPass = btoa(pass);
+    const user = users.find(u => (u.phone === id || u.email === id) && u.password === hashedPass);
     if (user) {
       sessionStorage.setItem('detoxy_customer', JSON.stringify({ name: user.name, phone: user.phone, email: user.email }));
       showAlert('Welcome back, ' + user.name + '! Redirecting...', 'success');
@@ -151,7 +152,7 @@
     if (pass.length < 8) { showAlert('Password must be at least 8 characters.', 'error'); return; }
     const users = JSON.parse(localStorage.getItem('detoxy_customers') || '[]');
     if (users.find(u => u.phone === phone)) { showAlert('An account with this phone already exists. Please sign in.', 'error'); return; }
-    users.push({ name, phone, email, password: pass, city, joinedAt: new Date().toISOString() });
+    users.push({ name, phone, email, password: btoa(pass), city, joinedAt: new Date().toISOString() });
     localStorage.setItem('detoxy_customers', JSON.stringify(users));
     sessionStorage.setItem('detoxy_customer', JSON.stringify({ name, phone, email }));
     showAlert('Account created! Welcome, ' + name + '! Redirecting...', 'success');

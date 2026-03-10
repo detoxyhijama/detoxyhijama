@@ -214,7 +214,7 @@
     return `<a href="${p.id}.html" class="related-card">
       <div class="related-img-wrap"><img src="${img}" alt="${p.name}" onerror="this.src='https://placehold.co/160x160/1a3d35/2dd4bf?text=Product'"><span class="card-discount">-${p.discount}</span></div>
       <div class="related-name">${p.name}</div>
-      <div class="related-price">${p.price} <span style="font-size:.75rem;color:var(--muted);font-family:sans-serif;text-decoration:line-through">₹${p.mrp}</span></div>
+      <div class="related-price">₹${p.price} <span style="font-size:.75rem;color:var(--muted);font-family:sans-serif;text-decoration:line-through">₹${p.mrp}</span></div>
     </a>`;
   }).join('');
   document.getElementById('relatedGrid').innerHTML = relatedHTML;

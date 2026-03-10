@@ -49,6 +49,7 @@
   // Store order items for placeOrder — avoids passing large JSON through HTML onclick attribute
   let _orderItems = [];
   let _orderTotal = 0;
+  let _orderSubtotal = 0;
 
   function renderCheckout() {
     const items = Cart.get();
@@ -69,6 +70,7 @@
     // Store in closure so placeOrder() can access without HTML attribute JSON
     _orderItems = orderItems;
     _orderTotal = total;
+    _orderSubtotal = subtotal;
     const itemsHTML = orderItems.map(i => `
       <div class="order-item">
         <img class="order-thumb" src="${fixImg(i.images && i.images[0])}" alt="${i.name}" onerror="this.src='https://placehold.co/48x48/1a3d35/2dd4bf?text=P'">
@@ -134,6 +136,7 @@
 
   async function placeOrder() {
     const total = _orderTotal;
+    const subtotal = _orderSubtotal;
     const items = _orderItems;
     const get = id => document.getElementById(id)?.value?.trim() || '';
     const first = get('cFirst'), last = get('cLast'), phone = get('cPhone'), addr = get('cAddr'), city = get('cCity'), pin = get('cPin');
@@ -152,7 +155,8 @@
       phone, email: get('cEmail'),
       address: addr + ', ' + city + ', ' + get('cState') + ' - ' + pin + ', ' + (get('cCountry') || 'India'),
       items: items.map(i => `${i.name} x${i.qty} (₹${i.lineTotal})`).join(' | '),
-      subtotal: total,
+      subtotal: subtotal,
+      total: total,
       payment: payMethod,
       notes: get('cNotes'),
       status: 'New'
@@ -164,7 +168,7 @@
     } catch (err) {
       alertEl.innerHTML = '<div class="alert alert--error">Something went wrong. Please try again.</div>';
       btn.disabled = false;
-      btn.textContent = 'Place Order';
+      btn.textContent = 'Place Order →';
     }
   }
 

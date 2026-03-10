@@ -7,7 +7,7 @@
 function _base() {
   // Detect if we're in a subdirectory
   const p = window.location.pathname;
-  if (p.includes('/products/') || p.includes('/admin/') || p.includes('/blogs/') || p.includes('/quote/') || p.includes('/confirmation/')) return '../';
+  if (p.includes('/products/') || p.includes('/admin/') || p.includes('/blogs/') || p.includes('/quote/') || p.includes('/confirmation/') || p.includes('/shipper/')) return '../';
   return '';
 }
 
