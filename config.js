@@ -38,7 +38,7 @@ const PRODUCTS = [
     reviews: 312,
     inStock: true,
     description: 'India\'s most trusted BPA-free medical-grade PVC hijama cup. Available in 6 sizes (1–6). Made at our Pollachi, Coimbatore facility with zero middlemen.',
-    features: ['BPA-Free Medical PVC', '6 Sizes Available (1–6)', 'Autoclave-Safe', 'Reusable & Durable', 'Direct Manufacturer Price'],
+    features: ['BPA-Free Medical PVC', '6 Sizes Available (1–6)', 'Autoclave-Safe', 'Reusable & Durable', 'Manufacturer Price'],
     specs: { Material: 'Medical-Grade PVC', Sizes: '1, 2, 3, 4, 5, 6', Color: 'Transparent', Origin: 'Made in India', 'Min Order': '1 cup' },
     images: ['assets/images/products/standard-cups/main.jpg'],
   },
@@ -365,40 +365,75 @@ const Cart = {
 
 // ============================================================
 // ORDER ENGINE
+// NOTE: Must use text/plain header — application/json triggers CORS preflight
+//       which Google Apps Script does not respond to, silently killing all requests.
 // ============================================================
+async function _apiCall(payload) {
+  const resp = await fetch(SITE.APPS_SCRIPT_URL, {
+    method: 'POST',
+    // text/plain avoids CORS preflight — Apps Script still receives full JSON body
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  });
+  const text = await resp.text();
+  try { return JSON.parse(text); } catch(e) {
+    console.warn('Apps Script returned non-JSON:', text.slice(0, 200));
+    return { success: false, raw: text.slice(0, 200) };
+  }
+}
+
 const Orders = {
   async place(orderData) {
     try {
-      const resp = await fetch(SITE.APPS_SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'placeOrder', ...orderData })
-      });
-      return await resp.json();
+      // Flatten nested objects to strings so Google Sheets can store them
+      const payload = {
+        action: 'placeOrder',
+        orderNumber:   orderData.orderNumber,
+        status:        orderData.status || 'Pending',
+        createdAt:     orderData.createdAt,
+        // Customer fields flattened
+        firstName:     orderData.customer?.firstName || '',
+        lastName:      orderData.customer?.lastName  || '',
+        email:         orderData.customer?.email     || '',
+        phone:         orderData.customer?.phone     || '',
+        // Shipping fields flattened
+        address1:      orderData.shipping?.address1  || '',
+        address2:      orderData.shipping?.address2  || '',
+        city:          orderData.shipping?.city      || '',
+        state:         orderData.shipping?.state     || '',
+        pincode:       orderData.shipping?.pincode   || '',
+        // Financials
+        subtotal:      orderData.subtotal     || 0,
+        shippingCost:  orderData.shippingCost || 0,
+        codFee:        orderData.codFee       || 0,
+        total:         orderData.total        || 0,
+        payment:       orderData.payment      || '',
+        notes:         orderData.notes        || '',
+        // Items as JSON string (Sheets stores in one cell)
+        items:         JSON.stringify(orderData.items || []),
+        itemsSummary:  (orderData.items || []).map(i => `${i.name} ×${i.qty}`).join(', '),
+      };
+      return await _apiCall(payload);
     } catch(e) {
-      console.error(e);
+      console.error('Orders.place error:', e);
       return { success: false, error: e.message };
     }
   },
   async getAll(filters = {}) {
     try {
-      const resp = await fetch(SITE.APPS_SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'getOrders', ...filters })
-      });
-      return await resp.json();
-    } catch(e) { return { success: false }; }
+      return await _apiCall({ action: 'getOrders', ...filters });
+    } catch(e) {
+      console.error('Orders.getAll error:', e);
+      return { success: false };
+    }
   },
   async update(id, updates) {
     try {
-      const resp = await fetch(SITE.APPS_SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'updateOrder', id, updates })
-      });
-      return await resp.json();
-    } catch(e) { return { success: false }; }
+      return await _apiCall({ action: 'updateOrder', id, updates });
+    } catch(e) {
+      console.error('Orders.update error:', e);
+      return { success: false };
+    }
   }
 };
 

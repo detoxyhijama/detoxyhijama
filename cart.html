@@ -110,6 +110,60 @@
     </div>
   </div>
 
+
+  <!-- REASSURANCE STRIP BELOW CART -->
+  <section style="background:#fff;padding:48px 5%;border-top:1px solid var(--border)">
+    <div style="max-width:1200px;margin:0 auto">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px">
+        <div style="text-align:center;padding:24px 16px;border:1px solid var(--border);border-radius:16px;background:var(--cream)">
+          <div style="font-size:2rem;margin-bottom:10px">🚚</div>
+          <div style="font-weight:700;color:var(--dark);font-size:.9rem;margin-bottom:4px">Free Shipping</div>
+          <div style="font-size:.78rem;color:var(--muted);line-height:1.5">On orders above ₹999. Pan-India delivery in 2–5 business days.</div>
+        </div>
+        <div style="text-align:center;padding:24px 16px;border:1px solid var(--border);border-radius:16px;background:var(--cream)">
+          <div style="font-size:2rem;margin-bottom:10px">🔒</div>
+          <div style="font-weight:700;color:var(--dark);font-size:.9rem;margin-bottom:4px">Secure Checkout</div>
+          <div style="font-size:.78rem;color:var(--muted);line-height:1.5">SSL encrypted. Pay via UPI, card, net banking or COD.</div>
+        </div>
+        <div style="text-align:center;padding:24px 16px;border:1px solid var(--border);border-radius:16px;background:var(--cream)">
+          <div style="font-size:2rem;margin-bottom:10px">🔄</div>
+          <div style="font-weight:700;color:var(--dark);font-size:.9rem;margin-bottom:4px">Easy Returns</div>
+          <div style="font-size:.78rem;color:var(--muted);line-height:1.5">7-day hassle-free return on unused items. No questions asked.</div>
+        </div>
+        <div style="text-align:center;padding:24px 16px;border:1px solid var(--border);border-radius:16px;background:var(--cream)">
+          <div style="font-size:2rem;margin-bottom:10px">🏭</div>
+          <div style="font-weight:700;color:var(--dark);font-size:.9rem;margin-bottom:4px">Direct from Factory</div>
+          <div style="font-size:.78rem;color:var(--muted);line-height:1.5">No markup, no middlemen. True factory price every time.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- YOU MAY ALSO LIKE -->
+  <section style="padding:64px 5%;background:var(--cream)">
+    <div style="max-width:1200px;margin:0 auto">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px">
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--dark)">You May Also <span style="color:var(--t)">Like</span></h2>
+        <a href="products.html" style="color:var(--t);font-size:.84rem;font-weight:600;text-decoration:none">See all products →</a>
+      </div>
+      <div class="products-grid" id="suggestedProducts"></div>
+    </div>
+  </section>
+
+  <!-- BULK ORDER CTA -->
+  <section style="padding:0 5% 64px;background:var(--cream)">
+    <div style="max-width:1200px;margin:0 auto">
+      <div style="background:linear-gradient(135deg,var(--dark),var(--mid));border-radius:20px;padding:36px 44px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:.7rem;color:var(--tl);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">🏭 B2B & Wholesale</div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:6px">Ordering for a Clinic or Institution?</h3>
+          <p style="color:rgba(255,255,255,.6);font-size:.86rem;line-height:1.6;max-width:480px">Get bulk pricing, private labelling and dedicated account support. We supply 5,000+ B2B clients across India with factory-direct pricing.</p>
+        </div>
+        <a href="mailto:detoxyhijama@gmail.com" style="display:inline-flex;align-items:center;gap:8px;background:var(--t);color:#fff;padding:14px 24px;border-radius:12px;font-size:.9rem;font-weight:700;text-decoration:none;flex-shrink:0">📧 Contact for Bulk Order</a>
+      </div>
+    </div>
+  </section>
+
   <div id="footer-mount"></div>
 </div>
 <script src="config.js"></script>
@@ -117,6 +171,9 @@
 <script>
   document.getElementById('header-mount').innerHTML = getNavHTML('');
   document.getElementById('footer-mount').innerHTML = getFooterHTML();
+  // Suggested products
+  const sp = document.getElementById('suggestedProducts');
+  if(sp) sp.innerHTML = PRODUCTS.slice(0,4).map(renderProductCard).join('');
 
   function renderCart() {
     const items = Cart.get();

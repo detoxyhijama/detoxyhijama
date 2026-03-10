@@ -220,12 +220,18 @@ document.addEventListener('DOMContentLoaded', () => {
    API — fetch from Google Sheet
    ============================================================ */
 async function callAPI(action, data = {}) {
+  // text/plain avoids CORS preflight — Apps Script ignores OPTIONS requests
   const resp = await fetch(API, {
     method : 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body   : JSON.stringify({ action, ...data })
   });
-  return resp.json();
+  const txt = await resp.text();
+  try { return JSON.parse(txt); }
+  catch(e) {
+    console.warn('Non-JSON from Apps Script:', txt.slice(0, 300));
+    return { success: false, raw: txt.slice(0, 300) };
+  }
 }
 
 async function fetchOrders() {
@@ -233,10 +239,17 @@ async function fetchOrders() {
   try {
     const res = await callAPI('getOrders');
     /* handle multiple response shapes Apps Script might return */
-    if      (Array.isArray(res))                   ORDERS = res;
+    if      (Array.isArray(res))                      ORDERS = res;
     else if (res.orders && Array.isArray(res.orders)) ORDERS = res.orders;
     else if (res.data   && Array.isArray(res.data))   ORDERS = res.data;
-    else                                           ORDERS = [];
+    else if (res.success === false) {
+      ORDERS = [];
+      const hint = res.raw ? `<pre style="font-size:.7rem;opacity:.6;white-space:pre-wrap;margin-top:8px;max-height:100px;overflow:auto">${res.raw}</pre>` : '';
+      setHTML(`<div class="err-box">⚠️ <strong>Apps Script returned an error.</strong><br>
+        Check: Script deployed as <em>"Anyone"</em> access · doPost() exists · Web App deployment type.${hint}
+        <button onclick="fetchOrders()" style="margin-top:12px;padding:8px 16px;background:var(--t);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.82rem">Retry</button></div>`);
+      return;
+    } else ORDERS = [];
 
     document.getElementById('syncTime').textContent = new Date().toLocaleTimeString('en-IN');
     updatePill();
@@ -244,8 +257,9 @@ async function fetchOrders() {
     ORDERS = [];
     setHTML(`<div class="err-box">
       ⚠️ <strong>Could not connect to Google Sheet.</strong><br>
-      Make sure the Apps Script is deployed as <em>"Anyone can access"</em> and the URL is correct.<br><br>
-      <small style="opacity:.7">${err.message}</small>
+      Causes: Wrong URL · Not deployed as "Anyone" · Network error<br>
+      <small style="opacity:.7;display:block;margin-top:4px">Error: ${err.message}</small>
+      <button onclick="fetchOrders()" style="margin-top:12px;padding:8px 16px;background:var(--t);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.82rem">Retry</button>
     </div>`);
   }
 }

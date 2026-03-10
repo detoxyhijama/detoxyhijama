@@ -25,7 +25,7 @@ function getNavHTML(activePage = '') {
            onerror="this.style.display='none'">
       <div class="brand-name-wrap">
         <span class="brand-main">Detoxy Hijama</span>
-        <span class="brand-sub">Direct Manufacturer</span>
+        <span class="brand-sub">Manufacturer</span>
       </div>
     </a>
     <nav class="site-nav">
@@ -62,7 +62,7 @@ function getFooterHTML() {
         </div>
         <p class="footer-desc">India's direct hijama manufacturer — factory-fresh quality at zero markup. Supplying 5,000+ practitioners, clinics & hospitals across India from our large factory in Coimbatore.</p>
         <div class="footer-trust">
-          <span class="footer-trust-pill">🏭 Direct Manufacturer</span>
+          <span class="footer-trust-pill">🏭 Manufacturer</span>
           <span class="footer-trust-pill">🚚 Pan India</span>
         </div>
       </div>
@@ -81,9 +81,6 @@ function getFooterHTML() {
         <ul>
           <li><a href="${base}about.html">About Us</a></li>
           <li><a href="${base}blogs.html">Blog</a></li>
-          <li><a href="${base}shipping.html">Shipping</a></li>
-          <li><a href="${base}returns.html">Returns</a></li>
-          <li><a href="${base}privacy.html">Privacy Policy</a></li>
         </ul>
       </div>
       <div class="footer-col">

@@ -144,8 +144,37 @@ let ORDERS=[],CUR='dashboard';
 function doLogin(){if(document.getElementById('lPass').value===PASS){sessionStorage.setItem('dh_admin','1');document.getElementById('loginScreen').style.display='none';document.getElementById('app').style.display='flex';fetchOrders().then(()=>renderDashboard());}else document.getElementById('lErr').style.display='block';}
 function logout(){sessionStorage.removeItem('dh_admin');location.reload();}
 document.addEventListener('DOMContentLoaded',()=>{if(sessionStorage.getItem('dh_admin')){document.getElementById('loginScreen').style.display='none';document.getElementById('app').style.display='flex';fetchOrders().then(()=>renderDashboard());}document.getElementById('lPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});});
-async function callAPI(action,data={}){const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,...data})});return r.json();}
-async function fetchOrders(){setHTML('<div class="loading"><div class="spin"></div> Fetching from Google Sheet…</div>');try{const res=await callAPI('getOrders');if(Array.isArray(res))ORDERS=res;else if(res.orders&&Array.isArray(res.orders))ORDERS=res.orders;else if(res.data&&Array.isArray(res.data))ORDERS=res.data;else ORDERS=[];document.getElementById('syncTime').textContent=new Date().toLocaleTimeString('en-IN');updatePills();}catch(err){ORDERS=[];setHTML('<div class="err-box">⚠️ <strong>Could not connect to Google Sheet.</strong><br>Make sure Apps Script is deployed as <em>"Anyone can access"</em>.<br><small style="opacity:.7">'+err.message+'</small></div>');}}
+// Use text/plain to avoid CORS preflight — Apps Script ignores OPTIONS requests
+async function callAPI(action,data={}){
+  const r=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,...data})});
+  const txt=await r.text();
+  try{return JSON.parse(txt);}catch(e){console.warn('Non-JSON from Apps Script:',txt.slice(0,300));return{success:false,raw:txt.slice(0,300)};}
+}
+async function fetchOrders(){
+  setHTML('<div class="loading"><div class="spin"></div> Fetching from Google Sheet…</div>');
+  try{
+    const res=await callAPI('getOrders');
+    // Handle all response shapes Apps Script might return
+    if(Array.isArray(res)) ORDERS=res;
+    else if(res.orders&&Array.isArray(res.orders)) ORDERS=res.orders;
+    else if(res.data&&Array.isArray(res.data)) ORDERS=res.data;
+    else if(res.success===false){
+      ORDERS=[];
+      const hint=res.raw?`<pre style="font-size:.72rem;opacity:.6;white-space:pre-wrap;margin-top:8px">${res.raw}</pre>`:'';
+      setHTML('<div class="err-box">⚠️ <strong>Apps Script returned an error.</strong><br>Check that:<br>• Script is deployed as <em>"Anyone"</em> (not "Anyone with Google account")<br>• Deployment type is <em>"Web App"</em><br>• doPost() function exists in script'+hint+'</div>');
+      return;
+    } else ORDERS=[];
+    document.getElementById('syncTime').textContent=new Date().toLocaleTimeString('en-IN');
+    updatePills();
+  }catch(err){
+    ORDERS=[];
+    setHTML('<div class="err-box">⚠️ <strong>Could not connect to Google Sheet.</strong><br>'+
+      'Possible causes:<br>• Apps Script URL is incorrect or expired<br>• Script not deployed as "Anyone" access<br>• Network/CORS issue<br>'+
+      '<small style="opacity:.7;display:block;margin-top:6px">Error: '+err.message+'</small>'+
+      '<button onclick="fetchOrders()" style="margin-top:12px;padding:8px 16px;background:var(--t);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.82rem">Retry</button>'+
+      '</div>');
+  }
+}
 async function refresh(){await fetchOrders();nav(CUR,null);showToast('Refreshed ✓');}
 function updatePills(){const p=ORDERS.filter(o=>norm(o.status)==='pending').length,a=ORDERS.length;const pp=document.getElementById('pillPending'),pa=document.getElementById('pillAll');pp.textContent=p;pp.style.display=p>0?'flex':'none';pa.textContent=a;pa.style.display=a>0?'flex':'none';}
 function norm(s){return(s||'pending').toLowerCase().replace(/[\s_-]+/g,'_');}
