@@ -6,9 +6,9 @@
   <title>Shipper View | Detoxy Hijama</title>
   <meta name="robots" content="noindex,nofollow"/>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Cormorant+Garamond:wght@700&display=swap');
     *{box-sizing:border-box;margin:0;padding:0}
     body{background:#eef2f0;font-family:"Outfit",system-ui,sans-serif;color:#0d1f1b;min-height:100vh}
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Cormorant+Garamond:wght@700&display=swap');
 
     /* ── Top bar ── */
     .topbar{background:#0d1f1b;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
@@ -53,7 +53,7 @@
     .card-body{padding:12px 16px}
     .info-row{display:flex;gap:8px;margin-bottom:7px;align-items:flex-start}
     .info-icon{width:18px;flex-shrink:0;opacity:.5;margin-top:1px}
-    .info-text{font-size:.81rem;color:#1a3530;line-height:1.5}
+    .info-text{font-size:.81rem;color:#1a3530;line-height:1.5;word-break:break-word;overflow-wrap:anywhere}
     .info-label{font-size:.68rem;text-transform:uppercase;color:#7a9490;font-weight:700;margin-bottom:1px}
     .items-text{font-size:.78rem;color:#4a6660;line-height:1.55;background:#f8fbfa;border-radius:8px;padding:8px 10px;border:1px solid #eef2f0;margin-bottom:10px}
 
@@ -319,9 +319,26 @@ function sendWhatsApp(idx) {
 }
 
 function copyAddress(encodedAddr) {
-  navigator.clipboard.writeText(decodeURIComponent(encodedAddr))
-    .then(() => showToast("Address copied!"))
-    .catch(() => showToast("Copy failed"));
+  const text = decodeURIComponent(encodedAddr);
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text)
+      .then(() => showToast("Address copied!"))
+      .catch(() => showToast("Copy failed"));
+  } else {
+    // Fallback for HTTP / older browsers
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand('copy');
+      showToast("Address copied!");
+    } catch(e) {
+      showToast("Copy failed — please copy manually");
+    }
+    document.body.removeChild(ta);
+  }
 }
 
 function showToast(msg) {
