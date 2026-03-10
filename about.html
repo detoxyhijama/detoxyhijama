@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>About Us — Detoxy Hijama | India's Direct Manufacturer</title>
+  <meta name="description" content="Learn about Detoxy Hijama — India's direct hijama cup manufacturer based in Pollachi, Coimbatore. Our story, mission and commitment to quality."/>
+  <link rel="stylesheet" href="assets/style.css"/>
+  <style>
+    /* HERO */
+    .about-hero { background: linear-gradient(135deg, var(--dark) 0%, var(--mid) 55%, #1e6357 100%); padding: 90px 5% 72px; position: relative; overflow: hidden; }
+    .about-hero::before { content:''; position:absolute; inset:0; background: radial-gradient(ellipse 70% 60% at 70% 50%, rgba(42,171,151,.18), transparent 70%); }
+    .about-hero-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1.1fr 1fr; gap: 60px; align-items: center; position: relative; z-index: 2; }
+    .about-hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.2rem, 4.5vw, 3.4rem); font-weight: 700; color: #fff; line-height: 1.12; margin-bottom: 18px; }
+    .about-hero h1 span { color: var(--tl); }
+    .about-hero-desc { color: rgba(255,255,255,.68); font-size: .96rem; line-height: 1.75; max-width: 520px; }
+    /* STATS */
+    .about-stats { display: flex; gap: 28px; flex-wrap: wrap; margin-top: 32px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,.1); }
+    .astat-num { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 700; color: var(--tl); display: block; }
+    .astat-lbl { font-size: .68rem; color: rgba(255,255,255,.45); text-transform: uppercase; letter-spacing: .08em; }
+    /* FOUNDER CARD */
+    .founder-card { background: rgba(255,255,255,.07); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.12); border-radius: 22px; padding: 28px; }
+    .founder-avatar { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--t), var(--td)); display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 700; color: #fff; margin-bottom: 14px; box-shadow: 0 6px 20px rgba(42,171,151,.35); }
+    .founder-name { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; color: #fff; }
+    .founder-title { font-size: .75rem; color: var(--tl); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; margin: 3px 0 12px; }
+    .founder-quote { font-size: .88rem; color: rgba(255,255,255,.62); line-height: 1.75; font-style: italic; }
+    /* STORY */
+    .story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+    .story-img-wrap { background: linear-gradient(135deg, var(--dark), var(--mid)); border-radius: 22px; padding: 40px; display: flex; flex-direction: column; gap: 16px; }
+    .story-img-wrap img { border-radius: 14px; width: 100%; object-fit: contain; }
+    .fact-pill { display: flex; align-items: center; gap: 10px; background: rgba(42,171,151,.12); border: 1px solid rgba(42,171,151,.25); border-radius: 12px; padding: 12px 16px; }
+    .fact-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .fact-text { font-size: .83rem; color: rgba(255,255,255,.75); line-height: 1.5; }
+    .fact-text strong { color: var(--tl); display: block; font-size: .88rem; }
+    /* VALUES */
+    .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 36px; }
+    .value-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 24px 20px; transition: all .22s; }
+    .value-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--border); }
+    .value-icon { width: 48px; height: 48px; border-radius: 12px; background: var(--tp); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 14px; }
+    .value-title { font-weight: 700; color: var(--dark); font-size: .95rem; margin-bottom: 7px; }
+    .value-desc { font-size: .82rem; color: var(--muted); line-height: 1.65; }
+    /* TEAM */
+    .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 36px; }
+    .team-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 24px 18px; text-align: center; transition: all .22s; }
+    .team-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .team-avatar { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--td), var(--mid)); display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 700; color: #fff; margin: 0 auto 14px; }
+    .team-name { font-weight: 700; color: var(--dark); font-size: .92rem; margin-bottom: 4px; }
+    .team-role { font-size: .76rem; color: var(--t); font-weight: 600; }
+    /* CONTACT */
+    .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 36px; }
+    .contact-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 24px; text-align: center; }
+    .contact-icon { font-size: 2rem; margin-bottom: 10px; }
+    .contact-label { font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 6px; }
+    .contact-val { font-weight: 600; color: var(--dark); font-size: .9rem; }
+    .contact-val a { color: var(--td); }
+    .contact-val a:hover { color: var(--t); }
+
+    @media (max-width: 900px) { .about-hero-inner { grid-template-columns: 1fr; } .founder-card { display: none; } .story-grid { grid-template-columns: 1fr; } .values-grid { grid-template-columns: 1fr 1fr; } .contact-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 640px) { .values-grid { grid-template-columns: 1fr; } .team-grid { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+<div class="page-wrapper">
+  <div id="header-mount"></div>
+
+  <!-- HERO -->
+  <section class="about-hero">
+    <div class="about-hero-inner">
+      <div>
+        <span class="sec-tag">Our Story</span>
+        <h1>India's <span>Direct Hijama</span><br>Manufacturer</h1>
+        <p class="about-hero-desc">Born in Pollachi, Coimbatore — Detoxy Hijama was founded with one mission: to make authentic, medical-grade hijama products accessible to every practitioner in India at factory prices, without any middlemen.</p>
+        <div class="about-stats">
+          <div><span class="astat-num">5000+</span><span class="astat-lbl">Practitioners Served</span></div>
+          <div><span class="astat-num">15+</span><span class="astat-lbl">Products</span></div>
+          <div><span class="astat-num">2020</span><span class="astat-lbl">Founded</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="founder-card">
+          <div class="founder-avatar">MA</div>
+          <div class="founder-name">Mohamed Aasiq</div>
+          <div class="founder-title">Founder & CEO</div>
+          <p class="founder-quote">"I started Detoxy Hijama because I saw practitioners struggling to find quality cups at fair prices. We manufacture everything in-house so every practitioner gets the best — directly from the factory."</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST BAR -->
+  <div class="trust-bar" style="background:#fff;border-bottom:1px solid var(--border);padding:14px 5%">
+    <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;gap:20px;justify-content:center">
+      <span class="trust-item">🏭 Made in Coimbatore</span>
+      <span class="trust-item">✅ Medical Grade Certified</span>
+      <span class="trust-item">🚚 Pan India Delivery</span>
+      <span class="trust-item">🤝 5000+ Satisfied Customers</span>
+    </div>
+  </div>
+
+  <!-- OUR STORY -->
+  <section class="sec" style="background:#fff">
+    <div class="sec-inner">
+      <div class="story-grid">
+        <div>
+          <span class="sec-tag">How We Started</span>
+          <h2 class="sec-h2">From a Small Workshop to <span>India's Leading</span> Manufacturer</h2>
+          <p style="font-size:.93rem;color:var(--muted);line-height:1.85;margin-bottom:16px">Detoxy Hijama was founded in 2020 by Mohamed Aasiq in Pollachi, Coimbatore — the heartland of Tamil Nadu. What started as a small manufacturing unit with a vision to provide affordable, high-quality hijama cups to local practitioners has grown into a trusted name across India.</p>
+          <p style="font-size:.93rem;color:var(--muted);line-height:1.85;margin-bottom:16px">We saw that most hijama practitioners were paying inflated prices through distributors and resellers. Our answer was simple — manufacture directly and sell directly. No middlemen. No markups. Just factory-fresh quality delivered to your door.</p>
+          <p style="font-size:.93rem;color:var(--muted);line-height:1.85">Today, over 5,000 practitioners, clinics, therapists and hospitals across India trust Detoxy Hijama for their cupping therapy supplies.</p>
+        </div>
+        <div class="story-img-wrap">
+          <div class="fact-pill">
+            <span class="fact-icon">🏭</span>
+            <div class="fact-text"><strong>Pollachi, Coimbatore</strong>Our in-house manufacturing facility in Tamil Nadu</div>
+          </div>
+          <div class="fact-pill">
+            <span class="fact-icon">🔬</span>
+            <div class="fact-text"><strong>Medical Grade Materials</strong>BPA-free PVC, medical silicone & borosilicate glass</div>
+          </div>
+          <div class="fact-pill">
+            <span class="fact-icon">✅</span>
+            <div class="fact-text"><strong>Quality Tested</strong>Every batch is tested before dispatch</div>
+          </div>
+          <div class="fact-pill">
+            <span class="fact-icon">🚀</span>
+            <div class="fact-text"><strong>Same-Day Dispatch</strong>Orders placed before 2 PM dispatched same day</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUR VALUES -->
+  <section class="sec">
+    <div class="sec-inner">
+      <div style="text-align:center">
+        <span class="sec-tag">What Drives Us</span>
+        <h2 class="sec-h2">Our <span>Values</span></h2>
+      </div>
+      <div class="values-grid">
+        <div class="value-card"><div class="value-icon">💯</div><div class="value-title">Uncompromising Quality</div><div class="value-desc">Every product meets medical-grade standards. We use only BPA-free PVC, food-grade silicone and borosilicate glass.</div></div>
+        <div class="value-card"><div class="value-icon">💰</div><div class="value-title">Fair Factory Pricing</div><div class="value-desc">Zero distributor markup. You buy direct from the factory — the same price our bulk customers get.</div></div>
+        <div class="value-card"><div class="value-icon">🤝</div><div class="value-title">Practitioner First</div><div class="value-desc">Every product we make is designed with the hijama practitioner in mind — ease of use, hygiene, and durability.</div></div>
+        <div class="value-card"><div class="value-icon">🌿</div><div class="value-title">Sunnah-Aligned</div><div class="value-desc">We respect the Prophetic tradition of hijama. Our products are designed to honour and support this blessed practice.</div></div>
+        <div class="value-card"><div class="value-icon">🚚</div><div class="value-title">Reliable Delivery</div><div class="value-desc">Pan India delivery via trusted couriers. Same-day dispatch for orders before 2 PM. Real tracking, always.</div></div>
+        <div class="value-card"><div class="value-icon">🔄</div><div class="value-title">Customer Satisfaction</div><div class="value-desc">7-day hassle-free returns. We stand behind every product. If something's wrong, we make it right.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="sec" style="background:#fff">
+    <div class="sec-inner">
+      <div style="text-align:center">
+        <span class="sec-tag">The People</span>
+        <h2 class="sec-h2">Meet the <span>Team</span></h2>
+      </div>
+      <div class="team-grid">
+        <div class="team-card"><div class="team-avatar">MA</div><div class="team-name">Mohamed Aasiq</div><div class="team-role">Founder & CEO</div></div>
+        <div class="team-card"><div class="team-avatar">QM</div><div class="team-name">Quality Manager</div><div class="team-role">Production & QC</div></div>
+        <div class="team-card"><div class="team-avatar">LT</div><div class="team-name">Logistics Team</div><div class="team-role">Dispatch & Delivery</div></div>
+        <div class="team-card"><div class="team-avatar">CS</div><div class="team-name">Customer Support</div><div class="team-role">Orders & Returns</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="sec" style="background:linear-gradient(135deg,var(--dark),var(--mid))">
+    <div class="sec-inner">
+      <div style="text-align:center">
+        <span style="display:inline-block;background:rgba(42,171,151,.2);color:var(--tl);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border-radius:50px;margin-bottom:10px;font-weight:600">Get In Touch</span>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,3vw,2.4rem);font-weight:700;color:#fff;margin-bottom:8px">Contact <span style="color:var(--tl)">Detoxy Hijama</span></h2>
+        <p style="color:rgba(255,255,255,.55);font-size:.87rem;max-width:440px;margin:0 auto">We're here to help with your orders, bulk inquiries and product questions.</p>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-card">
+          <div class="contact-icon">📧</div>
+          <div class="contact-label">Email</div>
+          <div class="contact-val"><a href="mailto:detoxyhijama@gmail.com">detoxyhijama@gmail.com</a></div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon">📞</div>
+          <div class="contact-label">Phone</div>
+          <div class="contact-val"><a href="tel:+919566596077">+91 95665 96077</a></div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon">📍</div>
+          <div class="contact-label">Address</div>
+          <div class="contact-val">Pollachi, Coimbatore<br>Tamil Nadu 642005</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:36px">
+        <a href="products.html" class="btn btn--primary btn--lg">🛒 Shop Our Products</a>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-mount"></div>
+</div>
+<script src="config.js"></script>
+<script src="shared.js"></script>
+<script>
+  document.getElementById('header-mount').innerHTML = getNavHTML('About');
+  document.getElementById('footer-mount').innerHTML = getFooterHTML();
+</script>
+</body>
+</html>

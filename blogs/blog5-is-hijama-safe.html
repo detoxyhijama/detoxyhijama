@@ -104,8 +104,8 @@ blockquote cite{display:block;font-size:.77rem;color:var(--muted);margin-top:6px
 .side-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px}
 .side-card h4{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--dark);margin-bottom:10px}
 .side-card p{font-size:.8rem;color:var(--muted);line-height:1.6;margin-bottom:10px}
-.btn-wa-s{display:flex;align-items:center;justify-content:center;gap:7px;background:#25d366;color:#fff;padding:10px;border-radius:50px;font-weight:700;font-size:.82rem;transition:all .2s;text-decoration:none}
-.btn-wa-s:hover{background:#1da851;color:#fff;transform:translateY(-2px)}
+.btn-primary-s{display:flex;align-items:center;justify-content:center;gap:7px;background:var(--t);color:#fff;padding:10px;border-radius:50px;font-weight:700;font-size:.82rem;transition:all .2s;text-decoration:none}
+.btn-primary-s:hover{background:var(--td);color:#fff;transform:translateY(-2px)}
 .btn-teal-s{display:flex;align-items:center;justify-content:center;gap:7px;background:var(--t);color:#fff;padding:10px;border-radius:50px;font-weight:700;font-size:.82rem;transition:all .2s;margin-top:7px;text-decoration:none}
 .btn-teal-s:hover{background:var(--td);color:#fff}
 .blog-list{list-style:none;padding:0}
@@ -119,7 +119,7 @@ blockquote cite{display:block;font-size:.77rem;color:var(--muted);margin-top:6px
 .cta-banner p{color:rgba(255,255,255,.65);margin-bottom:22px;font-size:.9rem}
 .cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 .cta-btns a{padding:12px 22px;border-radius:50px;font-weight:700;font-size:.87rem;transition:all .2s;text-decoration:none;display:inline-block}
-.btn-g{background:#25d366;color:#fff}
+.btn-g{background:var(--t);color:#fff}
 .btn-tl{background:var(--t);color:#fff}
 .cta-btns a:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,0,0,.2)}
 /* FOOTER */
@@ -141,8 +141,6 @@ footer{background:var(--dark);padding:44px 5% 20px;margin-top:72px}
 .soc.fb{background:#1877f2}.soc.yt{background:#ff0000}
 .soc.tg{background:linear-gradient(160deg,#2aabee,#229ed9)}
 /* WA FLOAT */
-.wa-float{position:fixed;bottom:24px;right:24px;z-index:800;width:56px;height:56px;border-radius:16px;background:#25d366;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 22px rgba(37,211,102,.5);font-size:1.6rem;text-decoration:none;transition:transform .2s}
-.wa-float:hover{transform:scale(1.1) translateY(-2px)}
 /* RESPONSIVE */
 @media(max-width:900px){.blog-layout{grid-template-columns:1fr}.sidebar{display:none}}
 @media(max-width:640px){.nav-links{display:none}.hamburger{display:block}.footer-top{grid-template-columns:1fr}.blog-layout{padding:40px 4%}}
@@ -161,7 +159,7 @@ footer{background:var(--dark);padding:44px 5% 20px;margin-top:72px}
     <li><a href="blog5-is-hijama-safe.html" class="active">Blog</a></li>
     <li><a href="https://detoxyhijama.github.io/#contact">Contact</a></li>
   </ul>
-  <a href="https://wa.me/919566596077?text=Hi%2C+I+want+to+order+hijama+cups" target="_blank" rel="noopener" class="nav-cta">💬 Order Now</a>
+  
   <button class="hamburger" onclick="document.getElementById('mobNav').classList.add('open')" aria-label="Menu">☰</button>
 </nav>
 <div class="mob-nav" id="mobNav">
@@ -172,7 +170,6 @@ footer{background:var(--dark);padding:44px 5% 20px;margin-top:72px}
   <a class="mob-link" href="https://detoxyhijama.github.io/">Home</a>
   <a class="mob-link" href="../products.html">Products</a>
   <a class="mob-link" href="blog1-why-hijama.html">Blog</a>
-  <a class="mob-link" href="https://wa.me/919566596077" target="_blank">💬 WhatsApp Order</a>
 </div>
 
 <div class="blog-hero">
@@ -301,7 +298,7 @@ footer{background:var(--dark);padding:44px 5% 20px;margin-top:72px}
   <h2>Ready to Start Hijama?</h2>
   <p>Get all hijama cups and supplies at direct manufacturer prices. No minimum order. Pan India delivery from Coimbatore.</p>
   <div class="cta-btns">
-    <a href="https://wa.me/919566596077?text=Hi%2C+I+want+to+buy+hijama+cups" target="_blank" rel="noopener" class="btn-g">💬 WhatsApp — +91-9566596077</a>
+    
     <a href="../products.html" class="btn-tl">🛒 View All 15 Products</a>
   </div>
 </div>
@@ -312,7 +309,7 @@ footer{background:var(--dark);padding:44px 5% 20px;margin-top:72px}
   <div class="side-card">
     <h4>Order Hijama Cups</h4>
     <p>Direct manufacturer. BPA-free. From ₹8/pc. No minimum. Pan India delivery.</p>
-    <a href="https://wa.me/919566596077?text=Hi%2C+I+want+to+buy+hijama+cups" target="_blank" rel="noopener" class="btn-wa-s">💬 WhatsApp Order</a>
+    
     <a href="../products.html" class="btn-teal-s">🛒 All 15 Products</a>
   </div>
   <div class="side-card">
@@ -352,7 +349,7 @@ footer{background:var(--dark);padding:44px 5% 20px;margin-top:72px}
           <li><a href="https://detoxyhijama.github.io/">Home</a></li>
           <li><a href="../products.html">All Products</a></li>
           <li><a href="blog1-why-hijama.html">Blog</a></li>
-          <li><a href="https://wa.me/919566596077" target="_blank">WhatsApp Order</a></li>
+          <li></li>
         </ul>
       </div>
       <div class="f-col">
@@ -373,7 +370,7 @@ footer{background:var(--dark);padding:44px 5% 20px;margin-top:72px}
   </div>
 </footer>
 
-<a class="wa-float" href="https://wa.me/919566596077?text=Hi%2C+I+want+to+order+hijama+cups" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
+
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 window.addEventListener('scroll',()=>{
