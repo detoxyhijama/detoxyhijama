@@ -3,56 +3,41 @@
 <head>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cart | Detoxy Hijama — Review & Checkout Your Hijama Order</title>
-  <meta name="description" content="Review your hijama equipment cart before checkout. Fast, secure ordering with COD and UPI payment options. Free shipping on orders over ₹999."/>
-  <meta name="keywords" content="hijama cart India, buy hijama online checkout, hijama order India, cupping therapy order, hijama free shipping India, COD hijama order, hijama equipment purchase"/>
-  <link rel="canonical" href="https://detoxyhijama.github.io/cart.html"/>
+  <title>Cart | Detoxy Hijama</title>
   <meta name="robots" content="noindex, nofollow"/>
-  <meta property="og:type" content="website"/>
-  <meta property="og:url" content="https://detoxyhijama.github.io/cart.html"/>
-  <meta property="og:title" content="Cart | Detoxy Hijama"/>
-  <meta property="og:description" content="Your Detoxy Hijama shopping cart. Review your selected hijama cups, cupping kits and consumables before checkout."/>
-  <meta property="og:image" content="https://detoxyhijama.github.io/assets/logo.png"/>
-  <meta property="og:site_name" content="Detoxy Hijama"/>
-  <meta name="twitter:card" content="summary_large_image"/>
-  <meta name="twitter:title" content="Cart | Detoxy Hijama"/>
-  <meta name="twitter:description" content="Your Detoxy Hijama shopping cart. Review your selected hijama cups, cupping kits and consumables before checkout."/>
-  <meta name="twitter:image" content="https://detoxyhijama.github.io/assets/logo.png"/>
   <link rel="stylesheet" href="assets/style.css"/>
   <style>
-    .cart-layout{display:grid;grid-template-columns:1fr 340px;gap:32px;align-items:start}
-    .cart-table{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
-    .cart-row{display:grid;grid-template-columns:64px 1fr auto auto;align-items:center;gap:16px;padding:18px 20px;border-bottom:1px solid var(--border)}
-    .cart-row:last-child{border-bottom:none}
-    .cart-thumb{width:64px;height:64px;object-fit:contain;border-radius:10px;background:var(--cream);border:1px solid var(--border);padding:4px}
-    .cart-name{font-weight:600;font-size:.9rem;color:var(--dark)}
-    .cart-unit{font-size:.76rem;color:var(--muted)}
-    .cart-line-price{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--td);text-align:right;min-width:70px}
-    .cart-remove{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.1rem;padding:4px;transition:color .2s}
-    .cart-remove:hover{color:var(--red)}
-    .summary-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px;position:sticky;top:80px}
-    .summary-row{display:flex;justify-content:space-between;font-size:.9rem;margin-bottom:10px}
-    .summary-total{border-top:1px solid var(--border);margin-top:14px;padding-top:14px;display:flex;justify-content:space-between;font-weight:700;font-size:1.05rem;color:var(--dark)}
-    @media(max-width:768px){
-      .cart-layout{grid-template-columns:1fr}
-      .cart-row{grid-template-columns:48px 1fr auto;grid-template-rows:auto auto}
-      .cart-line-price{grid-column:2;grid-row:2;text-align:left;padding-left:0;font-size:.97rem}
-      .cart-remove{grid-column:3;grid-row:1}
-    }
+    .free-ship-bar{background:var(--cream);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin-bottom:20px;font-size:.84rem;color:var(--text)}
+    .free-ship-progress{height:6px;background:var(--border);border-radius:6px;margin-top:8px;overflow:hidden}
+    .free-ship-fill{height:100%;background:var(--t);border-radius:6px;transition:width .4s}
+    .coupon-row{display:flex;gap:10px;margin-bottom:20px}
+    .coupon-row input{flex:1}
   </style>
 </head>
 <body>
 <div class="page-wrapper">
   <div id="header-mount"></div>
-  <section class="sec">
+
+  <section style="background:var(--cream);padding:24px 0;border-bottom:1px solid var(--border)">
     <div class="sec-inner">
-      <h1 class="sec-h2" style="margin-bottom:28px">Your <span>Cart</span></h1>
+      <nav class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">›</span>
+        <span>Shopping Cart</span>
+      </nav>
+      <h1 class="sec-h2">Your <span>Cart</span></h1>
+    </div>
+  </section>
+
+  <section class="sec--sm">
+    <div class="sec-inner">
       <div id="cartContent"></div>
     </div>
   </section>
+
   <div id="footer-mount"></div>
 </div>
 <script src="config.js"></script>
@@ -60,118 +45,81 @@
 <script>
   document.getElementById('header-mount').innerHTML = getNavHTML('');
   document.getElementById('footer-mount').innerHTML = getFooterHTML();
-
   const prods = (window.DETOXY_CONFIG || {}).products || [];
-
-  // Fix image paths for root-level pages (config images use '../assets/...' for products/ subfolder)
-  function fixImg(path) {
-    if (!path) return '';
-    return path.startsWith('../') ? path.replace('../', '') : path;
-  }
+  const cfg = window.DETOXY_CONFIG || {};
+  const freeAt = cfg.freeShippingAt || 999;
+  const shipCost = cfg.defaultShipping || 60;
 
   function renderCart() {
     const items = Cart.get();
     const el = document.getElementById('cartContent');
     if (!items.length) {
-      el.innerHTML = `<div class="empty-state"><div class="empty-icon">🛒</div><div class="empty-title">Your cart is empty</div><div class="empty-sub">Add some products to get started</div><a href="products.html" class="btn btn-primary">Browse Products</a></div>`;
+      el.innerHTML = `<div class="empty-state"><div class="empty-icon">🛒</div><div class="empty-title">Your cart is empty</div><div class="empty-sub">Add some products to get started</div><a href="products.html" class="btn btn-primary btn-lg" style="margin-top:8px">Browse Products</a></div>`;
       return;
     }
     let subtotal = 0;
-    const rows = items.map(item => {
-      const p = prods.find(x => x.id === item.id);
-      if (!p) return '';
-      const lineTotal = p.price * item.qty;
-      subtotal += lineTotal;
-      const img = fixImg(p.images && p.images[0]);
-      return `
-      <div class="cart-row" id="crow-${p.id}">
-        <img class="cart-thumb" src="${img}" alt="${p.name}" onerror="this.src='https://placehold.co/64x64/1a3d35/2dd4bf?text=Item'">
+    const enriched = items.map(item => {
+      const p = prods.find(x=>x.id===item.id);
+      if (!p) return null;
+      subtotal += p.price * item.qty;
+      return { ...item, price: p.price, name: p.name, img: p.images&&p.images[0]||'', unit: p.unit||'' };
+    }).filter(Boolean);
+    const shipping = subtotal >= freeAt ? 0 : shipCost;
+    const total = subtotal + shipping;
+    const freePct = Math.min(100, Math.round(subtotal/freeAt*100));
+
+    const rowsHTML = enriched.map(i => `
+      <div class="cart-row">
+        <img class="cart-thumb" src="${i.img}" alt="${i.name}"
+          onerror="this.src='https://placehold.co/72x72/e8f5f2/2aab97?text=P'">
         <div>
-          <div class="cart-name"><a href="products/${p.id}.html">${p.name}</a></div>
-          <div class="cart-unit">₹${p.price} ${p.unit}</div>
-          <div class="qty-control" style="margin-top:8px;width:fit-content">
-            <button class="qty-btn" onclick="changeQty('${p.id}',-1)">−</button>
-            <input type="number" class="qty-input" value="${item.qty}" min="1" style="width:44px" onchange="setQty('${p.id}',this.value)">
-            <button class="qty-btn" onclick="changeQty('${p.id}',1)">+</button>
+          <div class="cart-name">${i.name}</div>
+          <div class="cart-unit">₹${i.price.toLocaleString()} each ${i.unit}</div>
+          <div class="qty-stepper" style="margin-top:10px;width:120px">
+            <button onclick="Cart.updateQty('${i.id}', ${i.qty-1}); if(${i.qty}-1<1) Cart.remove('${i.id}'); renderCart()">−</button>
+            <input type="number" value="${i.qty}" min="1" onchange="Cart.updateQty('${i.id}', parseInt(this.value)||1); renderCart()">
+            <button onclick="Cart.updateQty('${i.id}', ${i.qty+1}); renderCart()">+</button>
           </div>
         </div>
-        <div class="cart-line-price">₹${lineTotal}</div>
-        <button class="cart-remove" onclick="removeItem('${p.id}')" title="Remove">✕</button>
-      </div>`;
-    }).join('');
-    const freeShipAt = (window.DETOXY_CONFIG||{}).freeShippingAt||999;
-    const shipCost = (window.DETOXY_CONFIG||{}).defaultShipping||60;
-    const shipping = subtotal >= freeShipAt ? 0 : shipCost;
-    const total = subtotal + shipping;
-    el.innerHTML = `
-    <div class="cart-layout">
-      <div>
-        <div class="cart-table">${rows}</div>
-        <button onclick="Cart.clear();renderCart()" style="margin-top:14px;font-size:.8rem;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline">Clear cart</button>
-      </div>
-      <div class="summary-card">
-        <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--dark);margin-bottom:18px">Order Summary</h3>
-        <div class="summary-row"><span style="color:var(--muted)">Subtotal</span><span>₹${subtotal}</span></div>
-        <div class="summary-row"><span style="color:var(--muted)">Shipping</span><span>${shipping === 0 ? '<span style="color:var(--t)">FREE</span>' : '₹' + shipping}</span></div>
-        ${shipping > 0 ? `<div style="font-size:.75rem;color:var(--muted);margin-bottom:8px">Add ₹${freeShipAt-subtotal} more for free shipping</div>` : ''}
-        <div class="summary-total"><span>Total</span><span style="color:var(--td)">₹${total}</span></div>
-        <a href="checkout.html" class="btn btn-primary btn-full" style="margin-top:18px">Proceed to Checkout →</a>
-        <a href="products.html" class="btn btn-outline btn-full" style="margin-top:10px">Continue Shopping</a>
-      </div>
-    </div>`;
-  }
+        <div class="cart-line-price">₹${(i.price*i.qty).toLocaleString()}</div>
+        <button class="cart-remove" onclick="Cart.remove('${i.id}'); renderCart()" title="Remove">🗑</button>
+      </div>`).join('');
 
-  function changeQty(id, d) {
-    const items = Cart.get();
-    const i = items.findIndex(x => x.id === id);
-    if (i > -1) {
-      items[i].qty = Math.max(1, items[i].qty + d);
-      Cart.save(items);
-    }
-    renderCart();
-  }
-  function setQty(id, val) {
-    Cart.updateQty(id, parseInt(val) || 1);
-    renderCart();
-  }
-  function removeItem(id) {
-    Cart.remove(id);
-    renderCart();
+    el.innerHTML = `
+      <div class="cart-layout">
+        <div>
+          <div class="free-ship-bar">
+            ${shipping === 0
+              ? '<span style="color:var(--green);font-weight:600">✓ Free shipping applied!</span>'
+              : `<span>Add <strong>₹${freeAt-subtotal}</strong> more for free shipping</span>`}
+            <div class="free-ship-progress"><div class="free-ship-fill" style="width:${freePct}%"></div></div>
+          </div>
+          <div class="cart-table">${rowsHTML}</div>
+          <div style="display:flex;justify-content:space-between;margin-top:16px;flex-wrap:wrap;gap:10px">
+            <a href="products.html" class="btn btn-outline">← Continue Shopping</a>
+            <button class="btn btn-sm" style="color:var(--red);border:1.5px solid var(--border);background:none;cursor:pointer" onclick="if(confirm('Clear cart?')){Cart.clear();renderCart()}">🗑 Clear Cart</button>
+          </div>
+        </div>
+        <div>
+          <div class="summary-card">
+            <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--dark);margin-bottom:16px">Order Summary</h3>
+            <div class="summary-row"><span>Subtotal</span><span>₹${subtotal.toLocaleString()}</span></div>
+            <div class="summary-row"><span>Shipping</span><span>${shipping===0?'<span style="color:var(--green)">FREE</span>':'₹'+shipping}</span></div>
+            <div class="summary-total"><span>Total</span><span>₹${total.toLocaleString()}</span></div>
+            <p style="font-size:.75rem;color:var(--muted);margin:10px 0 16px">Inclusive of all taxes. GST invoice available.</p>
+            <a href="checkout.html" class="btn btn-primary btn-full btn-lg">Proceed to Checkout →</a>
+            <div style="text-align:center;margin-top:14px">
+              <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+                <span class="trust-pill" style="font-size:.68rem">🔒 Secure</span>
+                <span class="trust-pill" style="font-size:.68rem">💳 UPI/COD/Card</span>
+                <span class="trust-pill" style="font-size:.68rem">↩️ 7-Day Returns</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
   }
   renderCart();
 </script>
-
-<script>
-(function(){
-  // Scroll reveal
-  var els = document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale');
-  if('IntersectionObserver' in window){
-    var obs = new IntersectionObserver(function(entries){
-      entries.forEach(function(e){
-        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
-      });
-    },{threshold:0.12});
-    els.forEach(function(el){ obs.observe(el); });
-  } else {
-    els.forEach(function(el){ el.classList.add('visible'); });
-  }
-  // Auto-add reveal to common elements if not already set
-  var autoReveal = document.querySelectorAll(
-    '.card:not(.reveal):not(.reveal-scale),' +
-    '.prod-card:not(.reveal):not(.reveal-scale),' +
-    '.why-card:not(.reveal):not(.reveal-scale),' +
-    '.cat-card:not(.reveal):not(.reveal-scale),' +
-    '.blog-card:not(.reveal):not(.reveal-scale),' +
-    '.set-card:not(.reveal):not(.reveal-scale),' +
-    '.admin-card:not(.reveal):not(.reveal-scale)'
-  );
-  autoReveal.forEach(function(el,i){
-    el.classList.add('reveal-scale');
-    el.style.transitionDelay = (i%5)*0.08 + 's';
-    obs && obs.observe(el);
-  });
-})();
-</script>
-
 </body>
 </html>

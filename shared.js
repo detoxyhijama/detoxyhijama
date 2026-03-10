@@ -1,323 +1,388 @@
-// Detoxy Hijama — Shared utilities & OrderSync
-// All admin pages depend on this file.
+// Detoxy Hijama — Shared utilities v2
+// OrderSync, Cart, Navigation, Footer, Search, Cart Drawer
 
+/* ─── OrderSync ─────────────────────────────────────────────────────────── */
 const OrderSync = (() => {
-
   const STORAGE_KEY = "detoxy_orders";
-
-  /** Return all orders from localStorage (array). */
   function getLocalOrders() {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-    } catch (e) {
-      console.error("OrderSync: failed to parse orders", e);
-      return [];
-    }
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+    catch(e) { return []; }
   }
-
-  /** Save a full orders array to localStorage. */
-  function saveLocalOrders(orders) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
-  }
-
-  /**
-   * Add or update a single order in localStorage, then optionally
-   * push it to Google Sheets if a URL is configured.
-   */
+  function saveLocalOrders(orders) { localStorage.setItem(STORAGE_KEY, JSON.stringify(orders)); }
   function submit(order) {
     const orders = getLocalOrders();
     const idx = orders.findIndex(o => o.id === order.id);
-    if (idx >= 0) {
-      orders[idx] = order;
-    } else {
-      orders.push(order);
-    }
+    if (idx >= 0) orders[idx] = order; else orders.push(order);
     saveLocalOrders(orders);
-
-    // Async push to Google Sheets (silent fail if not configured)
-    const url = (window.DETOXY_CONFIG || {}).sheetsUrl
-              || localStorage.getItem("detoxy_sheets_url");
+    const url = (window.DETOXY_CONFIG || {}).sheetsUrl || localStorage.getItem("detoxy_sheets_url");
     if (url) {
-      // Map local order field names to what apps-script.gs expects,
-      // and wrap with action:'placeOrder' so the script routes correctly.
-      // BUG FIX: Previously sent raw order object without an `action` field,
-      // causing apps-script to return "Unknown action: undefined".
-      // BUG FIX: Field names now match the apps-script column mapping.
       const nameParts = (order.name || "").trim().split(" ");
       const payload = {
-        action:       "placeOrder",
-        orderNumber:  order.id        || "",
-        status:       order.status    || "New",
-        createdAt:    order.savedAt   ? new Date(order.savedAt).toISOString() : new Date().toISOString(),
-        firstName:    nameParts[0]    || "",
-        lastName:     nameParts.slice(1).join(" ") || "",
-        email:        order.email     || "",
-        phone:        order.phone     || "",
-        address1:     order.address   || "",
-        address2:     order.address2  || "",
-        city:         order.city      || "",
-        state:        order.state     || "",
-        pincode:      order.pincode   || "",
-        itemsSummary: order.items     || "",
-        items:        order.items     || "",
-        subtotal:     order.subtotal  || order.total || 0,
-        shippingCost: order.shipping  || 0,
-        codFee:       order.codFee    || 0,
-        total:        order.total     || order.subtotal || 0,
-        payment:      order.payment   || "",
-        notes:        order.notes     || "",
-        type:         order.type      || ""
+        action:"placeOrder", orderNumber:order.id||"", status:order.status||"New",
+        createdAt:order.savedAt ? new Date(order.savedAt).toISOString() : new Date().toISOString(),
+        firstName:nameParts[0]||"", lastName:nameParts.slice(1).join(" ")||"",
+        email:order.email||"", phone:order.phone||"",
+        address1:order.address||"", address2:order.address2||"",
+        city:order.city||"", state:order.state||"", pincode:order.pincode||"",
+        itemsSummary:order.items||"", items:order.items||"",
+        subtotal:order.subtotal||order.total||0, shippingCost:order.shipping||0,
+        codFee:order.codFee||0, total:order.total||order.subtotal||0,
+        payment:order.payment||"", notes:order.notes||"", type:order.type||""
       };
-      fetch(url, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      }).catch(() => { /* silent */ });
+      fetch(url, { method:"POST", mode:"no-cors", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload) }).catch(()=>{});
     }
-
     return order;
   }
-
-  /** Generate a unique order ID. */
   function generateId() {
-    const now = Date.now().toString(36).toUpperCase();
-    const rand = Math.random().toString(36).slice(2, 5).toUpperCase();
-    return "DH-" + now + rand;
+    return "DH-" + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2,5).toUpperCase();
   }
-
-  /** Count orders by status. */
-  function countByStatus(status) {
-    return getLocalOrders().filter(o => (o.status || "New") === status).length;
-  }
-
-  /** Calculate total revenue (all non-cancelled orders). */
-  function totalRevenue() {
-    return getLocalOrders()
-      .filter(o => o.status !== "Cancelled")
-      .reduce((sum, o) => sum + parseFloat(o.subtotal || o.total || 0), 0);
-  }
-
+  function countByStatus(status) { return getLocalOrders().filter(o=>(o.status||"New")===status).length; }
+  function totalRevenue() { return getLocalOrders().filter(o=>o.status!=="Cancelled").reduce((s,o)=>s+parseFloat(o.subtotal||o.total||0),0); }
   return { getLocalOrders, saveLocalOrders, submit, generateId, countByStatus, totalRevenue };
 })();
 
-
-// ─── Cart ─────────────────────────────────────────────────────────────────────
-// Used by cart.html, checkout.html, and all product pages.
+/* ─── Cart ──────────────────────────────────────────────────────────────── */
 const Cart = (() => {
   const KEY = 'detoxy_cart';
-
   function get() {
     try { return JSON.parse(localStorage.getItem(KEY) || '[]'); }
     catch(e) { return []; }
   }
-
-  function save(items) {
-    localStorage.setItem(KEY, JSON.stringify(items));
-    _dispatch();
-  }
-
-  /**
-   * Add a product to cart by id and quantity.
-   * productId must match an id in the products catalogue.
-   */
+  function save(items) { localStorage.setItem(KEY, JSON.stringify(items)); _dispatch(); }
   function add(productId, qty) {
     qty = parseInt(qty) || 1;
     const items = get();
-    const idx   = items.findIndex(i => i.id === productId);
-    if (idx >= 0) {
-      items[idx].qty = Math.max(1, items[idx].qty + qty);
-    } else {
-      // Look up product details from global PRODUCTS array if available
-      let name  = productId.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
-      let price = 0;
-      let img   = '';
-      if (window.PRODUCTS) {
-        const p = window.PRODUCTS.find(p => p.id === productId);
-        if (p) { name = p.name; price = p.price; img = p.images ? p.images[0] : ''; }
-      }
-      items.push({ id: productId, name, price, img, qty });
+    const idx = items.findIndex(i => i.id === productId);
+    if (idx >= 0) { items[idx].qty = Math.max(1, items[idx].qty + qty); }
+    else {
+      let name = productId.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+      let price = 0, img = '';
+      const prods = (window.DETOXY_CONFIG||{}).products||window.PRODUCTS||[];
+      const p = prods.find(p => p.id === productId);
+      if (p) { name = p.name; price = p.price; img = p.images ? p.images[0] : ''; }
+      items.push({ id:productId, name, price, img, qty });
     }
     save(items);
-    _showToast('Added to cart ✓');
+    _showToast('✓ Added to cart');
+    _refreshDrawer();
   }
-
-  function remove(productId) {
-    save(get().filter(i => i.id !== productId));
-  }
-
+  function remove(productId) { save(get().filter(i=>i.id!==productId)); _refreshDrawer(); }
   function updateQty(productId, qty) {
     const items = get();
-    const idx   = items.findIndex(i => i.id === productId);
-    if (idx >= 0) { items[idx].qty = Math.max(1, qty); save(items); }
+    const idx = items.findIndex(i=>i.id===productId);
+    if (idx >= 0) { items[idx].qty = Math.max(1, qty); save(items); _refreshDrawer(); }
   }
-
-  function clear() { localStorage.removeItem(KEY); _dispatch(); }
-
-  function count()  { return get().reduce((s,i) => s + (i.qty||1), 0); }
-  function total()  { return get().reduce((s,i) => s + (i.price||0)*(i.qty||1), 0); }
+  function clear() { localStorage.removeItem(KEY); _dispatch(); _refreshDrawer(); }
+  function count() { return get().reduce((s,i)=>s+(i.qty||1),0); }
+  function total() { return get().reduce((s,i)=>s+(i.price||0)*(i.qty||1),0); }
 
   function _dispatch() {
-    window.dispatchEvent(new CustomEvent('cartUpdated', { detail: { count: count() } }));
-    // Update any cart-count badges on the page
+    window.dispatchEvent(new CustomEvent('cartUpdated', {detail:{count:count()}}));
     document.querySelectorAll('.cart-count,.cart-badge').forEach(el => {
       const n = count();
       el.textContent = n;
       el.style.display = n > 0 ? 'flex' : 'none';
     });
   }
-
   function _showToast(msg) {
     let toast = document.getElementById('dh-cart-toast');
     if (!toast) {
       toast = document.createElement('div');
       toast.id = 'dh-cart-toast';
-      toast.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#0d1f1b;color:#5eead4;padding:12px 20px;border-radius:10px;font-size:.85rem;font-weight:600;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;font-family:Outfit,sans-serif';
       document.body.appendChild(toast);
     }
     toast.textContent = msg;
     toast.style.opacity = '1';
     toast.style.transform = 'translateY(0)';
     clearTimeout(toast._t);
-    toast._t = setTimeout(() => { toast.style.opacity='0'; toast.style.transform='translateY(10px)'; }, 2200);
+    toast._t = setTimeout(()=>{ toast.style.opacity='0'; toast.style.transform='translateY(12px)'; }, 2400);
   }
-
-  // Initialise badge count on page load
-  document.addEventListener('DOMContentLoaded', () => _dispatch());
-
+  function _refreshDrawer() {
+    const drawer = document.getElementById('cart-drawer-body');
+    if (drawer) renderCartDrawer();
+  }
+  document.addEventListener('DOMContentLoaded', ()=>_dispatch());
   return { get, save, add, remove, updateQty, clear, count, total };
 })();
 
+/* ─── Star helper ─────────────────────────────────────────────────────── */
+function renderStars(rating) {
+  let s = '';
+  for (let i=1; i<=5; i++) {
+    if (rating >= i) s += '★';
+    else if (rating >= i-0.5) s += '½';
+    else s += '☆';
+  }
+  return s;
+}
 
-// ─── Navigation & Footer Components ──────────────────────────────────────────
-// Returns the nav HTML using style.css class names.
-// activeLabel: highlight current page link. prefix: '../' for subdir pages.
-function getNavHTML(activeLabel, prefix) {
+/* ─── Fix image paths ─────────────────────────────────────────────────── */
+function fixImg(path, prefix) {
+  if (!path) return '';
   prefix = prefix || '';
-  var navItems = [
-    { label:'Home',     href: prefix + 'index.html' },
-    { label:'Products', href: prefix + 'products.html' },
-    { label:'Blogs',    href: prefix + 'blogs.html' },
-    { label:'Quote',    href: prefix + 'quote.html' },
-    { label:'Contact',  href: prefix + 'contact.html' },
-  ];
-  var links = navItems.map(function(item){
-    var cls = 'nav-link' + (item.label === activeLabel ? ' nav-link--active' : '');
-    return '<a href="'+item.href+'" class="'+cls+'">'+item.label+'</a>';
+  if (path.startsWith('../')) return path.replace('../', prefix ? '' : '');
+  return path;
+}
+
+/* ─── Cart Drawer ─────────────────────────────────────────────────────── */
+function injectCartDrawer() {
+  if (document.getElementById('cart-drawer')) return;
+  const overlay = document.createElement('div');
+  overlay.id = 'cart-drawer-overlay';
+  overlay.className = 'cart-drawer-overlay';
+  overlay.onclick = closeCartDrawer;
+  document.body.appendChild(overlay);
+
+  const drawer = document.createElement('div');
+  drawer.id = 'cart-drawer';
+  drawer.className = 'cart-drawer';
+  drawer.innerHTML = `
+    <div class="drawer-header">
+      <div class="drawer-title">🛒 Your Cart</div>
+      <button class="drawer-close" onclick="closeCartDrawer()">✕</button>
+    </div>
+    <div class="drawer-body" id="cart-drawer-body"></div>
+    <div class="drawer-footer" id="cart-drawer-footer"></div>
+  `;
+  document.body.appendChild(drawer);
+  renderCartDrawer();
+}
+
+function renderCartDrawer() {
+  const body = document.getElementById('cart-drawer-body');
+  const footer = document.getElementById('cart-drawer-footer');
+  if (!body) return;
+  const items = Cart.get();
+  const prods = (window.DETOXY_CONFIG||{}).products||window.PRODUCTS||[];
+  if (!items.length) {
+    body.innerHTML = `<div class="drawer-empty"><div class="empty-icon">🛒</div><p>Your cart is empty</p><a href="${_prefix}products.html" class="btn btn-primary btn-sm">Browse Products</a></div>`;
+    footer.innerHTML = '';
+    return;
+  }
+  let subtotal = 0;
+  const htmlItems = items.map(item => {
+    const p = prods.find(x=>x.id===item.id);
+    const price = p ? p.price : (item.price||0);
+    const img = p && p.images ? p.images[0] : item.img || '';
+    const name = p ? p.name : item.name;
+    subtotal += price * (item.qty||1);
+    return `
+      <div class="drawer-item">
+        <img class="drawer-item-img" src="${fixImg(img)}" alt="${name}"
+          onerror="this.src='https://placehold.co/64x64/f0f4f3/2aab97?text=P'">
+        <div style="flex:1">
+          <div class="drawer-item-name">${name}</div>
+          <div class="drawer-item-price">₹${price.toLocaleString()}</div>
+          <div class="drawer-qty-row">
+            <button class="qty-btn" onclick="Cart.updateQty('${item.id}', ${(item.qty||1)-1}); if(${(item.qty||1)}-1<1) Cart.remove('${item.id}')">−</button>
+            <span class="qty-num">${item.qty||1}</span>
+            <button class="qty-btn" onclick="Cart.updateQty('${item.id}', ${(item.qty||1)+1})">+</button>
+          </div>
+        </div>
+        <button class="drawer-remove" onclick="Cart.remove('${item.id}')" title="Remove">✕</button>
+      </div>`;
   }).join('');
-  var cartCount = (window.Cart ? window.Cart.count() : 0);
-  var cartDisplay = cartCount > 0 ? 'flex' : 'none';
-  return '<header class="site-header" id="mainNav">' +
-    '<a href="'+prefix+'index.html" class="brand" style="text-decoration:none">' +
-      '<div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--t),#1a8577);display:flex;align-items:center;justify-content:center;font-family:Cormorant Garamond,serif;font-size:1.1rem;font-weight:700;color:#fff;flex-shrink:0">D</div>' +
-      '<div class="brand-name-wrap">' +
-        '<span class="brand-main">Detoxy Hijama</span>' +
-        '<span class="brand-sub">Cups · Coimbatore</span>' +
-      '</div>' +
-    '</a>' +
-    '<nav class="site-nav">'+links+'</nav>' +
-    '<div class="header-actions">' +
-      '<a href="'+prefix+'cart.html" class="cart-btn" aria-label="Cart">' +
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>' +
-        '<span class="cart-count" style="display:'+cartDisplay+'">'+cartCount+'</span>' +
-      '</a>' +
-    '</div>' +
-    '<button class="hamburger" onclick="document.getElementById(&quot;mob-nav-overlay&quot;).classList.toggle(&quot;open&quot;)" aria-label="Menu">☰</button>' +
-    '<div id="mob-nav-overlay" class="mob-nav">' +
-      '<div class="mob-top">' +
-        '<span style="font-family:Cormorant Garamond,serif;font-size:1.1rem;font-weight:700;color:#fff">Detoxy Hijama</span>' +
-        '<button class="mob-close" onclick="document.getElementById(&quot;mob-nav-overlay&quot;).classList.remove(&quot;open&quot;)" aria-label="Close">✕</button>' +
-      '</div>' +
-      navItems.map(function(item){
-        return '<a class="mob-link" href="'+item.href+'">'+item.label+'</a>';
-      }).join('') +
-      '<a href="'+prefix+'cart.html" class="mob-link" style="color:var(--tl)">🛒 Cart ('+cartCount+')</a>' +
-    '</div>' +
-  '</header>';
+  body.innerHTML = htmlItems;
+  const cfg = window.DETOXY_CONFIG||{};
+  const freeAt = cfg.freeShippingAt||999;
+  const ship = subtotal >= freeAt ? 0 : (cfg.defaultShipping||60);
+  const total = subtotal + ship;
+  footer.innerHTML = `
+    <div class="drawer-subtotal"><span>Subtotal</span><span>₹${subtotal.toLocaleString()}</span></div>
+    <div class="drawer-shipping-note">${ship===0 ? '✓ Free shipping applied' : `Add ₹${freeAt-subtotal} more for free shipping`}</div>
+    <div class="drawer-actions">
+      <a href="${_prefix}cart.html" class="btn btn-outline btn-full">View Cart</a>
+      <a href="${_prefix}checkout.html" class="btn btn-primary btn-full">Checkout →</a>
+    </div>`;
 }
 
-// Returns the footer HTML using style.css class names.
+let _prefix = '';
+function openCartDrawer() {
+  renderCartDrawer();
+  document.getElementById('cart-drawer').classList.add('open');
+  document.getElementById('cart-drawer-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeCartDrawer() {
+  document.getElementById('cart-drawer').classList.remove('open');
+  document.getElementById('cart-drawer-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ─── Search ──────────────────────────────────────────────────────────── */
+function injectSearch() {
+  if (document.getElementById('search-overlay')) return;
+  const overlay = document.createElement('div');
+  overlay.id = 'search-overlay';
+  overlay.className = 'search-overlay';
+  overlay.onclick = (e) => { if(e.target===overlay) closeSearch(); };
+  overlay.innerHTML = `
+    <div class="search-box">
+      <div class="search-input-wrap">
+        <span style="color:var(--muted);font-size:1rem">🔍</span>
+        <input type="text" id="search-input" placeholder="Search hijama products…" autocomplete="off">
+        <button style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:1rem" onclick="closeSearch()">✕</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+    </div>`;
+  document.body.appendChild(overlay);
+  document.getElementById('search-input').addEventListener('input', function() {
+    const q = this.value.trim().toLowerCase();
+    const prods = (window.DETOXY_CONFIG||{}).products||window.PRODUCTS||[];
+    const el = document.getElementById('search-results');
+    if (!q) { el.innerHTML = ''; return; }
+    const matches = prods.filter(p => p.name.toLowerCase().includes(q) || (p.desc||'').toLowerCase().includes(q)).slice(0,6);
+    if (!matches.length) { el.innerHTML = '<p style="text-align:center;color:var(--muted);padding:20px;font-size:.87rem">No products found</p>'; return; }
+    el.innerHTML = matches.map(p => `
+      <a class="search-result-item" href="${_prefix}products/${p.id}.html">
+        <img class="search-result-img" src="${fixImg(p.images&&p.images[0])}" alt="${p.name}"
+          onerror="this.src='https://placehold.co/44x44/f0f4f3/2aab97?text=P'">
+        <div>
+          <div class="search-result-name">${p.name}</div>
+          <div class="search-result-price">₹${p.price.toLocaleString()} <span style="color:var(--muted);font-size:.75rem;text-decoration:line-through;margin-left:4px">₹${p.mrp}</span></div>
+        </div>
+      </a>`).join('');
+  });
+}
+function openSearch() {
+  document.getElementById('search-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('search-input').focus(),50);
+}
+function closeSearch() {
+  document.getElementById('search-overlay').classList.remove('open');
+}
+document.addEventListener('keydown', e => { if(e.key==='Escape') { closeSearch(); closeCartDrawer(); } });
+
+/* ─── Nav HTML ────────────────────────────────────────────────────────── */
+function getNavHTML(activeLabel, prefix) {
+  _prefix = prefix || '';
+  const p = _prefix;
+  const navItems = [
+    { label:'Home',     href: p + 'index.html' },
+    { label:'Products', href: p + 'products.html' },
+    { label:'Blogs',    href: p + 'blogs.html' },
+    { label:'About',    href: p + 'about.html' },
+    { label:'Contact',  href: p + 'contact.html' },
+  ];
+  const linksHTML = navItems.map(i => `<a href="${i.href}" class="nav-link${i.label===activeLabel?' active':''}">${i.label}</a>`).join('');
+  return `
+<nav class="nav" id="main-nav">
+  <div class="nav-inner">
+    <a href="${p}index.html" class="nav-logo">
+      <img src="${p}assets/logo.png" alt="Detoxy Hijama" onerror="this.style.display='none'">
+      <div>
+        <div class="nav-logo-text">Detoxy Hijama</div>
+        <div class="nav-logo-sub">Manufacturer Direct</div>
+      </div>
+    </a>
+    <div class="nav-links">${linksHTML}</div>
+    <div class="nav-actions">
+      <button class="nav-search-btn" onclick="openSearch()" aria-label="Search">🔍</button>
+      <button class="nav-cart-btn" onclick="openCartDrawer()">
+        🛒 Cart
+        <span class="cart-badge cart-count">0</span>
+      </button>
+      <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" onclick="toggleMobileNav()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="nav-mobile" id="nav-mobile">
+  ${navItems.map(i=>`<a href="${i.href}" class="nav-link${i.label===activeLabel?' active':''}">${i.label}</a>`).join('')}
+  <a href="${p}products.html" class="btn btn-primary btn-sm" style="margin-top:8px">Shop Now →</a>
+</div>`;
+}
+
+function toggleMobileNav() {
+  const mob = document.getElementById('nav-mobile');
+  mob.classList.toggle('open');
+}
+
+/* ─── Footer HTML ─────────────────────────────────────────────────────── */
 function getFooterHTML(prefix) {
-  prefix = prefix || '';
-  var year = new Date().getFullYear();
-  return '<footer style="background:var(--dark);color:#fff;padding:60px 5% 28px;margin-top:auto">' +
-    '<div class="footer-inner">' +
-      '<div>' +
-        '<div class="footer-brand-name">Detoxy Hijama</div>' +
-        '<p class="footer-desc">India's trusted hijama equipment manufacturer. Factory-direct prices, premium quality, pan-India delivery from Coimbatore, Tamil Nadu.</p>' +
-        '<div style="font-size:.77rem;color:rgba(255,255,255,.4);line-height:2;margin-top:12px">' +
-          '📍 Pollachi, TN 642005<br>' +
-          '📞 <a href="tel:+919566596077" style="color:rgba(255,255,255,.5)">+91 95665 96077</a><br>' +
-          '✉ <a href="mailto:detoxyhijama@gmail.com" style="color:rgba(255,255,255,.5)">detoxyhijama@gmail.com</a>' +
-        '</div>' +
-      '</div>' +
-      '<div class="footer-col"><h4>Quick Links</h4><ul>' +
-        '<li><a href="'+prefix+'index.html">Home</a></li>' +
-        '<li><a href="'+prefix+'products.html">All Products</a></li>' +
-        '<li><a href="'+prefix+'blogs.html">Blog</a></li>' +
-        '<li><a href="'+prefix+'about.html">About Us</a></li>' +
-        '<li><a href="'+prefix+'contact.html">Contact</a></li>' +
-      '</ul></div>' +
-      '<div class="footer-col"><h4>Products</h4><ul>' +
-        '<li><a href="'+prefix+'products/electric-smart-cup.html">Electric Smart Cup</a></li>' +
-        '<li><a href="'+prefix+'products/premium-cups.html">Premium Cups</a></li>' +
-        '<li><a href="'+prefix+'products/silicone-facial-4.html">Silicone Facial Set</a></li>' +
-        '<li><a href="'+prefix+'products/magnetic-vacuum-kit.html">Vacuum Kit</a></li>' +
-        '<li><a href="'+prefix+'products/lancet-pen.html">Lancet Pen</a></li>' +
-      '</ul></div>' +
-      '<div class="footer-col"><h4>Get In Touch</h4><ul>' +
-        '<li><a href="https://wa.me/919566596077" target="_blank" rel="noopener">💬 WhatsApp Us</a></li>' +
-        '<li><a href="mailto:detoxyhijama@gmail.com">📧 Email Us</a></li>' +
-        '<li><a href="'+prefix+'quote.html">📋 Bulk Quote</a></li>' +
-        '<li><a href="'+prefix+'cart.html">🛒 Cart</a></li>' +
-      '</ul></div>' +
-    '</div>' +
-    '<div class="footer-bottom">' +
-      '<p>© '+year+' Detoxy Hijama. All rights reserved.</p>' +
-      '<p>Made in India 🇮🇳 | Hijama Equipment Manufacturer, Coimbatore</p>' +
-    '</div>' +
-  '</footer>';
+  const p = prefix !== undefined ? prefix : _prefix;
+  const cfg = window.DETOXY_CONFIG || {};
+  const phone = cfg.phone || '+91 95665 96077';
+  const email = cfg.email || 'detoxyhijama@gmail.com';
+  const address = cfg.address || 'DETOXY HIJAMA, Madurai, Tamil Nadu, India';
+  const wa = (cfg.social||{}).whatsapp || '919566596077';
+  return `
+<footer class="site-footer">
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand-logo">
+        <img src="${p}assets/logo.png" alt="Detoxy Hijama" onerror="this.style.display='none'">
+        <div class="footer-brand-name">Detoxy Hijama</div>
+      </div>
+      <p class="footer-desc">India's trusted manufacturer of clinical-grade hijama cups and cupping therapy equipment. Direct from factory — no middlemen.</p>
+      <div class="footer-social">
+        <a href="https://wa.me/${wa}" target="_blank" rel="noopener" title="WhatsApp">💬</a>
+        <a href="mailto:${email}" title="Email">📧</a>
+        <a href="${p}about.html" title="About Us">🏭</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Quick Links</div>
+      <div class="footer-links">
+        <a href="${p}index.html">Home</a>
+        <a href="${p}products.html">All Products</a>
+        <a href="${p}products.html?cat=cups">Hijama Cups</a>
+        <a href="${p}products.html?cat=kits">Cupping Kits</a>
+        <a href="${p}products.html?cat=consumables">Consumables</a>
+        <a href="${p}quote.html">Bulk / Export Quote</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Information</div>
+      <div class="footer-links">
+        <a href="${p}about.html">About Us</a>
+        <a href="${p}blogs.html">Blog</a>
+        <a href="${p}contact.html">Contact Us</a>
+        <a href="${p}cart.html">My Cart</a>
+        <a href="${p}checkout.html">Checkout</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Contact</div>
+      <div class="footer-contact-item"><span class="footer-contact-icon">📞</span><span>${phone}</span></div>
+      <div class="footer-contact-item"><span class="footer-contact-icon">📧</span><span>${email}</span></div>
+      <div class="footer-contact-item"><span class="footer-contact-icon">📍</span><span>${address}</span></div>
+      <a href="https://wa.me/${wa}?text=Hi+Detoxy+Hijama,+I+need+help+with+a+product" target="_blank" class="wa-btn" style="margin-top:12px">💬 Chat on WhatsApp</a>
+    </div>
+  </div>
+  <div style="max-width:1220px;margin:0 auto;padding:0 24px 24px">
+    <div style="background:rgba(42,171,151,.12);border:1px solid rgba(42,171,151,.2);border-radius:12px;padding:20px 24px;display:flex;gap:20px;flex-wrap:wrap;align-items:center;justify-content:center">
+      <span style="color:rgba(255,255,255,.8);font-size:.83rem">🔒 Secure Checkout</span>
+      <span style="color:rgba(255,255,255,.8);font-size:.83rem">🚚 Pan India Delivery</span>
+      <span style="color:rgba(255,255,255,.8);font-size:.83rem">📦 Same Day Dispatch</span>
+      <span style="color:rgba(255,255,255,.8);font-size:.83rem">↩️ 7-Day Returns</span>
+      <span style="color:rgba(255,255,255,.8);font-size:.83rem">💳 UPI / COD / Card</span>
+      <span style="color:rgba(255,255,255,.8);font-size:.83rem">🏭 Direct Manufacturer</span>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© ${new Date().getFullYear()} Detoxy Hijama. All rights reserved.</span>
+    <span>Made in <span style="color:var(--tl)">Madurai, Tamil Nadu 🇮🇳</span></span>
+  </div>
+</footer>`;
 }
 
-
-// ─── Product Card HTML ────────────────────────────────────────────────────────
-// Renders a product card for grids on index.html and products.html.
-// prefix: '' for root pages, '../' for subdir pages.
-function getProductCardHTML(p, prefix) {
-  prefix = prefix || '';
-  var img = (p.images && p.images[0])
-    ? p.images[0]
-    : 'https://placehold.co/320x220/1a3d35/2dd4bf?text=' + encodeURIComponent(p.name);
-  var discount = p.mrp > p.price
-    ? '<span class="prod-discount">-' + Math.round((1 - p.price/p.mrp)*100) + '%</span>'
-    : '';
-  var badge = p.badge
-    ? '<span class="prod-badge">' + p.badge + '</span>'
-    : '';
-  var stars = p.rating
-    ? '<span style="color:#f59e0b;font-size:.78rem">★ ' + p.rating + '</span>'
-    : '';
-  return '<div class="prod-card reveal-scale">' +
-    '<a href="' + prefix + 'products/' + p.id + '.html" style="display:block;text-decoration:none">' +
-      '<div class="prod-img-wrap">' +
-        '<img src="' + img + '" alt="' + p.name + '" class="prod-img lazy" loading="lazy" onerror="this.src=\'https://placehold.co/320x220/1a3d35/2dd4bf?text=Detoxy\'">' +
-        badge + discount +
-      '</div>' +
-      '<div class="prod-body">' +
-        '<div class="prod-name">' + p.name + '</div>' +
-        (p.desc ? '<div class="prod-desc">' + p.desc + '</div>' : '') +
-        '<div class="prod-price-row">' +
-          '<span class="prod-price">₹' + p.price + ' <small style="font-size:.7em;font-weight:400;color:var(--muted)">' + (p.unit||'') + '</small></span>' +
-          (p.mrp > p.price ? '<span class="prod-mrp">₹' + p.mrp + '</span>' : '') +
-          stars +
-        '</div>' +
-      '</div>' +
-    '</a>' +
-    '<div class="prod-actions">' +
-      '<button class="btn btn-primary" style="flex:1;font-size:.82rem;padding:9px 14px" onclick="Cart.add(\'' + p.id + '\',1)">' +
-        'Add to Cart' +
-      '</button>' +
-      '<a href="' + prefix + 'products/' + p.id + '.html" class="btn btn-outline" style="font-size:.82rem;padding:9px 14px">View →</a>' +
-    '</div>' +
-  '</div>';
-}
+/* ─── Scroll nav shadow + reveal ─────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  // Sticky nav scroll class
+  const nav = document.getElementById('main-nav');
+  if (nav) {
+    window.addEventListener('scroll', ()=>{
+      nav.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+  }
+  // Intersection observer for .reveal elements
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  // Inject search + drawer
+  injectSearch();
+  injectCartDrawer();
+});
