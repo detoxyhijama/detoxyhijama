@@ -601,3 +601,99 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 380px) {
   .products-grid { grid-template-columns: 1fr; }
 }
+
+/* ══════════════════════════════════════════════════════════
+   PRODUCT DETAIL PAGE  (product/*.html pages)
+   ══════════════════════════════════════════════════════════ */
+
+/* Centred content wrapper used on product pages */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 5%;
+}
+
+/* Card badge / discount overlays on gallery */
+.card-badge {
+  display: inline-block;
+  background: var(--t);
+  color: #fff;
+  font-size: .65rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 50px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.card-discount {
+  display: inline-block;
+  background: var(--red);
+  color: #fff;
+  font-size: .65rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 50px;
+}
+
+/* Quantity selector */
+.qty-control {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+.qty-btn {
+  background: none;
+  border: none;
+  width: 36px;
+  height: 38px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--dark);
+  cursor: pointer;
+  -webkit-transition: background .15s;
+          transition: background .15s;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.qty-btn:hover { background: var(--cream); }
+.qty-input {
+  width: 52px;
+  border: none;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  text-align: center;
+  font-size: .9rem;
+  font-weight: 600;
+  color: var(--dark);
+  padding: 6px 4px;
+  font-family: inherit;
+  outline: none;
+  background: #fff;
+  /* Remove number input spinners for cleaner look */
+  -moz-appearance: textfield;
+}
+.qty-input::-webkit-inner-spin-button,
+.qty-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* Rating stars */
+.star {
+  color: #f59e0b;
+  font-size: .95rem;
+  line-height: 1;
+}
+.star.half { opacity: .45; }
+
+/* Related products grid mobile fix */
+@media (max-width: 640px) {
+  .related-grid { grid-template-columns: 1fr 1fr !important; }
+  .product-page { padding: 20px 0 40px !important; }
+  .gallery-thumbs { gap: 6px; }
+  .gallery-thumb { width: 54px; height: 54px; }
+  .tabs { margin-top: 32px; }
+  .tab-btn { padding: 10px 14px; font-size: .8rem; }
+}

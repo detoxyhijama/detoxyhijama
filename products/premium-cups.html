@@ -3,7 +3,7 @@
 <head>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Premium Hijama Cups | Medical Grade Cupping Set — Detoxy Hijama</title>
@@ -259,7 +259,7 @@
     if (!p) return '';
     const img = (p.images&&p.images[0])||'';
     return `<a href="${p.id}.html" class="related-card">
-      <div class="related-img-wrap"><img src="${img}" alt="${p.name}" onerror="this.src='https://placehold.co/160x160/1a3d35/2dd4bf?text=Product'"><span class="card-discount">-${p.discount}</span></div>
+      <div class="related-img-wrap"><img src="${img}" alt="${p.name}" onerror="this.src='https://placehold.co/160x160/1a3d35/2dd4bf?text=Product'">${p.mrp > p.price ? '<span class="card-discount">-'+Math.round((1-p.price/p.mrp)*100)+'%</span>' : ''}</div>
       <div class="related-name">${p.name}</div>
       <div class="related-price">₹${p.price} <span style="font-size:.75rem;color:var(--muted);font-family:sans-serif;text-decoration:line-through">₹${p.mrp}</span></div>
     </a>`;
