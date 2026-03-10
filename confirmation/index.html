@@ -43,7 +43,21 @@
   document.getElementById('header-mount').innerHTML = getNavHTML('');
   document.getElementById('footer-mount').innerHTML = getFooterHTML();
   const id = new URLSearchParams(window.location.search).get('id');
-  if (id) document.getElementById('orderId').textContent = 'Order ID: ' + id;
+  if (id) {
+    document.getElementById('orderId').textContent = 'Order ID: ' + id;
+    const order = OrderSync.getLocalOrders().find(o => o.id === id);
+    if (order) {
+      const el = document.getElementById('orderId');
+      el.insertAdjacentHTML('afterend', `
+        <div style="margin-top:12px;padding:16px;background:#f9fffe;border:1px solid var(--border);border-radius:12px;font-size:.87rem;text-align:left">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:var(--muted)">Name</span><span style="font-weight:600">${order.name}</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:var(--muted)">Phone</span><span style="font-weight:600">${order.phone}</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="color:var(--muted)">Payment</span><span style="font-weight:600">${order.payment}</span></div>
+          <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"><span style="color:var(--muted)">Items</span><div style="margin-top:6px;font-weight:600;line-height:1.6">${(order.items||'').split(' | ').join('<br>')}</div></div>
+          <div style="display:flex;justify-content:space-between;margin-top:12px;font-size:1rem;font-weight:700;color:var(--td)"><span>Total</span><span>&#8377;${order.total}</span></div>
+        </div>`);
+    }
+  }
 </script>
 </body>
 </html>

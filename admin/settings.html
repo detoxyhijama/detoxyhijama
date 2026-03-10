@@ -121,6 +121,18 @@ function saveSettings() {
   setTimeout(()=>document.getElementById('setAlert').innerHTML='',3000);
 }
 
+// Load saved settings on page open
+(function loadSettings() {
+  const fsa = localStorage.getItem('shop_freeShipAt');
+  const ds  = localStorage.getItem('shop_defaultShip');
+  const cod = localStorage.getItem('shop_codEnabled');
+  const cm  = localStorage.getItem('shop_codMax');
+  if (fsa) document.getElementById('freeShipAt').value = fsa;
+  if (ds)  document.getElementById('defaultShip').value = ds;
+  if (cod) document.getElementById('codEnabled').value = cod;
+  if (cm)  document.getElementById('codMax').value = cm;
+})();
+
 function exportData() {
   const data = {};
   for (let i=0;i<localStorage.length;i++){const k=localStorage.key(i);data[k]=localStorage.getItem(k);}
