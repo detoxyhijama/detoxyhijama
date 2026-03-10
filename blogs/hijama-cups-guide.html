@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>The Complete Guide to Choosing Hijama Cups | Detoxy Hijama Blog</title>
-  <meta name="description" content="Learn the differences between standard, premium, silicone, and fire cupping cups. Expert advice on choosing the right hijama cup for your clinic or practice."/>
-  <meta name="keywords" content="hijama cups guide, cupping cup types, premium vs standard cups, silicone hijama cups, fire cupping cups India"/>
+  <title>Hijama Cups Buying Guide | Types, Sizes & Best Picks — Detoxy Hijama</title>
+  <meta name="description" content="Complete guide to choosing the right hijama cups. Compare silicone, glass, bamboo, plastic and electric cups. Best picks for beginners and professionals."/>
+  <meta name="keywords" content="hijama cups guide, types of cupping cups, best hijama cups India, silicone vs glass cupping, electric cupping cup guide, how to choose hijama cups"/>
   <link rel="canonical" href="https://detoxyhijama.github.io/blogs/hijama-cups-guide.html"/>
   <meta name="robots" content="index, follow"/>
   <meta property="og:type" content="article"/>
@@ -82,9 +82,42 @@
 </div>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-  document.getElementById("header-mount").innerHTML = getNavHTML("Blogs");
-  document.getElementById("footer-mount").innerHTML = getFooterHTML();
+  document.getElementById("header-mount").innerHTML = getNavHTML('Blogs','../');
+  document.getElementById("footer-mount").innerHTML = getFooterHTML('../');
 });
 </script>
+
+<script>
+(function(){
+  // Scroll reveal
+  var els = document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale');
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    },{threshold:0.12});
+    els.forEach(function(el){ obs.observe(el); });
+  } else {
+    els.forEach(function(el){ el.classList.add('visible'); });
+  }
+  // Auto-add reveal to common elements if not already set
+  var autoReveal = document.querySelectorAll(
+    '.card:not(.reveal):not(.reveal-scale),' +
+    '.prod-card:not(.reveal):not(.reveal-scale),' +
+    '.why-card:not(.reveal):not(.reveal-scale),' +
+    '.cat-card:not(.reveal):not(.reveal-scale),' +
+    '.blog-card:not(.reveal):not(.reveal-scale),' +
+    '.set-card:not(.reveal):not(.reveal-scale),' +
+    '.admin-card:not(.reveal):not(.reveal-scale)'
+  );
+  autoReveal.forEach(function(el,i){
+    el.classList.add('reveal-scale');
+    el.style.transitionDelay = (i%5)*0.08 + 's';
+    obs && obs.observe(el);
+  });
+})();
+</script>
+
 </body>
 </html>

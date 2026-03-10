@@ -2,10 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 Disallow: /shipper/
-Disallow: /cart.html
-Disallow: /checkout.html
-Disallow: /confirmation.html
-Disallow: /confirmation/
-Disallow: /login.html
-
 Sitemap: https://detoxyhijama.github.io/sitemap.xml

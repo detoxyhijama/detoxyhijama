@@ -30,8 +30,8 @@
       <p style="font-size:.93rem;color:var(--muted);margin-bottom:28px;line-height:1.75">Thank you for your order. We've received it and will dispatch within 24 hours. You'll receive updates via WhatsApp/SMS.</p>
       <div id="orderId" style="background:var(--tp);border:1px solid var(--border);border-radius:12px;padding:14px 20px;margin-bottom:28px;font-weight:600;color:var(--td)"></div>
       <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
-        <a href="../products.html" class="btn btn--primary">Continue Shopping</a>
-        <a href="https://wa.me/919566596077" class="btn btn--outline" target="_blank">💬 Track on WhatsApp</a>
+        <a href="../products.html" class="btn btn-primary">Continue Shopping</a>
+        <a href="https://wa.me/919566596077" class="btn btn-outline" target="_blank">💬 Track on WhatsApp</a>
       </div>
     </div>
   </section>
@@ -40,8 +40,8 @@
 <script src="../config.js"></script>
 <script src="../shared.js"></script>
 <script>
-  document.getElementById('header-mount').innerHTML = getNavHTML('');
-  document.getElementById('footer-mount').innerHTML = getFooterHTML();
+  document.getElementById('header-mount').innerHTML = getNavHTML('','../');
+  document.getElementById('footer-mount').innerHTML = getFooterHTML('../');
   const id = new URLSearchParams(window.location.search).get('id');
   if (id) {
     document.getElementById('orderId').textContent = 'Order ID: ' + id;
@@ -59,5 +59,38 @@
     }
   }
 </script>
+
+<script>
+(function(){
+  // Scroll reveal
+  var els = document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale');
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    },{threshold:0.12});
+    els.forEach(function(el){ obs.observe(el); });
+  } else {
+    els.forEach(function(el){ el.classList.add('visible'); });
+  }
+  // Auto-add reveal to common elements if not already set
+  var autoReveal = document.querySelectorAll(
+    '.card:not(.reveal):not(.reveal-scale),' +
+    '.prod-card:not(.reveal):not(.reveal-scale),' +
+    '.why-card:not(.reveal):not(.reveal-scale),' +
+    '.cat-card:not(.reveal):not(.reveal-scale),' +
+    '.blog-card:not(.reveal):not(.reveal-scale),' +
+    '.set-card:not(.reveal):not(.reveal-scale),' +
+    '.admin-card:not(.reveal):not(.reveal-scale)'
+  );
+  autoReveal.forEach(function(el,i){
+    el.classList.add('reveal-scale');
+    el.style.transitionDelay = (i%5)*0.08 + 's';
+    obs && obs.observe(el);
+  });
+})();
+</script>
+
 </body>
 </html>

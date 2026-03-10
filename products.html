@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>All Hijama Products | Detoxy Hijama — Manufacturer Direct</title>
-  <meta name="description" content="Shop all hijama cups, cupping kits, surgical blades and consumables from Detoxy Hijama manufacturer. Bulk pricing available. Pan India delivery."/>
-  <meta name="keywords" content="hijama cups online, cupping kits India, hijama consumables bulk, surgical blades hijama, detoxy hijama products, hijama equipment price list"/>
+  <title>Hijama Products | Buy Cupping Therapy Equipment Online India — Detoxy Hijama</title>
+  <meta name="description" content="Shop all hijama products: silicone cups, fire cupping sets, electric smart cups, vacuum kits, lancet pens, surgical blades, latex gloves & more. Factory prices, fast shipping across India. Bulk orders welcome."/>
+  <meta name="keywords" content="buy hijama products online, hijama cups shop India, silicone hijama cups, fire cupping glass set, electric hijama cup machine, vacuum cupping pump kit, hijama lancet pen price, hijama surgical blades India, latex gloves for hijama, hijama accessories buy online, cupping therapy products India, wholesale hijama equipment, hijama cups set price, best cupping cups India, medical grade hijama cups, hijama clinic supplies buy, hijama products Tamil Nadu, cupping therapy tools India, hijama equipment supplier, bulk cupping supplies, hijama cups manufacturer direct, cupping therapy accessories, professional cupping set India"/>
   <link rel="canonical" href="https://detoxyhijama.github.io/products.html"/>
   <meta name="robots" content="index, follow"/>
   <meta property="og:type" content="website"/>
@@ -27,6 +27,7 @@
     .products-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px}
     .result-count{font-size:.83rem;color:var(--muted)}
   </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"Detoxy Hijama Products","description":"Complete range of hijama cupping therapy equipment","url":"https://detoxyhijama.github.io/products.html","numberOfItems":14}</script>
 </head>
 <body>
 <div class="page-wrapper">
@@ -65,8 +66,8 @@
     <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;margin-bottom:12px">Need More? Get Wholesale Pricing</h2>
     <p style="opacity:.75;font-size:.93rem;margin-bottom:24px;max-width:480px;margin-left:auto;margin-right:auto">Minimum orders from 50 units. Custom packaging available. Export orders welcome.</p>
     <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
-      <a href="quote.html" class="btn btn--primary">Get Quotation</a>
-      <a href="https://wa.me/919566596077" class="btn btn--outline-white" target="_blank">💬 WhatsApp</a>
+      <a href="quote.html" class="btn btn-primary">Get Quotation</a>
+      <a href="https://wa.me/919566596077" class="btn btn-outline-white" target="_blank">💬 WhatsApp</a>
     </div>
   </div>
 
@@ -98,7 +99,7 @@
   }
 
   function renderProducts() {
-    let list = _cat === 'all' ? [...prods] : prods.filter(p => p.category === _cat);
+    let list = _cat === 'all' ? [...prods] : prods.filter(p => p.cat === _cat);
     const sort = document.getElementById('sortSel').value;
     if (sort === 'price-asc') list.sort((a,b) => a.price - b.price);
     else if (sort === 'price-desc') list.sort((a,b) => b.price - a.price);
@@ -109,5 +110,38 @@
 
   renderProducts();
 </script>
+
+<script>
+(function(){
+  // Scroll reveal
+  var els = document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale');
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    },{threshold:0.12});
+    els.forEach(function(el){ obs.observe(el); });
+  } else {
+    els.forEach(function(el){ el.classList.add('visible'); });
+  }
+  // Auto-add reveal to common elements if not already set
+  var autoReveal = document.querySelectorAll(
+    '.card:not(.reveal):not(.reveal-scale),' +
+    '.prod-card:not(.reveal):not(.reveal-scale),' +
+    '.why-card:not(.reveal):not(.reveal-scale),' +
+    '.cat-card:not(.reveal):not(.reveal-scale),' +
+    '.blog-card:not(.reveal):not(.reveal-scale),' +
+    '.set-card:not(.reveal):not(.reveal-scale),' +
+    '.admin-card:not(.reveal):not(.reveal-scale)'
+  );
+  autoReveal.forEach(function(el,i){
+    el.classList.add('reveal-scale');
+    el.style.transitionDelay = (i%5)*0.08 + 's';
+    obs && obs.observe(el);
+  });
+})();
+</script>
+
 </body>
 </html>

@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Contact Detoxy Hijama | Madurai, Tamil Nadu | +91 95665 96077</title>
-  <meta name="description" content="Contact Detoxy Hijama — hijama equipment manufacturer in Madurai, Tamil Nadu. Call +91 95665 96077 or WhatsApp for bulk orders and enquiries."/>
-  <meta name="keywords" content="detoxy hijama contact, hijama equipment manufacturer Madurai, hijama supplier Tamil Nadu, bulk hijama order enquiry, detoxyhijama@gmail.com"/>
+  <title>Contact Detoxy Hijama | WhatsApp, Email & Address — Madurai India</title>
+  <meta name="description" content="Contact Detoxy Hijama for bulk orders, product enquiries, or support. Reach us on WhatsApp +91 95665 96077, email or visit our store in Madurai, Tamil Nadu, India."/>
+  <meta name="keywords" content="contact detoxy hijama, hijama supplier contact India, hijama equipment enquiry, buy hijama bulk contact, detoxy hijama whatsapp, hijama manufacturer contact Madurai, hijama shop contact Tamil Nadu, hijama wholesale enquiry"/>
   <link rel="canonical" href="https://detoxyhijama.github.io/contact.html"/>
   <meta name="robots" content="index, follow"/>
   <meta property="og:type" content="website"/>
@@ -173,7 +173,7 @@
               <label class="form-label">Message <span class="req">*</span></label>
               <textarea class="form-textarea" id="cMessage" placeholder="Tell us what you need..." rows="4"></textarea>
             </div>
-            <button class="btn btn--primary btn--full" onclick="submitContact()">
+            <button class="btn btn-primary btn-full" onclick="submitContact()">
               Send Message
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             </button>
@@ -220,5 +220,38 @@
     alert.innerHTML = '<div class="alert alert--success">✓ Opening WhatsApp to send your message!</div>';
   }
 </script>
+
+<script>
+(function(){
+  // Scroll reveal
+  var els = document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale');
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    },{threshold:0.12});
+    els.forEach(function(el){ obs.observe(el); });
+  } else {
+    els.forEach(function(el){ el.classList.add('visible'); });
+  }
+  // Auto-add reveal to common elements if not already set
+  var autoReveal = document.querySelectorAll(
+    '.card:not(.reveal):not(.reveal-scale),' +
+    '.prod-card:not(.reveal):not(.reveal-scale),' +
+    '.why-card:not(.reveal):not(.reveal-scale),' +
+    '.cat-card:not(.reveal):not(.reveal-scale),' +
+    '.blog-card:not(.reveal):not(.reveal-scale),' +
+    '.set-card:not(.reveal):not(.reveal-scale),' +
+    '.admin-card:not(.reveal):not(.reveal-scale)'
+  );
+  autoReveal.forEach(function(el,i){
+    el.classList.add('reveal-scale');
+    el.style.transitionDelay = (i%5)*0.08 + 's';
+    obs && obs.observe(el);
+  });
+})();
+</script>
+
 </body>
 </html>

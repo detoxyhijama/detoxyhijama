@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Wet Cupping Technique: Step-by-Step Clinical Guide | Detoxy</title>
-  <meta name="description" content="Step-by-step clinical guide to wet cupping (hijama). Covers equipment prep, dry cupping phase, incision technique, second cup placement, and aftercare."/>
-  <meta name="keywords" content="wet cupping technique, hijama step by step, how to do hijama, cupping incision guide, hijama clinical protocol India"/>
+  <title>Wet Cupping Technique | Hijama Step-by-Step Tutorial — Detoxy Hijama</title>
+  <meta name="description" content="Master the wet cupping (hijama) technique. Detailed tutorial on cupping position, incision depth, suction duration and post-session care."/>
+  <meta name="keywords" content="wet cupping technique, hijama method tutorial, cupping therapy steps, wet hijama how to, hijama incision guide, cupping suction technique"/>
   <link rel="canonical" href="https://detoxyhijama.github.io/blogs/wet-cupping-technique.html"/>
   <meta name="robots" content="index, follow"/>
   <meta property="og:type" content="article"/>
@@ -85,9 +85,42 @@
 </div>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-  document.getElementById("header-mount").innerHTML = getNavHTML("Blogs");
-  document.getElementById("footer-mount").innerHTML = getFooterHTML();
+  document.getElementById("header-mount").innerHTML = getNavHTML('Blogs','../');
+  document.getElementById("footer-mount").innerHTML = getFooterHTML('../');
 });
 </script>
+
+<script>
+(function(){
+  // Scroll reveal
+  var els = document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale');
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    },{threshold:0.12});
+    els.forEach(function(el){ obs.observe(el); });
+  } else {
+    els.forEach(function(el){ el.classList.add('visible'); });
+  }
+  // Auto-add reveal to common elements if not already set
+  var autoReveal = document.querySelectorAll(
+    '.card:not(.reveal):not(.reveal-scale),' +
+    '.prod-card:not(.reveal):not(.reveal-scale),' +
+    '.why-card:not(.reveal):not(.reveal-scale),' +
+    '.cat-card:not(.reveal):not(.reveal-scale),' +
+    '.blog-card:not(.reveal):not(.reveal-scale),' +
+    '.set-card:not(.reveal):not(.reveal-scale),' +
+    '.admin-card:not(.reveal):not(.reveal-scale)'
+  );
+  autoReveal.forEach(function(el,i){
+    el.classList.add('reveal-scale');
+    el.style.transitionDelay = (i%5)*0.08 + 's';
+    obs && obs.observe(el);
+  });
+})();
+</script>
+
 </body>
 </html>

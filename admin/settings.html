@@ -25,10 +25,13 @@
     .admin-sidebar{background:#0d1f1b;padding:24px 16px;position:fixed;width:240px;height:100vh;overflow-y:auto;z-index:100}
     .admin-main{margin-left:248px;padding:28px}
     .sidebar-brand{display:flex;align-items:center;gap:10px;padding:0 8px 20px;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.08)}
-    .sidebar-brand-text{font-family:'Cormorant Garamond',serif;font-size:1rem;color:#fff;font-weight:700}
-    .sidebar-label{font-size:.65rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.12em;font-weight:700;padding:14px 12px 6px}
+    .sidebar-brand-name{font-family:"Cormorant Garamond",serif;font-size:1rem;color:#fff;font-weight:700;line-height:1.1}
+    .sidebar-brand-sub{font-size:.53rem;color:rgba(255,255,255,.3);letter-spacing:.12em;text-transform:uppercase;margin-top:1px}
+    .sidebar-section-label{font-size:.65rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.12em;font-weight:700;padding:14px 12px 6px}
     .sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:rgba(255,255,255,.65);font-size:.83rem;font-weight:500;transition:all .2s;margin-bottom:2px;text-decoration:none}
     .sidebar-link:hover,.sidebar-link.active{background:rgba(42,171,151,.16);color:#5eead4}
+    .sidebar-logout{color:rgba(255,140,140,.6)!important}
+    .sidebar-logout:hover{background:rgba(255,80,80,.12)!important;color:rgba(255,140,140,.9)!important}
     .set-card{background:#fff;border-radius:16px;padding:28px;border:1px solid var(--border);margin-bottom:20px}
     .set-card h2{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:var(--dark);margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border)}
     @media(max-width:900px){.admin-wrap{grid-template-columns:1fr}.admin-sidebar{display:none}.admin-main{margin-left:0}}
@@ -69,7 +72,7 @@
       <div class="form-group"><label class="form-label">Current Password</label><input type="password" class="form-input" id="oldPass" placeholder="Enter current password"/></div>
       <div class="form-group"><label class="form-label">New Password</label><input type="password" class="form-input" id="newPass" placeholder="Enter new password (min 8 chars)"/></div>
       <div class="form-group"><label class="form-label">Confirm New Password</label><input type="password" class="form-input" id="confirmPass" placeholder="Repeat new password"/></div>
-      <button class="btn btn--primary" onclick="changePassword()">Update Password</button>
+      <button class="btn btn-primary" onclick="changePassword()">Update Password</button>
     </div>
 
     <div class="set-card">
@@ -81,14 +84,14 @@
           <select class="form-select" id="codEnabled"><option value="yes">Yes</option><option value="no">No</option></select></div>
         <div class="form-group"><label class="form-label">Max COD Order Value (₹)</label><input type="number" class="form-input" id="codMax" value="5000"/></div>
       </div>
-      <button class="btn btn--primary" onclick="saveSettings()">Save Settings</button>
+      <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
     </div>
 
     <div class="set-card">
       <h2>⚠️ Danger Zone</h2>
       <div style="display:flex;gap:12px;flex-wrap:wrap">
         <button class="btn" style="background:var(--red);color:#fff;border-radius:10px" onclick="if(confirm('Clear ALL localStorage data? This removes all orders, blog drafts, and settings.'))localStorage.clear();">🗑️ Clear All Data</button>
-        <button class="btn btn--outline" onclick="exportData()">⬇️ Export All Data (JSON)</button>
+        <button class="btn btn-outline" onclick="exportData()">⬇️ Export All Data (JSON)</button>
       </div>
     </div>
   </main>

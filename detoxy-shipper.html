@@ -195,6 +195,11 @@ td{padding:11px 13px;font-size:.82rem;color:var(--txt);vertical-align:middle}
 @media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:640px){.sb{display:none}.content{padding:14px}.form-grid{grid-template-columns:1fr}#od{width:100%}}
 </style>
+  <meta name="robots" content="noindex, nofollow"/>
+  <link rel="canonical" href="https://detoxyhijama.github.io/detoxy-shipper.html"/>
+  <meta property="og:title" content="Detoxy Hijama Shipper"/>
+  <meta property="og:description" content="Detoxy Hijama internal shipper panel."/>
+  <meta property="og:type" content="website"/>
 </head>
 <body>
 
@@ -625,5 +630,38 @@ async function deleteProduct(id){
 let tt;
 function toast(msg){const e=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;e.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),3000)}
 </script>
+
+<script>
+(function(){
+  // Scroll reveal
+  var els = document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale');
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    },{threshold:0.12});
+    els.forEach(function(el){ obs.observe(el); });
+  } else {
+    els.forEach(function(el){ el.classList.add('visible'); });
+  }
+  // Auto-add reveal to common elements if not already set
+  var autoReveal = document.querySelectorAll(
+    '.card:not(.reveal):not(.reveal-scale),' +
+    '.prod-card:not(.reveal):not(.reveal-scale),' +
+    '.why-card:not(.reveal):not(.reveal-scale),' +
+    '.cat-card:not(.reveal):not(.reveal-scale),' +
+    '.blog-card:not(.reveal):not(.reveal-scale),' +
+    '.set-card:not(.reveal):not(.reveal-scale),' +
+    '.admin-card:not(.reveal):not(.reveal-scale)'
+  );
+  autoReveal.forEach(function(el,i){
+    el.classList.add('reveal-scale');
+    el.style.transitionDelay = (i%5)*0.08 + 's';
+    obs && obs.observe(el);
+  });
+})();
+</script>
+
 </body>
 </html>

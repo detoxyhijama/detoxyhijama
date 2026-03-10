@@ -25,10 +25,13 @@
     .admin-sidebar{background:#0d1f1b;padding:24px 16px;position:fixed;width:240px;height:100vh;overflow-y:auto;z-index:100}
     .admin-main{margin-left:248px;padding:28px}
     .sidebar-brand{display:flex;align-items:center;gap:10px;padding:0 8px 20px;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.08)}
-    .sidebar-brand-text{font-family:'Cormorant Garamond',serif;font-size:1rem;color:#fff;font-weight:700}
-    .sidebar-label{font-size:.65rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.12em;font-weight:700;padding:14px 12px 6px}
+    .sidebar-brand-name{font-family:"Cormorant Garamond",serif;font-size:1rem;color:#fff;font-weight:700;line-height:1.1}
+    .sidebar-brand-sub{font-size:.53rem;color:rgba(255,255,255,.3);letter-spacing:.12em;text-transform:uppercase;margin-top:1px}
+    .sidebar-section-label{font-size:.65rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.12em;font-weight:700;padding:14px 12px 6px}
     .sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:rgba(255,255,255,.65);font-size:.83rem;font-weight:500;transition:all .2s;margin-bottom:2px;text-decoration:none}
     .sidebar-link:hover,.sidebar-link.active{background:rgba(42,171,151,.16);color:#5eead4}
+    .sidebar-logout{color:rgba(255,140,140,.6)!important}
+    .sidebar-logout:hover{background:rgba(255,80,80,.12)!important;color:rgba(255,140,140,.9)!important}
     .admin-card{background:#fff;border-radius:16px;padding:24px;border:1px solid var(--border);margin-bottom:20px}
     .prod-table{width:100%;border-collapse:collapse}
     .prod-table th{font-size:.72rem;text-transform:uppercase;color:var(--muted);font-weight:700;padding:10px 12px;text-align:left;border-bottom:2px solid var(--border)}
@@ -79,7 +82,7 @@
         <h1 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;color:var(--dark)">Product Management</h1>
         <p style="font-size:.83rem;color:var(--muted)">Add, edit, and manage all products. Changes are saved locally.</p>
       </div>
-      <button class="btn btn--primary" onclick="openModal()">+ Add New Product</button>
+      <button class="btn btn-primary" onclick="openModal()">+ Add New Product</button>
     </div>
 
     <div class="admin-card">
@@ -127,12 +130,12 @@
       <label class="form-label">Product Images</label>
       <p style="font-size:.77rem;color:var(--muted);margin-bottom:8px">Enter image paths (relative to ecommerce root, e.g. assets/images/products/my-product/main.jpg). One per slot.</p>
       <div class="img-slots" id="imgSlots"></div>
-      <button class="btn btn--outline" style="margin-top:10px;font-size:.78rem;padding:7px 14px" onclick="addImgSlot()">+ Add Image Slot</button>
+      <button class="btn btn-outline" style="margin-top:10px;font-size:.78rem;padding:7px 14px" onclick="addImgSlot()">+ Add Image Slot</button>
     </div>
 
     <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
-      <button class="btn btn--outline" onclick="closeModal()">Cancel</button>
-      <button class="btn btn--primary" onclick="saveProduct()">Save Product</button>
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveProduct()">Save Product</button>
     </div>
   </div>
 </div>
@@ -166,8 +169,8 @@
         <td style="color:var(--muted);text-decoration:line-through">₹${p.mrp}</td>
         <td style="font-size:.78rem">₹${p.bulkPrice||'—'} / ${p.bulkQty||'—'}+</td>
         <td style="text-align:right;white-space:nowrap">
-          <a href="../products/${p.id}.html" target="_blank" class="btn btn--outline" style="padding:5px 12px;font-size:.74rem">View</a>
-          <button class="btn btn--outline" style="padding:5px 12px;font-size:.74rem" onclick="editProduct(${products.indexOf(p)})">Edit</button>
+          <a href="../products/${p.id}.html" target="_blank" class="btn btn-outline" style="padding:5px 12px;font-size:.74rem">View</a>
+          <button class="btn btn-outline" style="padding:5px 12px;font-size:.74rem" onclick="editProduct(${products.indexOf(p)})">Edit</button>
           <button class="btn" style="padding:5px 12px;font-size:.74rem;background:var(--red);color:#fff;border-radius:8px;margin-left:4px" onclick="deleteProduct(${products.indexOf(p)})">Delete</button>
         </td>
       </tr>`).join('')}

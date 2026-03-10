@@ -60,7 +60,7 @@
           <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--dark);line-height:1.3;margin-bottom:10px">The Complete Guide to Choosing Hijama Cups: Standard vs Premium vs Silicone</h2>
           <p style="font-size:.87rem;color:var(--muted);line-height:1.7;margin-bottom:16px">Not all hijama cups are created equal. This comprehensive guide breaks down the differences between standard PVC, premium transparent, curve, and silicone cups — helping you choose the right type for your practice and budget.</p>
           <div style="font-size:.75rem;color:var(--muted);margin-bottom:16px">By Detoxy Hijama Team · Product Guides</div>
-          <a href="hijama-cups-guide.html" class="btn btn--primary" style="font-size:.82rem">Read Article →</a>
+          <a href="hijama-cups-guide.html" class="btn btn-primary" style="font-size:.82rem">Read Article →</a>
         </div>
       </div>
 
@@ -163,7 +163,7 @@
   <div style="background:linear-gradient(135deg,var(--dark),var(--mid));padding:60px 5%;text-align:center;color:#fff">
     <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;margin-bottom:10px">Ready to Stock Your Clinic?</h2>
     <p style="opacity:.75;font-size:.93rem;margin-bottom:22px">Browse our complete range of clinical-grade hijama equipment at factory direct prices.</p>
-    <a href="../products.html" class="btn btn--primary btn--lg">Shop All Products →</a>
+    <a href="../products.html" class="btn btn-primary btn-lg">Shop All Products →</a>
   </div>
 
   <div id="footer-mount"></div>
@@ -171,8 +171,8 @@
 <script src="../config.js"></script>
 <script src="../shared.js"></script>
 <script>
-  document.getElementById('header-mount').innerHTML = getNavHTML('Blogs');
-  document.getElementById('footer-mount').innerHTML = getFooterHTML();
+  document.getElementById('header-mount').innerHTML = getNavHTML('Blogs','../');
+  document.getElementById('footer-mount').innerHTML = getFooterHTML('../');
 
   // Load dynamically created blogs
   const blogs = JSON.parse(localStorage.getItem('detoxy_blogs') || '[]')
@@ -193,5 +193,38 @@
     </a>`).join('');
   }
 </script>
+
+<script>
+(function(){
+  // Scroll reveal
+  var els = document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale');
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    },{threshold:0.12});
+    els.forEach(function(el){ obs.observe(el); });
+  } else {
+    els.forEach(function(el){ el.classList.add('visible'); });
+  }
+  // Auto-add reveal to common elements if not already set
+  var autoReveal = document.querySelectorAll(
+    '.card:not(.reveal):not(.reveal-scale),' +
+    '.prod-card:not(.reveal):not(.reveal-scale),' +
+    '.why-card:not(.reveal):not(.reveal-scale),' +
+    '.cat-card:not(.reveal):not(.reveal-scale),' +
+    '.blog-card:not(.reveal):not(.reveal-scale),' +
+    '.set-card:not(.reveal):not(.reveal-scale),' +
+    '.admin-card:not(.reveal):not(.reveal-scale)'
+  );
+  autoReveal.forEach(function(el,i){
+    el.classList.add('reveal-scale');
+    el.style.transitionDelay = (i%5)*0.08 + 's';
+    obs && obs.observe(el);
+  });
+})();
+</script>
+
 </body>
 </html>

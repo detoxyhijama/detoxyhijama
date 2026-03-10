@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Detoxy Hijama | Hijama Equipment Manufacturer India</title>
-  <meta name="description" content="Buy premium hijama cups, cupping kits and consumables direct from manufacturer. Clinic-grade quality, factory prices, pan India delivery from Madurai."/>
-  <meta name="keywords" content="hijama cups buy online India, hijama equipment manufacturer, cupping therapy sets, bulk hijama supplies, detoxy hijama, hijama clinic supplies Madurai"/>
+  <title>Detoxy Hijama | #1 Hijama Cups & Cupping Equipment Manufacturer India</title>
+  <meta name="description" content="Buy premium hijama cups, cupping therapy kits, vacuum sets, lancet pens, silicone cups & full hijama starter kits from India's top manufacturer. Clinic-grade quality, factory-direct prices, pan-India delivery. ISO-grade hijama equipment from Madurai, Tamil Nadu."/>
+  <meta name="keywords" content="hijama cups buy online India, hijama equipment manufacturer India, buy cupping therapy set India, bulk hijama supplies, detoxy hijama, hijama clinic supplies Madurai, hijama cups wholesale India, cupping therapy equipment online, vacuum cupping set India, wet cupping supplies India, hijama starter kit, hijama cups price India, silicon cupping cups, best hijama cups India, hijama cups Tamil Nadu, professional hijama equipment, hijama tools buy online, hijama set for clinic, hijama practitioner supplies, buy hijama kit India, hijama therapy products, cupping set online India, fire cupping set, electric cupping machine India, hijama cups manufacturer Madurai, Islamic hijama products, Sunnah hijama kit, therapeutic cupping set, hijama clinic startup kit, hijama consumables wholesale"/>
   <meta name="robots" content="index, follow"/>
   <meta property="og:type" content="website"/>
   <meta property="og:url" content="https://detoxyhijama.github.io/"/>
@@ -66,6 +66,7 @@
     @media(max-width:900px){.hero{grid-template-columns:1fr;min-height:auto;padding:40px 5%}.hero-visual{display:none}.cat-grid{grid-template-columns:repeat(2,1fr)}.why-grid{grid-template-columns:1fr 1fr}}
     @media(max-width:480px){.cat-grid{grid-template-columns:1fr 1fr}.why-grid{grid-template-columns:1fr}}
   </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Detoxy Hijama","url":"https://detoxyhijama.github.io","logo":"https://detoxyhijama.github.io/assets/logo.png","description":"India's leading hijama cupping therapy equipment manufacturer based in Madurai, Tamil Nadu.","address":{"@type":"PostalAddress","addressLocality":"Madurai","addressRegion":"Tamil Nadu","addressCountry":"IN"},"contactPoint":{"@type":"ContactPoint","telephone":"+91-95665-96077","contactType":"sales","availableLanguage":["Tamil","English","Hindi"]},"sameAs":["https://wa.me/919566596077"]}</script>
 </head>
 <body>
 <div class="page-wrapper">
@@ -79,8 +80,8 @@
         <h1>Premium Hijama<br>Equipment at<br><span>Factory Prices</span></h1>
         <p class="hero-desc">India's most trusted manufacturer of clinical-grade hijama cups, cupping kits, and practice consumables. Bulk orders welcome — save up to 40% versus distributor pricing.</p>
         <div class="hero-actions">
-          <a href="products.html" class="btn btn--primary btn--lg">Shop All Products</a>
-          <a href="quote.html" class="btn btn--outline btn--lg">Get Bulk Quote</a>
+          <a href="products.html" class="btn btn-primary btn-lg">Shop All Products</a>
+          <a href="quote.html" class="btn btn-outline btn-lg">Get Bulk Quote</a>
         </div>
         <div class="hero-stats">
           <div class="hero-stat"><div class="num">15+</div><div class="lbl">Products</div></div>
@@ -158,7 +159,7 @@
           <span class="sec-tag">Bestsellers</span>
           <h2 class="sec-h2">Featured <span>Products</span></h2>
         </div>
-        <a href="products.html" class="btn btn--outline">View All →</a>
+        <a href="products.html" class="btn btn-outline">View All →</a>
       </div>
       <div class="products-grid" id="featuredProducts"></div>
     </div>
@@ -211,8 +212,8 @@
     <h2>Need Bulk Hijama Supplies?</h2>
     <p>Get a custom quote for export orders, clinic bulk supply, and institutional procurement. Competitive factory pricing with flexible payment terms.</p>
     <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
-      <a href="quote.html" class="btn btn--primary btn--lg">Get Quotation</a>
-      <a href="https://wa.me/919566596077" class="btn btn--outline-white btn--lg" target="_blank">💬 WhatsApp</a>
+      <a href="quote.html" class="btn btn-primary btn-lg">Get Quotation</a>
+      <a href="https://wa.me/919566596077" class="btn btn-outline-white btn-lg" target="_blank">💬 WhatsApp</a>
     </div>
   </div>
 
@@ -256,5 +257,38 @@
       <div style="font-size:.75rem;color:var(--muted)">${t.loc}</div>
     </div>`).join('');
 </script>
+
+<script>
+(function(){
+  // Scroll reveal
+  var els = document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale');
+  if('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    },{threshold:0.12});
+    els.forEach(function(el){ obs.observe(el); });
+  } else {
+    els.forEach(function(el){ el.classList.add('visible'); });
+  }
+  // Auto-add reveal to common elements if not already set
+  var autoReveal = document.querySelectorAll(
+    '.card:not(.reveal):not(.reveal-scale),' +
+    '.prod-card:not(.reveal):not(.reveal-scale),' +
+    '.why-card:not(.reveal):not(.reveal-scale),' +
+    '.cat-card:not(.reveal):not(.reveal-scale),' +
+    '.blog-card:not(.reveal):not(.reveal-scale),' +
+    '.set-card:not(.reveal):not(.reveal-scale),' +
+    '.admin-card:not(.reveal):not(.reveal-scale)'
+  );
+  autoReveal.forEach(function(el,i){
+    el.classList.add('reveal-scale');
+    el.style.transitionDelay = (i%5)*0.08 + 's';
+    obs && obs.observe(el);
+  });
+})();
+</script>
+
 </body>
 </html>
