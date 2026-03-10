@@ -209,20 +209,7 @@
         <span class="sec-tag">Trusted Nationwide</span>
         <h2 class="sec-h2">What <span>Practitioners Say</span></h2>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px">
-        ${[
-          { name:'Dr. Aminah Shaikh', loc:'Mumbai', q:'Detoxy has been my go-to for 2 years. The premium cups are consistently high quality and the pricing simply cannot be beat for clinic-scale purchasing.' },
-          { name:'Ustaz Rashid', loc:'Hyderabad', q:'Ordered 2000 standard cups for my training institute. Arrived in 3 days, perfectly packed. The bulk pricing is genuinely excellent.' },
-          { name:'Sister Fatima Clinics', loc:'Chennai', q:'We switched to Detoxy from our previous supplier and saved almost 35% on our monthly supply costs. Quality is equal or better.' },
-          { name:'Al-Shifa Hijama Center', loc:'Bangalore', q:'The electric smart cups are fantastic for my patients who prefer gentler suction. Great product, fast delivery, professional service.' }
-        ].map(t => `
-        <div style="background:var(--cream);border:1px solid var(--border);border-radius:var(--radius);padding:24px">
-          <div style="display:flex;gap:3px;margin-bottom:10px">${'★'.repeat(5).split('').map(()=>'<span style="color:#f59e0b;font-size:.9rem">★</span>').join('')}</div>
-          <p style="font-size:.88rem;color:var(--text);line-height:1.7;margin-bottom:14px">"${t.q}"</p>
-          <div style="font-weight:600;font-size:.85rem;color:var(--dark)">${t.name}</div>
-          <div style="font-size:.75rem;color:var(--muted)">${t.loc}</div>
-        </div>`).join('')}
-      </div>
+      <div id="testimonialsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px"></div>
     </div>
   </section>
 
@@ -238,6 +225,22 @@
   const prods = (window.DETOXY_CONFIG || {}).products || [];
   const featured = prods.slice(0, 8);
   document.getElementById('featuredProducts').innerHTML = featured.map(p => getProductCardHTML(p, '')).join('');
+
+  // Render testimonials
+  const testimonials = [
+    { name:'Dr. Aminah Shaikh', loc:'Mumbai', q:'Detoxy has been my go-to for 2 years. The premium cups are consistently high quality and the pricing simply cannot be beat for clinic-scale purchasing.' },
+    { name:'Ustaz Rashid', loc:'Hyderabad', q:'Ordered 2000 standard cups for my training institute. Arrived in 3 days, perfectly packed. The bulk pricing is genuinely excellent.' },
+    { name:'Sister Fatima Clinics', loc:'Chennai', q:'We switched to Detoxy from our previous supplier and saved almost 35% on our monthly supply costs. Quality is equal or better.' },
+    { name:'Al-Shifa Hijama Center', loc:'Bangalore', q:'The electric smart cups are fantastic for my patients who prefer gentler suction. Great product, fast delivery, professional service.' }
+  ];
+  const stars = [1,2,3,4,5].map(() => '<span style="color:#f59e0b;font-size:.9rem">★</span>').join('');
+  document.getElementById('testimonialsGrid').innerHTML = testimonials.map(t => `
+    <div style="background:var(--cream);border:1px solid var(--border);border-radius:var(--radius);padding:24px">
+      <div style="display:flex;gap:3px;margin-bottom:10px">${stars}</div>
+      <p style="font-size:.88rem;color:var(--text);line-height:1.7;margin-bottom:14px">"${t.q}"</p>
+      <div style="font-weight:600;font-size:.85rem;color:var(--dark)">${t.name}</div>
+      <div style="font-size:.75rem;color:var(--muted)">${t.loc}</div>
+    </div>`).join('');
 </script>
 </body>
 </html>
