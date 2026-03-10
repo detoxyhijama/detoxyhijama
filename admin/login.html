@@ -53,7 +53,7 @@
   if (sessionStorage.getItem("detoxy_admin")==="true") window.location.href="index.html";
   function doLogin() {
     const pass = document.getElementById("adminPass").value;
-    const correct = localStorage.getItem("detoxy_admin_pass") || (window.DETOXY_CONFIG||{}).adminPassword || "detoxy2024admin";
+    const correct = localStorage.getItem("detoxy_admin_pass") || (window.DETOXY_CONFIG||{}).adminPassword || "detoxy2025";
     if (pass===correct) {
       sessionStorage.setItem("detoxy_admin","true");
       window.location.href="index.html";

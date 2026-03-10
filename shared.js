@@ -38,11 +38,41 @@ const OrderSync = (() => {
     const url = (window.DETOXY_CONFIG || {}).sheetsUrl
               || localStorage.getItem("detoxy_sheets_url");
     if (url) {
+      // Map local order field names to what apps-script.gs expects,
+      // and wrap with action:'placeOrder' so the script routes correctly.
+      // BUG FIX: Previously sent raw order object without an `action` field,
+      // causing apps-script to return "Unknown action: undefined".
+      // BUG FIX: Field names now match the apps-script column mapping.
+      const nameParts = (order.name || "").trim().split(" ");
+      const payload = {
+        action:       "placeOrder",
+        orderNumber:  order.id        || "",
+        status:       order.status    || "New",
+        createdAt:    order.savedAt   ? new Date(order.savedAt).toISOString() : new Date().toISOString(),
+        firstName:    nameParts[0]    || "",
+        lastName:     nameParts.slice(1).join(" ") || "",
+        email:        order.email     || "",
+        phone:        order.phone     || "",
+        address1:     order.address   || "",
+        address2:     order.address2  || "",
+        city:         order.city      || "",
+        state:        order.state     || "",
+        pincode:      order.pincode   || "",
+        itemsSummary: order.items     || "",
+        items:        order.items     || "",
+        subtotal:     order.subtotal  || order.total || 0,
+        shippingCost: order.shipping  || 0,
+        codFee:       order.codFee    || 0,
+        total:        order.total     || order.subtotal || 0,
+        payment:      order.payment   || "",
+        notes:        order.notes     || "",
+        type:         order.type      || ""
+      };
       fetch(url, {
         method: "POST",
         mode: "no-cors",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(order)
+        body: JSON.stringify(payload)
       }).catch(() => { /* silent */ });
     }
 
@@ -179,7 +209,7 @@ function getNavHTML(activeLabel, prefix) {
   var cartDisplay = cartCount > 0 ? 'flex' : 'none';
   return '<header class="site-header" id="mainNav">' +
     '<a href="'+prefix+'index.html" class="brand" style="text-decoration:none">' +
-      '<div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--t),var(--td));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:#fff;flex-shrink:0">D</div>' +
+      '<div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--t),#1a8577);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:#fff;flex-shrink:0">D</div>' +
       '<div class="brand-name-wrap">' +
         '<span class="brand-main">Detoxy Hijama</span>' +
         '<span class="brand-sub">Cups · Coimbatore</span>' +

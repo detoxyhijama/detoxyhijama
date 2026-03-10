@@ -17,7 +17,7 @@ function doPost(e) {
     let result;
     if      (action === 'placeOrder')  result = placeOrder(body);
     else if (action === 'getOrders')   result = getOrders();
-    else if (action === 'updateOrder') result = updateOrder(body.id, body.updates);
+    else if (action === 'updateOrder') result = updateOrder(body.id || body.orderNumber, body.updates);
     else result = { success: false, error: 'Unknown action: ' + action };
 
     return ContentService
@@ -84,7 +84,10 @@ function placeOrder(data) {
 function getOrders() {
   const sheet = getOrCreateSheet();
   const data   = sheet.getDataRange().getValues();
-  if (data.length < 2) return [];
+  // BUG FIX: Previously returned a plain array [], inconsistent with the
+  // {success, ...} envelope returned by placeOrder and updateOrder.
+  // Client code expecting result.success would silently fail.
+  if (data.length < 2) return { success: true, orders: [] };
 
   const headers = data[0];
   const orders  = data.slice(1).map(row => {
@@ -119,11 +122,13 @@ function getOrders() {
     };
   });
 
-  return orders;
+  return { success: true, orders: orders };
 }
 
 // ── UPDATE ORDER ───────────────────────────────────────────
 function updateOrder(orderNumber, updates) {
+  // BUG FIX: The caller may pass either body.id or body.orderNumber.
+  // Accept whichever is provided.
   if (!orderNumber) return { success: false, error: 'No order number provided' };
 
   const sheet   = getOrCreateSheet();

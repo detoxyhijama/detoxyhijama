@@ -254,9 +254,20 @@ function renderOrders(){
 
 function updateStatus(idx,newStatus){
   orders[idx].status=newStatus;
-  localStorage.setItem("detoxy_orders",JSON.stringify(orders));
-  // Sync updated status to Google Sheets
-  if (window.OrderSync) OrderSync.submit(orders[idx]);
+  OrderSync.saveLocalOrders(orders);
+  // Sync status change to Google Sheets via the updateOrder action.
+  // BUG FIX: Previously called OrderSync.submit() which (a) is designed for
+  // new orders, (b) uses the placeOrder action, and (c) was already saved to
+  // localStorage above — making it redundant and semantically wrong.
+  const url = (window.DETOXY_CONFIG||{}).sheetsUrl || localStorage.getItem("detoxy_sheets_url");
+  if (url) {
+    fetch(url, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "updateOrder", id: orders[idx].id, updates: { status: newStatus } })
+    }).catch(() => { /* silent */ });
+  }
   renderOrders();
 }
 

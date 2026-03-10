@@ -149,6 +149,11 @@
 <script src="../config.js"></script>
 <script src="../shared.js"></script>
 <script>
+// Auth guard: shipper panel requires admin login
+if (sessionStorage.getItem('detoxy_admin') !== 'true') {
+  document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:16px;font-family:Outfit,sans-serif;color:#1a3d35;background:#f0f4f3"><h2>Access Denied</h2><p>Please <a href="../admin/login.html" style="color:#2aab97">log in as admin</a> to access the shipper panel.</p></div>';
+  throw new Error('Unauthorised');
+}
 let allOrders = [];
 
 const BADGE = {
@@ -330,38 +335,5 @@ function showToast(msg) {
 loadOrders();
 setInterval(loadOrders, 60000);
 </script>
-
-<script>
-(function(){
-  // Scroll reveal
-  var els = document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale');
-  if('IntersectionObserver' in window){
-    var obs = new IntersectionObserver(function(entries){
-      entries.forEach(function(e){
-        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
-      });
-    },{threshold:0.12});
-    els.forEach(function(el){ obs.observe(el); });
-  } else {
-    els.forEach(function(el){ el.classList.add('visible'); });
-  }
-  // Auto-add reveal to common elements if not already set
-  var autoReveal = document.querySelectorAll(
-    '.card:not(.reveal):not(.reveal-scale),' +
-    '.prod-card:not(.reveal):not(.reveal-scale),' +
-    '.why-card:not(.reveal):not(.reveal-scale),' +
-    '.cat-card:not(.reveal):not(.reveal-scale),' +
-    '.blog-card:not(.reveal):not(.reveal-scale),' +
-    '.set-card:not(.reveal):not(.reveal-scale),' +
-    '.admin-card:not(.reveal):not(.reveal-scale)'
-  );
-  autoReveal.forEach(function(el,i){
-    el.classList.add('reveal-scale');
-    el.style.transitionDelay = (i%5)*0.08 + 's';
-    obs && obs.observe(el);
-  });
-})();
-</script>
-
 </body>
 </html>

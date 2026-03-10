@@ -25,13 +25,14 @@
     .admin-sidebar{background:#0d1f1b;padding:24px 16px;position:fixed;width:240px;height:100vh;overflow-y:auto;z-index:100}
     .admin-main{margin-left:248px;padding:28px}
     .sidebar-brand{display:flex;align-items:center;gap:10px;padding:0 8px 20px;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.08)}
-    .sidebar-brand-name{font-family:"Cormorant Garamond",serif;font-size:1rem;color:#fff;font-weight:700;line-height:1.1}
-    .sidebar-brand-sub{font-size:.53rem;color:rgba(255,255,255,.3);letter-spacing:.12em;text-transform:uppercase;margin-top:1px}
+    .sidebar-brand-name{font-family:'Cormorant Garamond',serif;font-size:1rem;color:#fff;font-weight:700}
+    .sidebar-brand-sub{font-size:.7rem;color:rgba(255,255,255,.4);font-weight:400}
     .sidebar-section-label{font-size:.65rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.12em;font-weight:700;padding:14px 12px 6px}
     .sidebar-link{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:rgba(255,255,255,.65);font-size:.83rem;font-weight:500;transition:all .2s;margin-bottom:2px;text-decoration:none}
     .sidebar-link:hover,.sidebar-link.active{background:rgba(42,171,151,.16);color:#5eead4}
-    .sidebar-logout{color:rgba(255,140,140,.6)!important}
-    .sidebar-logout:hover{background:rgba(255,80,80,.12)!important;color:rgba(255,140,140,.9)!important}
+    .sidebar-bottom{margin-top:auto;padding-top:16px;border-top:1px solid rgba(255,255,255,.08)}
+    .sidebar-logout{width:100%;background:none;border:none;cursor:pointer;text-align:left;color:rgba(255,255,255,.65);font-size:.83rem;font-family:inherit}
+    .sidebar-logout:hover{color:#f87171}
     .editor-card{background:#fff;border-radius:16px;padding:28px;border:1px solid var(--border);margin-bottom:20px}
     .editor-card h2{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:var(--dark);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
     .edit-section{border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px;transition:border-color .2s}
@@ -181,8 +182,8 @@
     </div>
 
     <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:8px">
-      <button class="btn btn-outline" onclick="loadDefaults()">↺ Reset to Defaults</button>
-      <button class="btn btn-primary" onclick="saveEdits()">💾 Save All Changes</button>
+      <button class="btn btn--outline" onclick="loadDefaults()">↺ Reset to Defaults</button>
+      <button class="btn btn--primary" onclick="saveEdits()">💾 Save All Changes</button>
     </div>
   </main>
 </div>
