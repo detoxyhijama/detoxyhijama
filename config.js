@@ -33,3 +33,16 @@ window.DETOXY_CONFIG = {
   products: []
 
 };
+
+// Merge admin-saved custom products (set via admin/products.html) into DETOXY_CONFIG.products
+(function() {
+  try {
+    var custom = localStorage.getItem('detoxy_custom_products');
+    if (custom) {
+      var parsed = JSON.parse(custom);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        window.DETOXY_CONFIG.products = parsed;
+      }
+    }
+  } catch(e) { /* ignore */ }
+})();

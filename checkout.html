@@ -176,7 +176,7 @@
     btn.disabled = true; btn.textContent = 'Placing order...';
     const payMethod = document.querySelector('input[name="pay"]:checked')?.value || 'COD';
     const orderData = {
-      id: 'ORD-' + Date.now(),
+      id: OrderSync.generateId(),
       timestamp: new Date().toISOString(),
       name: first + ' ' + last,
       phone, email: get('cEmail'),
