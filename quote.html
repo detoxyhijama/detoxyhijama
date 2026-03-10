@@ -3,35 +3,91 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Bulk Hijama Supply Quote | Export Orders | Detoxy Hijama — Factory Direct</title>
-  <meta name="description" content="Generate instant bulk quotes for hijama cups, cupping kits and consumables. Export orders, clinic supply, institutional procurement. Factory direct pricing from Detoxy Hijama, Madurai, Tamil Nadu."/>
-  <meta name="keywords" content="bulk hijama cups wholesale, hijama equipment export India, cupping kit bulk order, hijama supplier India, wholesale hijama supplies, hijama manufacturer Coimbatore, bulk cupping sets, hijama clinic supply, institutional hijama procurement, hijama B2B India"/>
+  <title>Bulk Hijama Supply Quote | Detoxy Hijama — Factory Direct</title>
+  <meta name="description" content="Generate instant bulk quotes for hijama cups, cupping kits and consumables. Factory direct pricing from Detoxy Hijama, Tamil Nadu."/>
   <link rel="canonical" href="https://detoxyhijama.github.io/quote.html"/>
   <link rel="stylesheet" href="assets/style.css"/>
   <style>
     .quote-grid{display:grid;grid-template-columns:1fr 380px;gap:32px;align-items:start}
     .quote-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:20px}
-    .quote-card h3{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:700;color:var(--dark);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
-    .product-quote-row{display:grid;grid-template-columns:1fr 100px 80px 90px 30px;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+    .quote-card h3{font-family:"Cormorant Garamond",serif;font-size:1.2rem;font-weight:700;color:var(--dark);margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+    .product-quote-row{display:grid;grid-template-columns:1fr 100px 80px 100px 30px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
     .product-quote-row:last-child{border-bottom:none}
     .pq-name{font-size:.86rem;font-weight:600;color:var(--dark)}
     .pq-cat{font-size:.7rem;color:var(--muted)}
-    .pq-unit{font-size:.75rem;color:var(--muted)}
-    .pq-price{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;color:var(--td);text-align:right}
+    .pq-price{font-family:"Cormorant Garamond",serif;font-size:1rem;font-weight:700;color:var(--td);text-align:right}
     .pq-total{font-weight:700;color:var(--dark);font-size:.9rem;text-align:right}
-    .bill-section{background:var(--cream);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px}
-    .bill-row{display:flex;justify-content:space-between;font-size:.88rem;margin-bottom:8px}
+    .bill-section{background:var(--cream);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:16px}
+    .bill-row{display:flex;justify-content:space-between;font-size:.87rem;margin-bottom:8px;align-items:center}
     .bill-total{border-top:2px solid var(--t);margin-top:12px;padding-top:12px;display:flex;justify-content:space-between;font-weight:700;font-size:1.1rem}
-    .tier-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.65rem;font-weight:700;margin-left:6px}
+    .tier-tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:.63rem;font-weight:700;margin-left:5px}
     .tier-bulk{background:#d1fae5;color:#065f46}
     .tier-retail{background:var(--tp);color:var(--td)}
-    .seo-section{background:var(--cream);padding:80px 5%;border-top:1px solid var(--border)}
-    .seo-section h2{font-family:'Cormorant Garamond',serif;font-size:clamp(1.5rem,2.5vw,2rem);font-weight:700;color:var(--dark);margin-bottom:14px}
-    .seo-section h3{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:var(--dark);margin-bottom:10px;margin-top:24px}
-    .seo-section p{font-size:.9rem;color:var(--text);line-height:1.85;margin-bottom:14px}
-    .seo-two-col{display:grid;grid-template-columns:1fr 1fr;gap:32px}
-    @media(max-width:900px){.quote-grid{grid-template-columns:1fr}.product-quote-row{grid-template-columns:1fr 80px 60px 70px 26px;gap:8px}.seo-two-col{grid-template-columns:1fr}}
-    @media print{.site-header,.mob-nav,#footer-mount,.no-print{display:none!important}.quote-grid{grid-template-columns:1fr}.print-only{display:block!important}}
+    .wa-btn-full{display:flex;align-items:center;justify-content:center;gap:10px;padding:13px 18px;background:#25d366;border-radius:12px;color:#fff;font-weight:700;font-size:.88rem;cursor:pointer;border:none;transition:background .18s;font-family:"Outfit",sans-serif;width:100%}
+    .wa-btn-full:hover{background:#1fba59}
+    @media(max-width:900px){.quote-grid{grid-template-columns:1fr}.product-quote-row{grid-template-columns:1fr 80px 70px 80px 24px;gap:8px}}
+
+    /* ══════════════════════════════════════════════════════════════
+       PROFESSIONAL PDF INVOICE — shows ONLY during print
+       A4 size, branded, pixel-perfect
+       ══════════════════════════════════════════════════════════════ */
+    #pdf-invoice{display:none}
+    @media print{
+      *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+      body>*{display:none!important}
+      #pdf-invoice{display:block!important;font-family:"Outfit","Segoe UI",Arial,sans-serif;font-size:10pt;color:#1a3530;margin:0;padding:0;background:#fff}
+      .inv-page{width:210mm;min-height:297mm;padding:14mm 16mm 14mm;box-sizing:border-box;position:relative;background:#fff}
+      /* Header */
+      .inv-header{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:10mm;border-bottom:2px solid #2aab97;margin-bottom:7mm}
+      .inv-logo-area{display:flex;align-items:center;gap:10px}
+      .inv-logo{width:52px;height:52px;border-radius:10px;object-fit:cover}
+      .inv-company-name{font-family:"Cormorant Garamond","Times New Roman",serif;font-size:20pt;font-weight:700;color:#0d1f1b;line-height:1}
+      .inv-company-tag{font-size:7.5pt;color:#2aab97;text-transform:uppercase;letter-spacing:.12em;font-weight:700;margin-top:2px}
+      .inv-company-sub{font-size:8pt;color:#5a7a74;margin-top:3px;line-height:1.4}
+      .inv-doc-info{text-align:right}
+      .inv-doc-type{font-family:"Cormorant Garamond","Times New Roman",serif;font-size:18pt;font-weight:700;color:#0d1f1b;line-height:1;margin-bottom:4px}
+      .inv-doc-num{font-size:9pt;color:#2aab97;font-weight:700;margin-bottom:6px}
+      .inv-doc-dates{font-size:8.5pt;color:#5a7a74;line-height:1.7}
+      /* Bill-to / From */
+      .inv-parties{display:grid;grid-template-columns:1fr 1fr;gap:12mm;margin-bottom:7mm}
+      .inv-party-box{padding:5mm;border:1px solid #d8e8e4;border-radius:5px}
+      .inv-party-label{font-size:7pt;text-transform:uppercase;letter-spacing:.14em;color:#2aab97;font-weight:700;margin-bottom:4px}
+      .inv-party-name{font-size:11pt;font-weight:700;color:#0d1f1b;margin-bottom:3px}
+      .inv-party-detail{font-size:8.5pt;color:#5a7a74;line-height:1.6}
+      /* Items table */
+      .inv-table{width:100%;border-collapse:collapse;margin-bottom:6mm}
+      .inv-table thead tr{background:#0d1f1b}
+      .inv-table thead th{color:#fff;padding:5mm 4mm;font-size:8.5pt;text-align:left;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+      .inv-table thead th:last-child{text-align:right}
+      .inv-table thead th:nth-child(2),.inv-table thead th:nth-child(3),.inv-table thead th:nth-child(4){text-align:right}
+      .inv-table tbody tr{border-bottom:1px solid #e8f0ed}
+      .inv-table tbody tr:nth-child(even){background:#f7fbfa}
+      .inv-table tbody td{padding:4mm 4mm;font-size:9pt;vertical-align:top}
+      .inv-table tbody td:nth-child(2),.inv-table tbody td:nth-child(3),.inv-table tbody td:nth-child(4){text-align:right}
+      .inv-table tbody td:last-child{text-align:right;font-weight:700}
+      .inv-prod-name{font-weight:700;color:#0d1f1b;line-height:1.3}
+      .inv-prod-cat{font-size:7.5pt;color:#7a9490;margin-top:1px}
+      /* Totals */
+      .inv-totals{display:flex;justify-content:flex-end;margin-bottom:6mm}
+      .inv-totals-box{width:72mm;border:1px solid #d8e8e4;border-radius:5px;overflow:hidden}
+      .inv-total-row{display:flex;justify-content:space-between;padding:3mm 5mm;font-size:9pt;border-bottom:1px solid #e8f0ed}
+      .inv-total-row:last-child{border-bottom:none}
+      .inv-total-grand{display:flex;justify-content:space-between;padding:4mm 5mm;background:#0d1f1b;color:#fff;font-size:11pt;font-weight:700}
+      .inv-total-grand span:last-child{color:#5eead4}
+      /* Notes & Terms */
+      .inv-notes{background:#f7fbfa;border:1px solid #d8e8e4;border-radius:5px;padding:5mm;margin-bottom:6mm;font-size:8.5pt;color:#4a6660;line-height:1.6}
+      .inv-notes-label{font-size:7.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#2aab97;margin-bottom:3px}
+      /* Footer */
+      .inv-footer{border-top:1px solid #d8e8e4;padding-top:5mm;display:flex;justify-content:space-between;align-items:center}
+      .inv-footer-brand{display:flex;align-items:center;gap:7px}
+      .inv-footer-logo{width:22px;height:22px;border-radius:4px;object-fit:cover}
+      .inv-footer-name{font-family:"Cormorant Garamond","Times New Roman",serif;font-size:11pt;font-weight:700;color:#0d1f1b}
+      .inv-footer-contact{font-size:8pt;color:#7a9490;text-align:right;line-height:1.6}
+      /* Watermark */
+      .inv-watermark{position:absolute;bottom:40mm;left:50%;transform:translateX(-50%);font-family:"Cormorant Garamond",serif;font-size:52pt;font-weight:700;color:rgba(42,171,151,.05);white-space:nowrap;pointer-events:none;letter-spacing:.05em}
+      /* Accent bar */
+      .inv-accent-bar{height:4px;background:linear-gradient(90deg,#2aab97,#0d1f1b);margin-bottom:0;border-radius:2px 2px 0 0}
+    }
   </style>
 </head>
 <body>
@@ -39,340 +95,414 @@
   <div id="header-mount"></div>
 
   <!-- HERO -->
-  <div style="background:linear-gradient(135deg,var(--dark),var(--mid));padding:64px 5%;color:#fff;text-align:center">
-    <span style="display:inline-block;background:rgba(42,171,151,.25);color:var(--tl);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;padding:5px 14px;border-radius:50px;margin-bottom:16px;font-weight:700;border:1px solid rgba(42,171,151,.3)">Bulk / Export / Institutional</span>
-    <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.2;margin-bottom:14px">Wholesale Hijama Supply<br><span style="color:var(--tl)">Instant Quotation System</span></h1>
-    <p style="opacity:.75;font-size:.95rem;max-width:540px;margin:0 auto 28px;line-height:1.7">Generate a professional quote in seconds. Configure quantities, see tiered pricing, and export PDF. Direct factory pricing for clinics, hospitals, distributors & exporters.</p>
-    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+  <div style="background:linear-gradient(135deg,var(--dark),var(--mid));padding:60px 5%;color:#fff;text-align:center">
+    <span style="display:inline-block;background:rgba(42,171,151,.22);color:var(--tl);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;padding:5px 14px;border-radius:50px;margin-bottom:14px;font-weight:700;border:1px solid rgba(42,171,151,.3)">Bulk · Export · Institutional</span>
+    <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.9rem,4vw,2.9rem);font-weight:700;line-height:1.2;margin-bottom:12px">Wholesale Hijama Supply<br><span style="color:var(--tl)">Professional Quotation</span></h1>
+    <p style="opacity:.73;font-size:.93rem;max-width:520px;margin:0 auto 26px;line-height:1.7">Configure quantities, see tiered bulk pricing, and generate a professional PDF quotation with Detoxy Hijama branding.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
       <a href="#quote-builder" class="btn btn--primary">Build My Quote ↓</a>
-      <a href="https://wa.me/919566596077" class="btn btn--outline-white" target="_blank">💬 WhatsApp for Custom Quote</a>
+      <a href="https://wa.me/919566596077" class="btn btn--outline-white" target="_blank" style="display:flex;align-items:center;gap:8px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp for Custom Quote
+      </a>
     </div>
   </div>
 
   <section class="sec" id="quote-builder">
     <div class="sec-inner">
       <div class="quote-grid">
-        <!-- QUOTE BUILDER -->
+        <!-- BUILDER -->
         <div>
           <div class="quote-card">
-            <h3>📋 Your Information</h3>
+            <h3>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--t)" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Your Information
+            </h3>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
               <div class="form-group"><label class="form-label">Company / Clinic Name <span class="req">*</span></label><input class="form-input" id="qCompany" placeholder="Your clinic or company name"/></div>
-              <div class="form-group"><label class="form-label">Contact Person <span class="req">*</span></label><input class="form-input" id="qContact" placeholder="Full name"/></div>
+              <div class="form-group"><label class="form-label">Contact Person</label><input class="form-input" id="qContact" placeholder="Full name"/></div>
               <div class="form-group"><label class="form-label">Phone <span class="req">*</span></label><input class="form-input" id="qPhone" placeholder="+91 xxxxx xxxxx"/></div>
               <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="qEmail" placeholder="your@email.com"/></div>
               <div class="form-group" style="grid-column:1/-1"><label class="form-label">Delivery Address</label><input class="form-input" id="qAddress" placeholder="City, State, PIN"/></div>
-              <div class="form-group"><label class="form-label">GST Number (Optional)</label><input class="form-input" id="qGST" placeholder="GST/TIN number"/></div>
+              <div class="form-group"><label class="form-label">GST Number</label><input class="form-input" id="qGST" placeholder="GST/TIN number (optional)"/></div>
               <div class="form-group"><label class="form-label">Order Type</label>
                 <select class="form-select" id="qOrderType" onchange="recalculate()">
-                  <option value="clinic">Clinic Supply</option>
-                  <option value="hospital">Hospital / Institution</option>
-                  <option value="distributor">Distributor</option>
-                  <option value="export">Export Order</option>
-                  <option value="training">Training Institute</option>
-                  <option value="retail">Retail / Personal</option>
+                  <option value="clinic">Clinic Supply</option><option value="hospital">Hospital / Institution</option>
+                  <option value="distributor">Distributor</option><option value="export">Export Order</option>
+                  <option value="training">Training Institute</option><option value="retail">Retail / Personal</option>
                 </select>
               </div>
             </div>
           </div>
-
           <div class="quote-card">
-            <h3>🛒 Select Products & Quantities</h3>
-            <div style="display:grid;grid-template-columns:1fr 100px 80px 90px 30px;gap:12px;padding:6px 0 10px;border-bottom:2px solid var(--border);margin-bottom:4px">
-              <span style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase">Product</span>
-              <span style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase">Qty</span>
-              <span style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase">Unit Price</span>
-              <span style="font-size:.72rem;font-weight:700;color:var(--muted);text-align:right;text-transform:uppercase">Line Total</span>
+            <h3>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--t)" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+              Products & Quantities
+            </h3>
+            <div style="display:grid;grid-template-columns:1fr 100px 80px 100px 30px;gap:10px;padding:5px 0 10px;border-bottom:2px solid var(--border);margin-bottom:4px">
+              <span style="font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase">Product</span>
+              <span style="font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase">Qty</span>
+              <span style="font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase">Unit ₹</span>
+              <span style="font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;text-align:right">Total</span>
               <span></span>
             </div>
             <div id="quoteProductList"></div>
           </div>
         </div>
 
-        <!-- QUOTE SUMMARY -->
-        <div>
-          <div style="position:sticky;top:80px">
-            <div class="bill-section">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-                <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:var(--dark);margin:0">Quote Summary</h3>
-                <span style="font-size:.72rem;color:var(--muted)" id="quoteDate"></span>
-              </div>
-              <div id="quoteSummaryItems"></div>
-              <div id="quoteTotals"></div>
+        <!-- SUMMARY PANEL -->
+        <div style="position:sticky;top:80px">
+          <div class="bill-section">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+              <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:700;color:var(--dark);margin:0">Quote Summary</h3>
+              <span style="font-size:.72rem;color:var(--muted)" id="quoteDate"></span>
             </div>
+            <div id="quoteSummaryItems"></div>
+            <div id="quoteTotals"></div>
+          </div>
 
-            <div class="quote-card" style="margin-bottom:16px">
-              <h3 style="font-size:1rem;padding-bottom:10px">Billing Options</h3>
-              <div class="form-group">
-                <label class="form-label">Discount %</label>
-                <input type="number" class="form-input" id="qDiscount" value="0" min="0" max="50" oninput="recalculate()" placeholder="0"/>
-              </div>
-              <div class="form-group">
-                <label class="form-label">GST %</label>
-                <select class="form-select" id="qGST_rate" onchange="recalculate()">
-                  <option value="0">0% (Exempt)</option>
-                  <option value="5">5% GST</option>
-                  <option value="12">12% GST</option>
-                  <option value="18" selected>18% GST</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Shipping</label>
-                <select class="form-select" id="qShipping" onchange="recalculate()">
-                  <option value="0">Free Shipping</option>
-                  <option value="60">Standard ₹60</option>
-                  <option value="150">Express ₹150</option>
-                  <option value="custom">Custom (enter below)</option>
-                </select>
-              </div>
-              <div class="form-group" id="customShipRow" style="display:none">
-                <label class="form-label">Custom Shipping ₹</label>
-                <input type="number" class="form-input" id="qCustomShip" value="0" oninput="recalculate()"/>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Notes / Terms</label>
-                <textarea class="form-textarea" id="qNotes" rows="2" placeholder="Payment terms, special instructions..."></textarea>
-              </div>
+          <div class="quote-card" style="margin-bottom:14px">
+            <h3 style="font-size:.95rem;padding-bottom:10px;margin-bottom:14px">Billing Options</h3>
+            <div class="form-group">
+              <label class="form-label">Discount %</label>
+              <input type="number" class="form-input" id="qDiscount" value="0" min="0" max="50" oninput="recalculate()"/>
             </div>
+            <div class="form-group">
+              <label class="form-label">GST Rate</label>
+              <select class="form-select" id="qGST_rate" onchange="recalculate()">
+                <option value="0">0% (Exempt)</option><option value="5">5% GST</option>
+                <option value="12">12% GST</option><option value="18" selected>18% GST</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Shipping</label>
+              <select class="form-select" id="qShipping" onchange="recalculate()">
+                <option value="0">Free Shipping</option><option value="60">Standard ₹60</option>
+                <option value="150">Express ₹150</option><option value="custom">Custom</option>
+              </select>
+            </div>
+            <div class="form-group" id="customShipRow" style="display:none">
+              <label class="form-label">Custom Shipping ₹</label>
+              <input type="number" class="form-input" id="qCustomShip" value="0" oninput="recalculate()"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Payment Terms / Notes</label>
+              <textarea class="form-textarea" id="qNotes" rows="2" placeholder="E.g. 50% advance, balance on delivery..."></textarea>
+            </div>
+          </div>
 
-            <div style="display:flex;flex-direction:column;gap:10px" class="no-print">
-              <button class="btn btn--primary btn--full" onclick="sendQuoteWhatsApp()">
-                💬 Send via WhatsApp
-              </button>
-              <button class="btn btn--dark btn--full" onclick="printQuote()">
-                🖨️ Download / Print PDF
-              </button>
-              <button class="btn btn--outline btn--full" onclick="submitQuoteRequest()">
-                📧 Submit Quote Request
-              </button>
-            </div>
+          <div style="display:flex;flex-direction:column;gap:10px" class="no-print">
+            <button class="wa-btn-full" onclick="sendQuoteWhatsApp()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              Send via WhatsApp
+            </button>
+            <button class="btn btn--dark btn--full" onclick="generatePDF()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              Download PDF Invoice
+            </button>
+            <button class="btn btn--primary btn--full" onclick="submitQuoteRequest()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Submit Quote Request
+            </button>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- SEO CONTENT: 10,000+ words -->
-  <section class="seo-section">
-    <div style="max-width:1200px;margin:0 auto">
-      <div style="text-align:center;margin-bottom:52px">
-        <span class="sec-tag">Complete Guide</span>
-        <h2 style="font-size:clamp(1.8rem,3vw,2.6rem)">The Complete Guide to Bulk Hijama Supply, Export Orders & Wholesale Cupping Equipment Procurement in India</h2>
-        <p style="color:var(--muted);max-width:680px;margin:0 auto;font-size:.93rem;line-height:1.7">Everything you need to know about ordering hijama equipment at wholesale prices from India's leading manufacturer — Detoxy Hijama, Madurai, Tamil Nadu.</p>
-      </div>
-
-      <div class="seo-two-col">
-        <div>
-          <h2>What is Hijama Cupping Therapy? An Evidence-Based Overview</h2>
-          <p>Hijama, derived from the Arabic word meaning "to suck" or "to restore to the original condition", is one of the oldest forms of traditional medicine practised across the Islamic world, South Asia, East Asia, and increasingly in Western integrative healthcare settings. Rooted in prophetic medicine (Tibb al-Nabawi), hijama involves the application of suction cups to specific points on the body to draw out stagnant blood, stimulate circulation, remove metabolic waste, and restore the natural flow of energy (Qi in Chinese medicine, or simply "good blood" in the Islamic medical tradition).</p>
-          <p>Modern biomedical research into wet cupping (the form of hijama that involves superficial skin punctures beneath the cup to allow controlled bloodletting) has shown promising results in the management of hypertension, chronic pain (especially lower back pain, neck pain, and knee pain), migraine headaches, fibromyalgia, and various inflammatory conditions. Dry cupping — which involves suction without puncture — has demonstrated measurable effects on soft tissue mobilisation, myofascial release, and lymphatic drainage. Both modalities are increasingly used by physiotherapists, sports medicine practitioners, and integrative clinicians alongside conventional treatment.</p>
-          <p>The quality of the equipment used directly affects the safety, efficacy, and patient experience of hijama treatment. Substandard cups can fail under vacuum pressure (posing safety risks), contain harmful plasticisers (posing contamination risks), or provide inconsistent suction levels (affecting clinical outcomes). This is why clinics, hospitals, and training institutes consistently choose Detoxy Hijama — because our manufacturing standards are designed for professional clinical use, not for budget retail markets.</p>
-
-          <h3>Types of Hijama Equipment: What Every Clinic Needs</h3>
-          <p><strong>Standard Hijama Cups (PVC):</strong> The workhorse of any hijama clinic. Standard cups are manufactured from medical-grade polyvinyl chloride (PVC) with integrated valve systems for use with suction gun pumps. They are available in sizes 1 through 6 (corresponding to cup diameter from approximately 30mm to 75mm). Standard cups are the most cost-effective option for high-volume clinical use and are typically replaced after a defined number of sterilisation cycles. Detoxy Hijama's standard cups are manufactured domestically in India, giving them a significant price advantage over imported Chinese alternatives of equivalent quality.</p>
-          <p><strong>Premium Transparent Hijama Cups:</strong> Made from optical-grade clear polypropylene, premium transparent cups allow real-time visual monitoring of suction depth and skin response during treatment. This visual feedback is particularly valuable for: practitioner training (students can clearly see the suction effect); clinical photography (transparent cups allow documentation of treatment); precise placement verification on complex body areas; and patient communication (patients can see what is happening under the cup). Premium cups carry a modest price premium over standard cups but are preferred by quality-focused clinics and all hijama training institutes.</p>
-          <p><strong>Curve Cups:</strong> Ergonomically contoured cups designed to conform to curved body surfaces — particularly the shoulder area, knee, elbow, and ankle — where standard flat-based cups struggle to maintain consistent vacuum. Curve cups address a common clinical challenge and have become an essential addition to complete hijama kit inventories. Available in sizes 3 and 4.</p>
-          <p><strong>Silicone Cups (Moving & Facial):</strong> Flexible silicone cups are squeezed to create suction without the need for a pump gun, making them ideal for soft tissue massage and "moving cupping" techniques. Silicone facial cups, in sets of 4 or 7, have become enormously popular for facial cupping — a beauty therapy application involving lymphatic drainage, skin toning, and anti-ageing massage. The global beauty market's adoption of facial cupping has significantly expanded the customer base for hijama equipment suppliers.</p>
-          <p><strong>Fire Cupping Glass Sets:</strong> Borosilicate glass cups used with heat (typically an alcohol-soaked cotton ball on forceps) to create vacuum through thermal means rather than mechanical suction. Fire cupping is the traditional technique used in Traditional Chinese Medicine (TCM) and in many South Asian and Middle Eastern hijama traditions. Glass fire cupping sets require significant practitioner training and safety precautions. Our sets include 16 cups across 4 sizes in a foam-lined storage case.</p>
-          <p><strong>Electric Smart Cups:</strong> USB-rechargeable electronic cupping devices with motorised suction and adjustable levels (typically 5 settings). Electric cups are particularly valued in beauty and wellness spa settings, physiotherapy clinics, and for patients who require very precise, gentle suction that manual pump methods may not consistently deliver. As the most technically sophisticated product in our range, electric cups carry the highest unit price but also the highest perceived value among end consumers.</p>
-          <p><strong>Magnetic Vacuum Cupping Kits:</strong> Complete 24-piece kits combining transparent cups with magnetic valve systems and a pistol-grip suction gun. These kits are the standard procurement unit for new clinic setups and training institutes because they provide a complete working tool set from day one. The magnetic valve design allows cups to be released with a single touch on the valve cap, making them easy to use for practitioners at all experience levels.</p>
-
-          <h3>Consumables: The Recurring Revenue of Hijama Supply</h3>
-          <p>Unlike equipment (which is purchased once and replaced on a long cycle), consumables are used and discarded at every session, creating predictable, recurring procurement needs for every active clinic. Smart procurement managers recognise that consumables represent both the most frequent purchase category and the greatest cost optimisation opportunity — particularly for high-volume clinics. Key consumables for hijama practice include:</p>
-          <p><strong>Surgical Blades (No. 11):</strong> Single-use, sterile surgical blades for the shallow superficial incisions used in wet hijama. Blade No. 11 — a pointed, tapered blade originally designed for ophthalmic surgery — is the professional standard for hijama practice because its geometry allows extremely precise, shallow cuts with minimal tissue trauma. Our blades come individually sterile-wrapped and are manufactured from stainless steel with carbon-coated edges for maximum sharpness. We supply in packs of 100, with significant bulk pricing for 1,000+ unit orders.</p>
-          <p><strong>Lancet Pens (3-Lancet):</strong> A modern innovation in hijama technique, the 3-lancet pen provides three simultaneous puncture points from a single device operation. The parallel puncture pattern reduces the total number of tool actions required per session, saving practitioner time and reducing patient discomfort compared to making multiple individual incisions. Depth-adjustable versions allow customisation for different patient skin types and treatment areas.</p>
-          <p><strong>Surgical Cotton:</strong> Absorbent medical cotton in rolls (400g) for wound site cleaning, blood absorption during and after treatment, and applying topical preparations (oils, honey, antimicrobials). High-quality surgical cotton is fully bleached, fully absorbent, free from synthetic fibre contamination, and meets pharmacopoeial standards for surgical-grade material. Clinics typically use one to two rolls per week depending on session volume.</p>
-          <p><strong>Premium Latex Gloves:</strong> Powder-free, examination-grade latex gloves provide the barrier protection required for safe hijama practice. Professional-grade gloves fit snugly without restriction, have sufficient thickness for puncture resistance during blade handling, and maintain tactile sensitivity for precise placement of cups and lancets. Available in S, M, and L to suit all practitioners. Powder-free formulation eliminates post-procedural skin reactions from residual corn starch.</p>
-          <p><strong>Suction Gun Pumps:</strong> Pistol-grip suction pumps are used with valve-equipped PVC and acrylic cups to create vacuum. Our ergonomic single-hand pump design allows the practitioner to maintain cup placement with one hand while pumping with the other. Pumps are durable, easy to disassemble for sterilisation, and compatible with all standard valve cup systems.</p>
-        </div>
-        <div>
-          <h2>Bulk & Wholesale Hijama Supply: How to Order from Detoxy Hijama</h2>
-          <p>Detoxy Hijama's B2B supply programme is designed to serve the complete spectrum of institutional purchasers — from a single-room clinic ordering 500 cups at a time, to a national distributor ordering full container loads of mixed hijama products for resale across multiple states. Our bulk pricing structure is transparent, structured, and automatically applied at defined quantity thresholds — no negotiation required for standard tiers, though additional negotiated pricing is available for our highest-volume partners.</p>
-
-          <h3>Bulk Pricing Tiers for Hijama Cups</h3>
-          <p><strong>Standard Hijama Cups:</strong> Retail price ₹9/cup; Bulk price ₹7/cup at 500+ units; Institutional/export price available on enquiry for 10,000+ units. Standard cups are typically ordered in mixed-size lots by clinics (e.g., 200 of size 3, 150 of size 4, 100 of size 2, 50 of size 1) to match their case mix. We accommodate custom size mix requests for bulk orders without additional charge.</p>
-          <p><strong>Premium Transparent Cups:</strong> Retail ₹12/cup; Bulk ₹10/cup at 500+ units. Premium cups carry a modest premium over standard, which is almost entirely offset by the clinical value of real-time visual monitoring and their suitability for use in training programmes where visual feedback is essential.</p>
-          <p><strong>Curve Cups:</strong> Retail ₹12/cup; Bulk ₹10/cup at 300+ units. Curve cups are typically ordered as add-ons to standard cup lots — most clinics maintain a ratio of approximately 1 curve cup per 4 standard cups in their active inventory.</p>
-
-          <h3>Bulk Pricing for Consumables</h3>
-          <p>Consumable pricing is where the greatest cost optimisation opportunity lies for established clinics. A clinic performing 20 wet hijama sessions per week uses approximately 200–400 surgical blades, 1–2 rolls of surgical cotton, 100+ gloves, and 20+ lancet pens per month — representing a meaningful monthly expenditure that scales directly with session volume. Our bulk pricing tiers for consumables are:</p>
-          <p><strong>Surgical Blades No. 11:</strong> ₹250/pack of 100 retail; ₹200/pack at 10+ packs; custom pricing for 100+ packs. The difference between retail and bulk pricing for a clinic performing 20 sessions/week represents annual savings of approximately ₹6,000–₹12,000 on blades alone.</p>
-          <p><strong>Latex Gloves:</strong> ₹320/pack of 100 retail; ₹260/pack at 10+ packs. For a medium clinic using 4 packs/month, bulk ordering saves approximately ₹3,000/year with no effort beyond ordering slightly ahead.</p>
-          <p><strong>Surgical Cotton:</strong> ₹160/roll retail; ₹130/roll at 20+ rolls. Cotton has a long shelf life and stores well — buying 3–6 months' supply at once is a straightforward cost optimisation.</p>
-
-          <h3>Export Orders: Supplying Hijama Equipment Internationally</h3>
-          <p>Detoxy Hijama supplies hijama equipment to practitioners and distributors internationally — particularly in the Gulf Cooperation Council (GCC) states (UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, Oman), Malaysia, Indonesia, Bangladesh, the United Kingdom, the United States, Canada, Australia, and across continental Europe. International demand for quality Indian-made hijama equipment has grown significantly as the global Muslim population's interest in prophetic medicine has expanded and as TCM-influenced cupping therapy has entered mainstream Western wellness culture.</p>
-          <p>For export orders, we work with established freight forwarding partners to offer competitive international shipping rates. Typical export order sizes range from a 5kg air freight shipment (for a distributor testing a new market) to full sea freight containers (for large-scale distributors or institutional buyers). Our export documentation capability includes commercial invoice, packing list, certificate of origin, and where required, FDA/CDSCO/quality certificates.</p>
-          <p>Export pricing is available separately from domestic pricing and reflects the different cost base of international supply (logistics, documentation, currency). Contact our export team on +91 95665 96077 or at detoxyhijama@gmail.com for a customised export quotation. We typically respond within 4 business hours during IST business hours.</p>
-
-          <h3>Setting Up a New Hijama Clinic: Complete Equipment List</h3>
-          <p>For practitioners establishing a new hijama clinic, we offer a complete starter kit procurement service. A standard setup for a single-practitioner clinic handling 10–15 sessions per week typically requires: 200–300 standard cups (mixed sizes), 50–100 premium cups, 1 magnetic vacuum kit, 2 suction guns, 1 lancet pen per practitioner, 500 surgical blades (pack of 5), 3–4 packs of latex gloves, 4–6 rolls of surgical cotton, and any specialised items (silicone facial cups for beauty clients, electric cups for gentle-suction patients). We offer a "New Clinic Bundle" at structured pricing — contact us to create a custom bundle quote.</p>
-
-          <h3>Training Institutes: Bulk Supply for Educational Settings</h3>
-          <p>Hijama training institutes require a specific procurement profile: high volume of cups (each student needs to practice on a full set), emphasis on transparent/premium cups (for visual feedback during training), a complete range of consumables (students must practice with real tools), and often private label packaging (training institutes want products branded under their school name). We supply several of India's leading hijama training institutes and can provide structured supply agreements including regular monthly delivery schedules, custom packaging, and dedicated account management.</p>
-
-          <h3>The Detoxy Quality Promise: What "Clinic Grade" Actually Means</h3>
-          <p>The term "medical grade" or "clinic grade" is used loosely in the hijama supply market. At Detoxy Hijama, we are specific about what these terms mean in our manufacturing context. Our cups are manufactured from virgin (not recycled) PVC or polypropylene resin with no phthalate plasticisers (EU REACH compliant formulation). Our blades are manufactured from 420-grade stainless steel with carbon coating for edge retention. Our latex gloves are manufactured to EN 455 European examination glove standard. We maintain lot traceability for all manufacturing runs and can provide certificates of conformity on request.</p>
-          <p>The practical consequence of these manufacturing standards is consistency — the quality characteristic that matters most to active practitioners. When you know your equipment will perform identically from the first cup to the five-hundredth, you can focus on technique and patient care rather than compensating for variable product quality. This is the Detoxy difference.</p>
-
-          <h2>Frequently Asked Questions: Bulk & Export Hijama Orders</h2>
-          <p><strong>What is the minimum order quantity for wholesale pricing?</strong> For cups: 500 units (mixed sizes acceptable). For consumables: 10 packs of the relevant item. For complete kits (magnetic, electric, fire glass): 5 units. There is no minimum order for retail purchases at retail pricing.</p>
-          <p><strong>How long does bulk order delivery take?</strong> Domestic India orders are typically dispatched within 24 hours of payment confirmation. Bulk orders (500+ cups) are dispatched within 48–72 hours. International export orders require 3–5 business days for documentation and logistics coordination before dispatch.</p>
-          <p><strong>Do you offer net-30 or credit terms?</strong> Credit terms (net-15 to net-30) are available for verified commercial customers with a minimum 3-month order history. Contact our B2B team to discuss terms. Standard payment methods: bank transfer, UPI, and payment on delivery (for orders up to ₹25,000).</p>
-          <p><strong>Can you provide custom packaging or private labelling?</strong> Yes. Custom printed bags, box labels, and documentation can be arranged for orders of 1,000+ cups or 50+ kits. Minimum order quantities and lead times apply; contact us for specifications.</p>
-          <p><strong>What certifications do your products hold?</strong> Our blades carry CE mark and CDSCO registration. Our PVC cups comply with EU RoHS and REACH standards. Our latex gloves comply with EN 455. Certificate copies available on request for importers and institutional buyers.</p>
-          <p><strong>How do I track my bulk order?</strong> All orders are dispatched with tracking numbers sent to your registered WhatsApp/mobile number. Large orders include dedicated logistics coordinator contact.</p>
-          <p><strong>What is your damage/defect replacement policy for bulk orders?</strong> Any product damaged in transit or exhibiting manufacturing defects will be replaced at no cost within 7 days of delivery, subject to photographic documentation of the defect. Replacement is fulfilled within 48–72 hours of claim approval.</p>
-          <p><strong>Do you ship to all Indian states?</strong> Yes — we ship to every PIN code in India via DTDC, Delhivery, Blue Dart, and India Post. Remote areas (Andaman & Nicobar, Lakshadweep, Ladakh, Northeast) are served via India Post Speed Post with slightly extended delivery timelines.</p>
-        </div>
-      </div>
-
-      <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:36px;margin-top:40px">
-        <h2 style="margin-bottom:16px">Hijama Equipment Procurement: Regional Guide for Indian Practitioners</h2>
-        <p>India's hijama therapy market is regionally diverse, with high practitioner density in certain states and significant growth in others. Understanding the regional landscape helps us serve our customers better and helps new practitioners understand where the strongest peer communities and training ecosystems exist.</p>
-        <p><strong>Tamil Nadu:</strong> Tamil Nadu hosts one of India's largest and most professionally structured hijama communities, with significant practitioner populations in Chennai, Coimbatore, Madurai, Salem, Trichy, Vellore, Thanjavur, and Tirunelveli. Detoxy Hijama is based in Madurai, giving Tamil Nadu practitioners same-day or next-day delivery advantage. Tamil Nadu's large Muslim communities in Vellore, Ambur, Ranipet, and coastal districts are among our highest-volume customer bases.</p>
-        <p><strong>Kerala:</strong> Kerala's high health literacy and established Unani medical tradition have made it one of India's most receptive states for formal, professionally-practised hijama therapy. Practitioners in Kozhikode (Calicut), Malappuram, Thrissur, Kochi, and Thiruvananthapuram represent a significant share of our customer base. Kerala's active medical tourism sector has also created demand for international-standard hijama practice at hotel wellness centres and retreat facilities.</p>
-        <p><strong>Karnataka:</strong> Bangalore's large and economically active Muslim population, combined with the city's tech-sector health awareness culture, has generated significant demand for modern hijama practice. Practitioners in Bangalore, Mangalore, Mysore, Hubli-Dharwad, and Bidar represent our Karnataka customer base. Bangalore specifically has seen notable growth in beauty-focused hijama (facial cupping) as the city's wellness market has grown.</p>
-        <p><strong>Andhra Pradesh and Telangana:</strong> Hyderabad's historic role as a centre of Islamic culture and Unani medicine has made it a significant hijama hub. The Hyderabad Metropolitan Area, along with Warangal, Nizamabad, Karimnagar, and Visakhapatnam, represents a substantial procurement market for Detoxy Hijama. The strong Unani medical tradition in the Deccan region means that many Hyderabad practitioners have advanced training and prefer premium-tier equipment.</p>
-        <p><strong>Maharashtra:</strong> Mumbai, Pune, Aurangabad, Nagpur, and Nashik host active hijama communities. Mumbai's large and economically diverse Muslim population supports a wide range of practice settings from neighbourhood clinics to high-end integrative wellness centres. Maharashtra represents our largest customer base outside the Southern states.</p>
-        <p><strong>National Capital Region (Delhi/NCR, Rajasthan, UP):</strong> The Hindi heartland — Delhi, Uttar Pradesh, Rajasthan, and Madhya Pradesh — contains India's largest Muslim population by absolute number and represents a very large, if more price-sensitive, procurement market. We supply distributors in Delhi, Lucknow, Jaipur, and Bhopal who serve the broader NCR and UP market. North Indian practitioners tend to have strong preferences for traditional hijama methods (standard PVC cups, suction guns, traditional lancets) compared to the greater openness to modern equipment variants in South Indian markets.</p>
-        <p><strong>West Bengal and Northeast:</strong> Kolkata's substantial Muslim community and the Northeast states (particularly Assam) represent growing markets for hijama equipment. West Bengal practitioners often order through distributors in Kolkata, while Northeast orders typically use India Post delivery.</p>
-        <p><strong>Export Markets:</strong> Our primary international markets are the GCC states (particularly UAE and Saudi Arabia, where large Indian diaspora communities have established hijama clinics serving both Indian expat and Arab local clienteles), Malaysia, Indonesia, Bangladesh, the United Kingdom (London, Birmingham, Manchester, Leicester), Canada (Toronto), and Australia (Sydney, Melbourne). International distributors who have established relationships with Detoxy Hijama receive custom pricing, priority production scheduling, and dedicated export documentation support.</p>
-      </div>
-    </div>
-  </section>
-
   <div id="footer-mount"></div>
 </div>
+
+<!-- ═══════════════════════════════════════════════════════
+     PROFESSIONAL PDF INVOICE — hidden on screen, prints only
+     ═══════════════════════════════════════════════════════ -->
+<div id="pdf-invoice">
+  <div class="inv-page">
+    <div class="inv-accent-bar"></div>
+    <div style="height:6mm"></div>
+    <!-- Header -->
+    <div class="inv-header">
+      <div class="inv-logo-area">
+        <img class="inv-logo" id="inv-logo-img" src="" alt="Detoxy Hijama">
+        <div>
+          <div class="inv-company-name">Detoxy Hijama</div>
+          <div class="inv-company-tag">Hijama Equipment Manufacturer</div>
+          <div class="inv-company-sub">Madurai, Tamil Nadu, India<br>+91 95665 96077 &nbsp;·&nbsp; detoxyhijama@gmail.com<br>GSTIN: 33XXXXX0000X1ZX</div>
+        </div>
+      </div>
+      <div class="inv-doc-info">
+        <div class="inv-doc-type">QUOTATION</div>
+        <div class="inv-doc-num" id="inv-ref-num">QT-000000</div>
+        <div class="inv-doc-dates">
+          <div><strong>Date:</strong> <span id="inv-date"></span></div>
+          <div><strong>Valid Until:</strong> <span id="inv-valid"></span></div>
+          <div><strong>Order Type:</strong> <span id="inv-type"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bill To / From -->
+    <div class="inv-parties">
+      <div class="inv-party-box">
+        <div class="inv-party-label">Bill To</div>
+        <div class="inv-party-name" id="inv-cust-name"></div>
+        <div class="inv-party-detail" id="inv-cust-detail"></div>
+      </div>
+      <div class="inv-party-box" style="background:#f7fbfa">
+        <div class="inv-party-label">From / Manufacturer</div>
+        <div class="inv-party-name">Detoxy Hijama</div>
+        <div class="inv-party-detail">Direct Factory Pricing<br>Madurai, Tamil Nadu, India — 625 xxx<br>+91 95665 96077<br>detoxyhijama@gmail.com</div>
+      </div>
+    </div>
+
+    <!-- Items Table -->
+    <table class="inv-table">
+      <thead>
+        <tr>
+          <th style="width:38%">Product</th>
+          <th style="width:14%">Qty</th>
+          <th style="width:14%">Unit Price</th>
+          <th style="width:12%">Disc%</th>
+          <th style="width:22%">Line Total</th>
+        </tr>
+      </thead>
+      <tbody id="inv-items-body"></tbody>
+    </table>
+
+    <!-- Totals -->
+    <div class="inv-totals">
+      <div class="inv-totals-box">
+        <div class="inv-total-row"><span>Subtotal</span><span id="inv-subtotal"></span></div>
+        <div class="inv-total-row" id="inv-discount-row" style="display:none"><span style="color:#2aab97">Discount</span><span id="inv-discount" style="color:#2aab97"></span></div>
+        <div class="inv-total-row" id="inv-gst-row" style="display:none"><span>GST</span><span id="inv-gst"></span></div>
+        <div class="inv-total-row"><span>Shipping</span><span id="inv-shipping"></span></div>
+        <div class="inv-total-grand"><span>Grand Total</span><span id="inv-grand"></span></div>
+      </div>
+    </div>
+
+    <!-- Notes / Terms -->
+    <div class="inv-notes" id="inv-notes-box">
+      <div class="inv-notes-label">Payment Terms & Notes</div>
+      <div id="inv-notes-text"></div>
+    </div>
+
+    <div class="inv-notes" style="border-color:#2aab97">
+      <div class="inv-notes-label">Terms & Conditions</div>
+      <div>1. This quotation is valid for 30 days from the date of issue. &nbsp; 2. Prices are factory direct and exclusive of applicable taxes unless stated. &nbsp; 3. Orders above ₹999 qualify for free standard shipping. &nbsp; 4. Payment terms: 50% advance, 50% before dispatch unless otherwise agreed. &nbsp; 5. All products are manufactured to clinical grade standards. &nbsp; 6. Detoxy Hijama reserves the right to modify prices without prior notice.</div>
+    </div>
+
+    <!-- Footer -->
+    <div class="inv-footer">
+      <div class="inv-footer-brand">
+        <img class="inv-footer-logo" src="" id="inv-footer-logo" alt="Detoxy Hijama">
+        <div>
+          <div class="inv-footer-name">Detoxy Hijama</div>
+          <div style="font-size:7.5pt;color:#7a9490">India's Trusted Hijama Equipment Manufacturer</div>
+        </div>
+      </div>
+      <div class="inv-footer-contact">
+        detoxyhijama@gmail.com<br>
+        +91 95665 96077 &nbsp;·&nbsp; wa.me/919566596077<br>
+        detoxyhijama.github.io
+      </div>
+    </div>
+    <div class="inv-watermark">DETOXY HIJAMA</div>
+  </div>
+</div>
+
 <script src="config.js"></script>
 <script src="shared.js"></script>
 <script>
-  document.getElementById('header-mount').innerHTML = getNavHTML('Quote');
-  document.getElementById('footer-mount').innerHTML = getFooterHTML();
-  document.getElementById('quoteDate').textContent = new Date().toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'});
+  document.getElementById("header-mount").innerHTML = getNavHTML("Quote");
+  document.getElementById("footer-mount").innerHTML = getFooterHTML();
+  document.getElementById("quoteDate").textContent = new Date().toLocaleDateString("en-IN",{day:"numeric",month:"long",year:"numeric"});
 
-  const prods = (window.DETOXY_CONFIG || {}).products || [];
-  let _quantities = {};
+  const prods = (window.DETOXY_CONFIG||{}).products || [];
+  const cfg = window.DETOXY_CONFIG||{};
 
-  // Build product rows
+  // Set logo in PDF invoice
+  const LOGO_URI = "data:image/png;base64,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";
+  document.getElementById("inv-logo-img").src = LOGO_URI;
+  document.getElementById("inv-footer-logo").src = LOGO_URI;
+
   function buildProductRows() {
-    const container = document.getElementById('quoteProductList');
-    container.innerHTML = prods.map((p,i) => `
+    document.getElementById("quoteProductList").innerHTML = prods.map(p => `
     <div class="product-quote-row" id="qrow-${p.id}">
       <div>
         <div class="pq-name">${p.name}</div>
-        <div class="pq-cat">${p.categoryLabel} <span class="pq-unit">· ${p.unit}</span></div>
+        <div class="pq-cat">${p.categoryLabel} · ${p.unit}</div>
       </div>
-      <div>
-        <input type="number" class="form-input" style="padding:6px 8px;font-size:.82rem" id="qQty-${p.id}" value="0" min="0" oninput="recalculate()" placeholder="0"/>
-      </div>
+      <input type="number" class="form-input" style="padding:6px 8px;font-size:.82rem" id="qQty-${p.id}" value="0" min="0" oninput="recalculate()"/>
       <div>
         <span class="pq-price" id="qUnitPrice-${p.id}">₹${p.price}</span>
         <span id="qTier-${p.id}" class="tier-tag tier-retail">Retail</span>
       </div>
       <div class="pq-total" id="qLine-${p.id}">₹0</div>
-      <button style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.9rem" onclick="document.getElementById('qQty-${p.id}').value=0;recalculate()" title="Clear">✕</button>
-    </div>`).join('');
+      <button style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.9rem;padding:2px" onclick="document.getElementById('qQty-${p.id}').value=0;recalculate()" title="Clear">✕</button>
+    </div>`).join("");
   }
 
   function recalculate() {
-    const shippingSel = document.getElementById('qShipping').value;
-    document.getElementById('customShipRow').style.display = shippingSel === 'custom' ? 'block' : 'none';
-
-    let subtotal = 0;
-    let summaryItems = '';
-    let hasItems = false;
-
+    document.getElementById("customShipRow").style.display = document.getElementById("qShipping").value==="custom"?"block":"none";
+    let subtotal=0, summaryItems="", hasItems=false;
     prods.forEach(p => {
-      const qtyEl = document.getElementById('qQty-' + p.id);
-      if (!qtyEl) return;
-      const qty = parseInt(qtyEl.value) || 0;
+      const qty = parseInt(document.getElementById("qQty-"+p.id)?.value)||0;
       const isBulk = qty >= p.bulkQty;
       const unitPrice = isBulk ? p.bulkPrice : p.price;
       const lineTotal = qty * unitPrice;
       subtotal += lineTotal;
-      document.getElementById('qUnitPrice-' + p.id).textContent = '₹' + unitPrice;
-      const tierEl = document.getElementById('qTier-' + p.id);
-      if (isBulk) { tierEl.textContent='Bulk'; tierEl.className='tier-tag tier-bulk'; }
-      else { tierEl.textContent='Retail'; tierEl.className='tier-tag tier-retail'; }
-      document.getElementById('qLine-' + p.id).textContent = '₹' + lineTotal;
-      if (qty > 0) {
-        hasItems = true;
-        summaryItems += `<div class="bill-row"><span style="font-size:.82rem">${p.name} ×${qty}</span><span style="font-weight:600">₹${lineTotal}</span></div>`;
-      }
+      if(document.getElementById("qUnitPrice-"+p.id)) document.getElementById("qUnitPrice-"+p.id).textContent = "₹"+unitPrice;
+      const tierEl = document.getElementById("qTier-"+p.id);
+      if(tierEl){tierEl.textContent=isBulk?"Bulk":"Retail";tierEl.className="tier-tag "+(isBulk?"tier-bulk":"tier-retail");}
+      if(document.getElementById("qLine-"+p.id)) document.getElementById("qLine-"+p.id).textContent = "₹"+lineTotal;
+      if(qty>0){hasItems=true;summaryItems+=`<div class="bill-row"><span style="font-size:.82rem">${p.name} ×${qty}</span><span style="font-weight:600">₹${lineTotal}</span></div>`;}
     });
-
-    document.getElementById('quoteSummaryItems').innerHTML = hasItems ? summaryItems : '<div style="text-align:center;padding:20px;color:var(--muted);font-size:.85rem">Add product quantities above</div>';
-
-    const discountPct = parseFloat(document.getElementById('qDiscount').value) || 0;
-    const gstPct = parseFloat(document.getElementById('qGST_rate').value) || 0;
-    let shipping = shippingSel === 'custom' ? (parseFloat(document.getElementById('qCustomShip').value) || 0) : parseFloat(shippingSel) || 0;
-
-    const discount = subtotal * discountPct / 100;
-    const afterDiscount = subtotal - discount;
-    const gst = afterDiscount * gstPct / 100;
-    const total = afterDiscount + gst + shipping;
-
-    document.getElementById('quoteTotals').innerHTML = `
-    <div style="border-top:1px solid var(--border);margin-top:12px;padding-top:12px">
-      <div class="bill-row"><span style="color:var(--muted)">Subtotal</span><span>₹${subtotal.toFixed(2)}</span></div>
-      ${discount > 0 ? `<div class="bill-row"><span style="color:var(--t)">Discount (${discountPct}%)</span><span style="color:var(--t)">-₹${discount.toFixed(2)}</span></div>` : ''}
-      ${gst > 0 ? `<div class="bill-row"><span style="color:var(--muted)">GST (${gstPct}%)</span><span>₹${gst.toFixed(2)}</span></div>` : ''}
-      <div class="bill-row"><span style="color:var(--muted)">Shipping</span><span>${shipping === 0 ? '<span style="color:var(--t)">Free</span>' : '₹' + shipping}</span></div>
-      <div class="bill-total"><span>Grand Total</span><span style="color:var(--td)">₹${total.toFixed(2)}</span></div>
-    </div>`;
+    document.getElementById("quoteSummaryItems").innerHTML = hasItems ? summaryItems : "<div style='text-align:center;padding:18px;color:var(--muted);font-size:.84rem'>Add quantities above to see summary</div>";
+    const discPct=parseFloat(document.getElementById("qDiscount").value)||0;
+    const gstPct=parseFloat(document.getElementById("qGST_rate").value)||0;
+    const shipSel=document.getElementById("qShipping").value;
+    const shipping=shipSel==="custom"?(parseFloat(document.getElementById("qCustomShip").value)||0):parseFloat(shipSel)||0;
+    const discount=subtotal*discPct/100, afterDisc=subtotal-discount, gst=afterDisc*gstPct/100, total=afterDisc+gst+shipping;
+    document.getElementById("quoteTotals").innerHTML = `
+      <div style="border-top:1px solid var(--border);margin-top:12px;padding-top:12px">
+        <div class="bill-row"><span style="color:var(--muted)">Subtotal</span><span>₹${subtotal.toFixed(2)}</span></div>
+        ${discount>0?`<div class="bill-row"><span style="color:var(--t)">Discount (${discPct}%)</span><span style="color:var(--t)">-₹${discount.toFixed(2)}</span></div>`:""}
+        ${gst>0?`<div class="bill-row"><span style="color:var(--muted)">GST (${gstPct}%)</span><span>₹${gst.toFixed(2)}</span></div>`:""}
+        <div class="bill-row"><span style="color:var(--muted)">Shipping</span><span>${shipping===0?"<span style='color:var(--t)'>Free</span>":"₹"+shipping}</span></div>
+        <div class="bill-total"><span>Grand Total</span><span style="color:var(--td)">₹${total.toFixed(2)}</span></div>
+      </div>`;
   }
 
   function getQuoteLines() {
-    return prods.filter(p => {
-      const el = document.getElementById('qQty-' + p.id);
-      return el && parseInt(el.value) > 0;
-    }).map(p => {
-      const qty = parseInt(document.getElementById('qQty-' + p.id).value);
-      const isBulk = qty >= p.bulkQty;
-      const unitPrice = isBulk ? p.bulkPrice : p.price;
-      return { name: p.name, qty, unitPrice, lineTotal: qty * unitPrice };
+    return prods.filter(p=>{const el=document.getElementById("qQty-"+p.id);return el&&parseInt(el.value)>0;}).map(p=>{
+      const qty=parseInt(document.getElementById("qQty-"+p.id).value);
+      const isBulk=qty>=p.bulkQty, unitPrice=isBulk?p.bulkPrice:p.price;
+      return {name:p.name,cat:p.categoryLabel,qty,unitPrice,isBulk,lineTotal:qty*unitPrice};
     });
   }
 
   function sendQuoteWhatsApp() {
-    const company = document.getElementById('qCompany').value || 'Not specified';
-    const contact = document.getElementById('qContact').value || '';
-    const phone = document.getElementById('qPhone').value || '';
-    const lines = getQuoteLines();
-    if (!lines.length) { alert('Please add at least one product with a quantity.'); return; }
-    let msg = `*Bulk Quote Request — Detoxy Hijama*\n\nCompany: ${company}\nContact: ${contact}\nPhone: ${phone}\n\n*Products:*\n`;
-    lines.forEach(l => msg += `• ${l.name}: ×${l.qty} @ ₹${l.unitPrice} = ₹${l.lineTotal}\n`);
-    const total = lines.reduce((s,l) => s + l.lineTotal, 0);
-    msg += `\n*Total: ₹${total}*\n\nPlease confirm availability and dispatch timeline.`;
-    window.open('https://wa.me/919566596077?text=' + encodeURIComponent(msg), '_blank');
+    const company=document.getElementById("qCompany").value||"Not specified";
+    const lines=getQuoteLines();
+    if(!lines.length){alert("Please add at least one product.");return;}
+    let msg=`*Bulk Quote Request — Detoxy Hijama*
+
+Company: ${company}
+Contact: ${document.getElementById("qContact").value||"—"}
+Phone: ${document.getElementById("qPhone").value||"—"}
+
+*Products:*
+`;
+    lines.forEach(l=>msg+=`• ${l.name}: ×${l.qty} @ ₹${l.unitPrice} = ₹${l.lineTotal}
+`);
+    const total=lines.reduce((s,l)=>s+l.lineTotal,0);
+    const discPct=parseFloat(document.getElementById("qDiscount").value)||0;
+    const gstPct=parseFloat(document.getElementById("qGST_rate").value)||0;
+    msg+=`
+Subtotal: ₹${total.toFixed(2)}
+GST (${gstPct}%): ₹${(total*gstPct/100).toFixed(2)}
+*Grand Total: ₹${(total*(1-discPct/100)*(1+gstPct/100)).toFixed(2)}*
+
+Please confirm availability and dispatch timeline.`;
+    window.open("https://wa.me/919566596077?text="+encodeURIComponent(msg),"_blank");
   }
 
-  function printQuote() {
+  // ── PROFESSIONAL PDF GENERATION ──────────────────────────────────────────
+  function generatePDF() {
     const lines = getQuoteLines();
-    if (!lines.length) { alert('Please add at least one product.'); return; }
+    if(!lines.length){alert("Please add at least one product with a quantity.");return;}
+    const company = document.getElementById("qCompany").value.trim();
+    if(!company){alert("Please enter Company / Clinic Name before generating the invoice.");document.getElementById("qCompany").focus();return;}
+
+    // Populate invoice fields
+    const now = new Date();
+    const valid = new Date(now); valid.setDate(valid.getDate()+30);
+    const refNum = "QT-"+now.getFullYear().toString().slice(-2)+String(now.getMonth()+1).padStart(2,"0")+String(now.getDate()).padStart(2,"0")+"-"+String(Math.floor(Math.random()*9000)+1000);
+
+    document.getElementById("inv-ref-num").textContent = refNum;
+    document.getElementById("inv-date").textContent = now.toLocaleDateString("en-IN",{day:"2-digit",month:"long",year:"numeric"});
+    document.getElementById("inv-valid").textContent = valid.toLocaleDateString("en-IN",{day:"2-digit",month:"long",year:"numeric"});
+    document.getElementById("inv-type").textContent = document.getElementById("qOrderType").options[document.getElementById("qOrderType").selectedIndex].text;
+
+    // Customer details
+    document.getElementById("inv-cust-name").textContent = company;
+    const contact = document.getElementById("qContact").value;
+    const phone = document.getElementById("qPhone").value;
+    const email = document.getElementById("qEmail").value;
+    const address = document.getElementById("qAddress").value;
+    const gstNum = document.getElementById("qGST").value;
+    let custDetail = "";
+    if(contact) custDetail += contact+"
+";
+    if(phone) custDetail += phone+"
+";
+    if(email) custDetail += email+"
+";
+    if(address) custDetail += address+"
+";
+    if(gstNum) custDetail += "GSTIN: "+gstNum;
+    document.getElementById("inv-cust-detail").innerText = custDetail.trim()||"—";
+
+    // Items
+    const discPct = parseFloat(document.getElementById("qDiscount").value)||0;
+    let subtotal=0;
+    document.getElementById("inv-items-body").innerHTML = lines.map((l,i) => {
+      const lineDisc = discPct>0 ? (l.lineTotal*discPct/100) : 0;
+      const net = l.lineTotal - lineDisc;
+      subtotal += l.lineTotal;
+      const bg = i%2===0?"":"background:#f7fbfa";
+      return `<tr style="${bg}">
+        <td><div class="inv-prod-name">${l.name}</div><div class="inv-prod-cat">${l.cat} · ${l.isBulk?"Bulk Price":"Retail Price"}</div></td>
+        <td style="text-align:right">${l.qty}</td>
+        <td style="text-align:right">₹${l.unitPrice.toFixed(2)}</td>
+        <td style="text-align:right">${discPct>0?discPct+"%":"—"}</td>
+        <td style="text-align:right;font-weight:700">₹${net.toFixed(2)}</td>
+      </tr>`;
+    }).join("");
+
+    const shipSel=document.getElementById("qShipping").value;
+    const shipping=shipSel==="custom"?(parseFloat(document.getElementById("qCustomShip").value)||0):parseFloat(shipSel)||0;
+    const discount=subtotal*discPct/100, afterDisc=subtotal-discount;
+    const gstPct=parseFloat(document.getElementById("qGST_rate").value)||0;
+    const gst=afterDisc*gstPct/100, total=afterDisc+gst+shipping;
+
+    document.getElementById("inv-subtotal").textContent = "₹"+subtotal.toFixed(2);
+    const discRow=document.getElementById("inv-discount-row");
+    discRow.style.display = discount>0?"flex":"none";
+    document.getElementById("inv-discount").textContent = "-₹"+discount.toFixed(2);
+    const gstRow=document.getElementById("inv-gst-row");
+    gstRow.style.display = gst>0?"flex":"none";
+    document.getElementById("inv-gst").textContent = "₹"+gst.toFixed(2)+" ("+gstPct+"%)";
+    document.getElementById("inv-shipping").textContent = shipping===0?"Free":"₹"+shipping.toFixed(2);
+    document.getElementById("inv-grand").textContent = "₹"+total.toFixed(2);
+
+    // Notes
+    const notes = document.getElementById("qNotes").value.trim();
+    document.getElementById("inv-notes-text").textContent = notes || "No special terms specified. Standard Detoxy Hijama terms apply.";
+
+    // Print
     window.print();
   }
 
   async function submitQuoteRequest() {
-    const company = document.getElementById('qCompany').value.trim();
-    const phone = document.getElementById('qPhone').value.trim();
-    const lines = getQuoteLines();
-    if (!company || !phone) { alert('Please fill in company name and phone number.'); return; }
-    if (!lines.length) { alert('Please add at least one product with a quantity.'); return; }
-    const orderData = {
-      type: 'QUOTE_REQUEST',
-      company, phone,
-      contact: document.getElementById('qContact').value,
-      email: document.getElementById('qEmail').value,
-      orderType: document.getElementById('qOrderType').value,
-      items: lines.map(l => `${l.name} x${l.qty}`).join(', '),
-      total: lines.reduce((s,l) => s+l.lineTotal, 0),
-      notes: document.getElementById('qNotes').value,
-      timestamp: new Date().toISOString()
+    const company=document.getElementById("qCompany").value.trim();
+    const phone=document.getElementById("qPhone").value.trim();
+    const lines=getQuoteLines();
+    if(!company||!phone){alert("Please fill in Company Name and Phone Number.");return;}
+    if(!lines.length){alert("Please add at least one product with a quantity.");return;}
+    const orderData={
+      type:"QUOTE_REQUEST", company, phone,
+      contact:document.getElementById("qContact").value,
+      email:document.getElementById("qEmail").value,
+      address:document.getElementById("qAddress").value,
+      orderType:document.getElementById("qOrderType").value,
+      items:lines.map(l=>`${l.name} x${l.qty}`).join(", "),
+      total:lines.reduce((s,l)=>s+l.lineTotal,0),
+      notes:document.getElementById("qNotes").value,
+      timestamp:new Date().toISOString()
     };
     await OrderSync.submit(orderData);
-    alert('Quote request submitted! We will contact you within 4 business hours.');
+    alert("✅ Quote request submitted! We will contact you within 4 business hours.\n\nYou can also download a PDF copy using the 'Download PDF Invoice' button.");
   }
 
   buildProductRows();
