@@ -60,7 +60,7 @@ function getFooterHTML() {
           <img src="${base}assets/logo.png" alt="Detoxy Hijama" style="width:40px;height:40px;border-radius:50%;object-fit:cover" onerror="this.style.display='none'">
           <span class="footer-brand-name">Detoxy Hijama</span>
         </div>
-        <p class="footer-desc">India's direct hijama manufacturer — factory-fresh quality at zero markup. Trusted by 5,000+ practitioners across India.</p>
+        <p class="footer-desc">India's direct hijama manufacturer — factory-fresh quality at zero markup. Supplying 5,000+ practitioners, clinics & hospitals across India from our large factory in Coimbatore.</p>
         <div class="footer-trust">
           <span class="footer-trust-pill">🏭 Direct Manufacturer</span>
           <span class="footer-trust-pill">🚚 Pan India</span>
