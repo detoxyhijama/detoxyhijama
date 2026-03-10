@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard | Detoxy Hijama</title>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/style.css"/>
+  <style>
+    /* FIX 4: Added -webkit-sticky for iOS Safari < 13 which requires the prefixed form.
+       Without it, the sidebar scrolls away on iPhones below Safari 13. */
+    .admin-sidebar{background:var(--dark);color:#fff;padding:0;position:-webkit-sticky;position:sticky;top:0;height:100vh;overflow-y:auto}
+    .admin-logo{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:10px}
+    .admin-logo-mark{width:36px;height:36px;border-radius:9px;background:var(--t);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .admin-logo-mark svg{width:20px;height:20px}
+    .admin-logo-name{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700}
+    .admin-logo-sub{font-size:.62rem;opacity:.6;letter-spacing:.07em;text-transform:uppercase}
+    .admin-nav{padding:16px 12px}
+    .admin-nav-section{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);padding:8px 8px 6px;margin-top:8px}
+    .admin-nav a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;font-size:.85rem;font-weight:500;color:rgba(255,255,255,.7);transition:var(--transition);text-decoration:none;margin-bottom:2px}
+    .admin-nav a:hover,.admin-nav a.active{background:rgba(255,255,255,.1);color:#fff}
+    .admin-nav a svg{width:17px;height:17px;flex-shrink:0}
+    .admin-main{padding:32px;overflow-y:auto}
+    .admin-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
+    .admin-topbar h1{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--dark)}
+    .admin-topbar p{font-size:.82rem;color:var(--muted)}
+    .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+    .stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px}
+    .stat-label{font-size:.75rem;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+    .stat-value{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:700;color:var(--dark);line-height:1}
+    .stat-change{font-size:.75rem;color:var(--success);margin-top:4px}
+    .admin-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:24px}
+    .admin-card-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+    .admin-card-head h3{font-size:.95rem;font-weight:700;color:var(--dark)}
+    .admin-table{width:100%;border-collapse:collapse;font-size:.84rem}
+    .admin-table th{padding:10px 16px;text-align:left;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid var(--border);background:var(--cream)}
+    .admin-table td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+    .admin-table tr:last-child td{border-bottom:none}
+    .admin-table tr:hover td{background:var(--cream)}
+    .status-badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:50px;font-size:.71rem;font-weight:700}
+    .status-pending{background:#fef3c7;color:#92400e}
+    .status-confirmed{background:#d1fae5;color:#065f46}
+    .status-dispatched{background:var(--tp);color:var(--td)}
+    .status-delivered{background:#e0e7ff;color:#3730a3}
+    /* FIX 3: 'inset:0' shorthand not supported in Safari < 14.1 — replaced with explicit
+       top/right/bottom/left which are universally supported. Applied to both overlays. */
+    .login-overlay{position:fixed;top:0;right:0;bottom:0;left:0;background:var(--cream);display:flex;align-items:center;justify-content:center;z-index:999}
+    .login-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:40px;width:100%;max-width:380px;text-align:center}
+    .login-box h2{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--dark);margin-bottom:6px}
+    .login-box p{font-size:.83rem;color:var(--muted);margin-bottom:24px}
+    /* FIX 2: Removed dead display:flex declaration — it was set then immediately overridden by
+       display:none in the same rule block. The first value was never applied, same as the
+       nav-cart-count bug. display:none is the correct default; .open class shows it as flex. */
+    /* FIX 3: inset:0 replaced with explicit top/right/bottom/left here too. */
+    .admin-form-modal{position:fixed;top:0;right:0;bottom:0;left:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center;display:none}
+    .admin-form-modal.open{display:flex}
+    .admin-modal-box{background:var(--white);border-radius:var(--radius-lg);padding:32px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
+    .admin-modal-box h3{font-size:1.1rem;font-weight:700;color:var(--dark);margin-bottom:20px}
+    @media(max-width:900px){.admin-layout{grid-template-columns:1fr}.admin-sidebar{display:none}.stat-grid{grid-template-columns:repeat(2,1fr)}}
+    .sheets-url-row{display:flex;gap:8px;margin-bottom:16px}
+    .sheets-url-row input{flex:1}
+  </style>
+</head>
+<body>
+
+<!-- LOGIN OVERLAY -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <div style="width:48px;height:48px;border-radius:12px;background:var(--dark);display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+      <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+    </div>
+    <h2>Admin Access</h2>
+    <p>Enter the admin password to continue</p>
+    <div class="form-group" style="text-align:left">
+      <label class="form-label" for="adminPass">Password</label>
+      <input type="password" id="adminPass" class="form-control" placeholder="Admin password" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <div class="form-error" id="loginErr" style="display:none">Incorrect password</div>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="doLogin()">Sign In</button>
+    <p style="margin-top:14px;font-size:.75rem;color:var(--muted)">Default: detoxy2024admin &mdash; change in config.js</p>
+  </div>
+</div>
+
+<!-- ADMIN LAYOUT -->
+<div class="admin-layout" id="adminLayout" style="display:none">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-logo">
+      <div class="admin-logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></div>
+      <div><div class="admin-logo-name">Detoxy Admin</div><div class="admin-logo-sub">Dashboard</div></div>
+    </div>
+    <nav class="admin-nav">
+      <div class="admin-nav-section">Main</div>
+      <a href="#" class="active" onclick="showSection('dashboard',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard
+      </a>
+      <a href="#" onclick="showSection('orders',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Orders
+      </a>
+      <a href="#" onclick="showSection('products',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>Products
+      </a>
+      <div class="admin-nav-section">Settings</div>
+      <a href="#" onclick="showSection('settings',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>Settings
+      </a>
+      <a href="../index.html" target="_blank">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>View Site
+      </a>
+      <a href="#" onclick="doLogout()" style="margin-top:8px;color:rgba(255,100,100,.7)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>Logout
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+
+    <!-- DASHBOARD -->
+    <div id="section-dashboard">
+      <div class="admin-topbar">
+        <div><h1>Dashboard</h1><p id="dashGreeting"></p></div>
+        <button class="btn btn-primary btn-sm" onclick="loadOrders()">Refresh Data</button>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-label">Total Orders</div><div class="stat-value" id="statOrders">0</div><div class="stat-change">From Google Sheets</div></div>
+        <div class="stat-card"><div class="stat-label">Products</div><div class="stat-value">9</div><div class="stat-change">Active listings</div></div>
+        <div class="stat-card"><div class="stat-label">Revenue (est.)</div><div class="stat-value" id="statRevenue">&#8377;0</div><div class="stat-change">Pending + Confirmed</div></div>
+        <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-value" id="statPending">0</div><div class="stat-change">Awaiting dispatch</div></div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-head"><h3>Recent Orders</h3><span id="ordersStatus" style="font-size:.78rem;color:var(--muted)">Loading...</span></div>
+        <div id="recentOrdersTable" style="padding:24px;color:var(--muted);font-size:.85rem;text-align:center">Connect Google Sheets to view orders.</div>
+      </div>
+    </div>
+
+    <!-- ORDERS -->
+    <div id="section-orders" style="display:none">
+      <div class="admin-topbar">
+        <div><h1>Orders</h1><p>All orders from Google Sheets</p></div>
+        <button class="btn btn-primary btn-sm" onclick="loadOrders()">Sync Orders</button>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-head">
+          <h3>All Orders</h3>
+          <select class="sort-select" id="orderFilter" onchange="renderOrders()">
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="dispatched">Dispatched</option>
+            <option value="delivered">Delivered</option>
+          </select>
+        </div>
+        <div id="ordersTableWrap"><p style="padding:24px;color:var(--muted);font-size:.85rem">No orders loaded. Configure Google Sheets in Settings.</p></div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div id="section-products" style="display:none">
+      <div class="admin-topbar">
+        <div><h1>Products</h1><p>Manage product catalogue</p></div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-head"><h3>All Products</h3></div>
+        <table class="admin-table">
+          <thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Rating</th><th>Stock</th><th>Status</th></tr></thead>
+          <tbody id="productsAdminTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="section-settings" style="display:none">
+      <div class="admin-topbar"><div><h1>Settings</h1><p>Configure Google Sheets API &amp; site settings</p></div></div>
+      <div class="admin-card" style="max-width:600px">
+        <div class="admin-card-head"><h3>Google Sheets API</h3></div>
+        <div style="padding:24px">
+          <p style="font-size:.85rem;color:var(--muted);margin-bottom:20px">Enter your Google Apps Script Web App URL to sync orders. See README for setup instructions.</p>
+          <div class="form-group">
+            <label class="form-label">Google Apps Script URL</label>
+            <div class="sheets-url-row">
+              <input type="url" id="sheetsUrlInput" class="form-control" placeholder="https://script.google.com/macros/s/..." value=""/>
+              <button class="btn btn-primary" onclick="saveSheetsUrl()">Save</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Admin Password</label>
+            <input type="password" id="newAdminPass" class="form-control" placeholder="New password"/>
+          </div>
+          <button class="btn btn-dark" onclick="saveSettings()">Save Settings</button>
+          <div id="settingsSaved" class="alert alert-success" style="display:none;margin-top:14px">Settings saved successfully.</div>
+        </div>
+      </div>
+      <div class="admin-card" style="max-width:600px;margin-top:16px">
+        <div class="admin-card-head"><h3>Google Apps Script Setup Guide</h3></div>
+        <div style="padding:24px;font-size:.85rem;color:var(--muted);line-height:1.8">
+          <ol style="padding-left:20px">
+            <li>Go to <a href="https://sheets.google.com" target="_blank" style="color:var(--t)">Google Sheets</a> and create a new spreadsheet.</li>
+            <li>Add these sheets: <strong>Orders</strong> (columns: order_id, name, phone, address, items, total, status, date) and <strong>Products</strong>.</li>
+            <li>Open Extensions &gt; Apps Script and paste the <code>google-apps-script.gs</code> code.</li>
+            <li>Deploy as Web App — set access to <em>Anyone</em>. Copy the URL.</li>
+            <li>Paste the URL above and click Save.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="../assets/js/shared.js"></script>
+<script>
+var ADMIN_PASS = localStorage.getItem('dh_admin_pass') || 'detoxy2024admin';
+var allOrders = [];
+
+function doLogin() {
+  var pass = document.getElementById('adminPass').value;
+  if (pass === ADMIN_PASS) {
+    document.getElementById('loginOverlay').style.display = 'none';
+    document.getElementById('adminLayout').style.display = 'grid';
+    localStorage.setItem('dh_admin_session', '1');
+    initDashboard();
+  } else {
+    document.getElementById('loginErr').style.display = 'block';
+  }
+}
+
+function doLogout() {
+  localStorage.removeItem('dh_admin_session');
+  window.location.reload();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Check session
+  if (localStorage.getItem('dh_admin_session')) {
+    document.getElementById('loginOverlay').style.display = 'none';
+    document.getElementById('adminLayout').style.display = 'grid';
+    initDashboard();
+  }
+  document.getElementById('adminPass').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+  // Load settings
+  var su = localStorage.getItem('detoxy_sheets_url') || '';
+  document.getElementById('sheetsUrlInput').value = su;
+});
+
+function initDashboard() {
+  var now = new Date();
+  var h = now.getHours();
+  var greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('dashGreeting').textContent = greet + ' — ' + now.toLocaleDateString('en-IN', {weekday:'long', day:'numeric', month:'long'});
+  loadOrders();
+  renderAdminProducts();
+}
+
+function loadOrders() {
+  var url = localStorage.getItem('detoxy_sheets_url');
+  if (!url) { document.getElementById('ordersStatus').textContent = 'No Sheets URL configured'; return; }
+  document.getElementById('ordersStatus').textContent = 'Loading...';
+  fetch(url + '?action=getOrders')
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      allOrders = data.orders || [];
+      document.getElementById('statOrders').textContent = allOrders.length;
+      document.getElementById('statPending').textContent = allOrders.filter(function(o){ return o.status === 'pending'; }).length;
+      var revenue = allOrders.reduce(function(s,o){ return s + (parseFloat(o.total) || 0); }, 0);
+      document.getElementById('statRevenue').textContent = fmtINR(revenue);
+      document.getElementById('ordersStatus').textContent = allOrders.length + ' orders loaded';
+      renderOrders();
+    })
+    .catch(function(e) { document.getElementById('ordersStatus').textContent = 'Error loading orders'; });
+}
+
+function renderOrders() {
+  var filter = (document.getElementById('orderFilter') || {}).value || '';
+  var orders = filter ? allOrders.filter(function(o){ return o.status === filter; }) : allOrders;
+  var wrap = document.getElementById('ordersTableWrap') || document.getElementById('recentOrdersTable');
+  if (!wrap) return;
+
+  if (orders.length === 0) { wrap.innerHTML = '<p style="padding:24px;text-align:center;color:var(--muted)">No orders found.</p>'; return; }
+
+  wrap.innerHTML = '<table class="admin-table"><thead><tr><th>Order ID</th><th>Customer</th><th>Phone</th><th>Total</th><th>Status</th><th>Date</th><th>Action</th></tr></thead><tbody>' +
+    orders.slice(0, 50).map(function(o) {
+      var sClass = 'status-' + (o.status || 'pending');
+      var date = o.date ? new Date(o.date).toLocaleDateString('en-IN') : '-';
+      return '<tr>' +
+        '<td><strong>'+o.order_id+'</strong></td>' +
+        '<td>'+o.name+'</td>' +
+        '<td><a href="tel:'+o.phone+'">'+o.phone+'</a></td>' +
+        '<td>'+fmtINR(o.total)+'</td>' +
+        '<td><span class="status-badge '+sClass+'">'+((o.status||'pending'))+'</span></td>' +
+        '<td>'+date+'</td>' +
+        '<td><select class="sort-select" style="padding:5px 8px;font-size:.75rem" onchange="updateStatus(\''+o.order_id+'\',this.value)"><option>Update Status</option><option value="confirmed">Confirmed</option><option value="dispatched">Dispatched</option><option value="delivered">Delivered</option><option value="cancelled">Cancelled</option></select></td>' +
+      '</tr>';
+    }).join('') + '</tbody></table>';
+
+  // Also update recent orders on dashboard
+  var recent = document.getElementById('recentOrdersTable');
+  if (recent && recent !== wrap) recent.innerHTML = wrap.innerHTML;
+}
+
+function updateStatus(orderId, status) {
+  if (!status || status === 'Update Status') return;
+  var url = localStorage.getItem('detoxy_sheets_url');
+  if (!url) { alert('Google Sheets not configured'); return; }
+  fetch(url + '?action=updateStatus&orderId=' + orderId + '&status=' + status)
+    .then(function(){ showToast('Status updated to ' + status, 'success'); loadOrders(); })
+    .catch(function(){ showToast('Error updating status', 'error'); });
+}
+
+function renderAdminProducts() {
+  var tbody = document.getElementById('productsAdminTable');
+  if (!tbody) return;
+  tbody.innerHTML = PRODUCTS.map(function(p) {
+    return '<tr>' +
+      '<td><div style="display:flex;align-items:center;gap:10px"><img src="../'+p.images[0]+'" style="width:40px;height:40px;border-radius:7px;object-fit:cover;border:1px solid var(--border)" alt="'+p.name+'"><div><div style="font-weight:600;font-size:.85rem">'+p.name+'</div><div style="font-size:.72rem;color:var(--muted)">'+p.id+'</div></div></div></td>' +
+      '<td>'+p.categoryLabel+'</td>' +
+      '<td>'+fmtINR(p.price)+'</td>' +
+      '<td>'+p.rating+'</td>' +
+      '<td>'+p.stock+'</td>' +
+      '<td><span class="status-badge '+(p.stock > 0 ? 'status-confirmed' : 'status-pending')+'">'+( p.stock > 0 ? 'Active' : 'Out of Stock')+'</span></td>' +
+    '</tr>';
+  }).join('');
+}
+
+function showSection(name, el) {
+  document.querySelectorAll('.admin-main > div[id^="section-"]').forEach(function(d){ d.style.display='none'; });
+  document.getElementById('section-' + name).style.display = 'block';
+  document.querySelectorAll('.admin-nav a').forEach(function(a){ a.classList.remove('active'); });
+  if (el) el.classList.add('active');
+}
+
+function saveSheetsUrl() {
+  var url = document.getElementById('sheetsUrlInput').value.trim();
+  localStorage.setItem('detoxy_sheets_url', url);
+  showToast('Sheets URL saved', 'success');
+}
+
+function saveSettings() {
+  saveSheetsUrl();
+  var newPass = document.getElementById('newAdminPass').value.trim();
+  if (newPass) { localStorage.setItem('dh_admin_pass', newPass); ADMIN_PASS = newPass; }
+  document.getElementById('settingsSaved').style.display = 'flex';
+  setTimeout(function(){ document.getElementById('settingsSaved').style.display='none'; }, 3000);
+}
+</script>
+</body>
+</html>

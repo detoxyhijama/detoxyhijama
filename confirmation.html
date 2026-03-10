@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Confirmed | Detoxy Hijama</title>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/style.css"/>
+  <style>
+    .confirm-wrap{max-width:620px;margin:60px auto;padding:0 20px 80px}
+    .confirm-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:40px;text-align:center}
+    .confirm-icon{width:72px;height:72px;border-radius:50%;background:#d1fae5;display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+    .confirm-icon svg{width:36px;height:36px;color:#059669}
+    .confirm-card h1{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:700;color:var(--dark);margin-bottom:8px}
+    .confirm-card p{font-size:.9rem;color:var(--muted);margin-bottom:24px}
+    .order-ref{background:var(--cream);border-radius:10px;padding:14px 20px;display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:.95rem;color:var(--dark);margin-bottom:28px}
+    .order-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;text-align:left;margin-bottom:28px}
+    .order-detail-item{background:var(--cream);border-radius:9px;padding:14px 16px}
+    .order-detail-label{font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+    .order-detail-val{font-size:.9rem;font-weight:600;color:var(--dark)}
+    .ordered-items{text-align:left;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:24px}
+    .oi-head{padding:12px 16px;background:var(--cream);border-bottom:1px solid var(--border);font-size:.8rem;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:.06em}
+    .oi-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border)}
+    .oi-item:last-child{border-bottom:none}
+    .oi-img{width:44px;height:44px;border-radius:7px;object-fit:cover;border:1px solid var(--border);flex-shrink:0}
+    .oi-name{font-size:.84rem;font-weight:600;color:var(--dark);flex:1}
+    .oi-price{font-size:.88rem;font-weight:700;color:var(--dark)}
+  </style>
+</head>
+<body>
+<div id="header-mount" data-page=""></div>
+
+<div class="confirm-wrap">
+  <div class="confirm-card" id="confirmCard">
+    <div class="confirm-icon">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+    </div>
+    <h1>Order Placed Successfully!</h1>
+    <p>Thank you for your order. We will dispatch it within 24 hours and keep you updated via phone/SMS.</p>
+    <div class="order-ref" id="orderRef">Loading...</div>
+    <div class="order-detail-grid" id="orderDetails"></div>
+    <div class="ordered-items" id="orderedItems"></div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a href="index.html" class="btn btn-primary">Continue Shopping</a>
+      <a href="#" id="waTrackBtn" class="btn btn-outline" target="_blank" rel="noopener">Track via WhatsApp</a>
+    </div>
+  </div>
+</div>
+
+<div id="footer-mount"></div>
+<script src="assets/js/shared.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var hm = document.getElementById('header-mount');
+  if (hm) {
+    var frag = document.createRange().createContextualFragment(renderHeader(''));
+    hm.replaceWith(frag);
+    Cart.updateUI();
+    initSearch();
+    initMobileNav();
+  }
+  var fm = document.getElementById('footer-mount');
+  if (fm) fm.outerHTML = renderFooter();
+
+  var order;
+  try { order = JSON.parse(localStorage.getItem('dh_last_order') || 'null'); } catch(e){}
+
+  if (!order) {
+    document.getElementById('confirmCard').innerHTML = '<h2>No recent order found</h2><p>Return to the shop to place an order.</p><a href="index.html" class="btn btn-primary">Go Home</a>';
+    return;
+  }
+
+  document.getElementById('orderRef').textContent = 'Order #' + order.orderId;
+
+  document.getElementById('orderDetails').innerHTML =
+    '<div class="order-detail-item"><div class="order-detail-label">Delivery Name</div><div class="order-detail-val">'+order.name+'</div></div>' +
+    '<div class="order-detail-item"><div class="order-detail-label">Mobile</div><div class="order-detail-val">'+order.phone+'</div></div>' +
+    '<div class="order-detail-item" style="grid-column:1/-1"><div class="order-detail-label">Delivery Address</div><div class="order-detail-val">'+order.address+', '+order.city+', '+order.state+' - '+order.pincode+'</div></div>' +
+    '<div class="order-detail-item"><div class="order-detail-label">Payment Method</div><div class="order-detail-val">'+(order.payment==='cod'?'Cash on Delivery':order.payment==='upi'?'UPI/Bank Transfer':'WhatsApp Order')+'</div></div>' +
+    '<div class="order-detail-item"><div class="order-detail-label">Order Total</div><div class="order-detail-val">'+fmtINR(order.total)+'</div></div>';
+
+  document.getElementById('orderedItems').innerHTML =
+    '<div class="oi-head">Items Ordered</div>' +
+    (order.items || []).map(function(item) {
+      var p = PRODUCTS.find(function(x){ return x.id === item.id; });
+      return '<div class="oi-item">' +
+        '<img src="'+(p ? p.images[0] : '')+'" alt="'+item.name+'" class="oi-img" onerror="this.src=\'assets/images/placeholder.svg\'">' +
+        '<div class="oi-name">'+item.name+' <span style="color:var(--muted);font-weight:400">x'+item.qty+'</span></div>' +
+        '<div class="oi-price">'+fmtINR(item.price * item.qty)+'</div>' +
+      '</div>';
+    }).join('');
+
+  document.getElementById('waTrackBtn').href = 'https://wa.me/919566596077?text=Hi%20Detoxy!%20I%20want%20to%20track%20my%20order%20%23' + order.orderId;
+});
+</script>
+</body>
+</html>

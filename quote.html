@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bulk Quote | Detoxy Hijama — Wholesale Hijama Equipment India</title>
+  <meta name="description" content="Get a custom bulk quote for hijama equipment. Wholesale pricing for clinics, hospitals, training institutes and distributors. Pan India delivery."/>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="https://detoxyhijama.github.io/quote.html"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/style.css"/>
+  <style>
+    .quote-page { display: grid; grid-template-columns: 1fr 380px; gap: 40px; padding: 48px 0 80px; align-items: start; }
+    .quote-form-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; }
+    .quote-aside { display: flex; flex-direction: column; gap: 20px; }
+    .aside-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+    .aside-card h3 { font-size: .9rem; font-weight: 700; color: var(--dark); margin-bottom: 14px; }
+    .tier-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: .84rem; }
+    .tier-row:last-child { border-bottom: none; }
+    .tier-qty { font-weight: 600; color: var(--dark); }
+    .tier-disc { font-weight: 700; color: var(--success); }
+    .form-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media(max-width:860px) { .quote-page { grid-template-columns: 1fr; } .form-row2 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div id="header-mount" data-page="Bulk Quote"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a>
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      <span aria-current="page">Bulk Quote</span>
+    </nav>
+    <h1>Get a Bulk / Wholesale Quote</h1>
+    <p>Custom pricing for clinics, distributors, training institutes and export orders.</p>
+  </div>
+</section>
+
+<div class="container">
+  <div class="quote-page">
+    <div class="quote-form-card">
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--dark);margin-bottom:6px">Request a Quote</h2>
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:28px">Fill the form below and we'll send you a custom price list within 2 hours via WhatsApp or email.</p>
+
+      <div id="quoteAlert"></div>
+
+      <div class="form-row2">
+        <div class="form-group">
+          <label class="form-label" for="qName">Full Name *</label>
+          <input type="text" id="qName" class="form-control" placeholder="Your name" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="qPhone">Mobile Number *</label>
+          <input type="tel" id="qPhone" class="form-control" placeholder="+91 XXXXX XXXXX" required/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="qEmail">Email Address</label>
+        <input type="email" id="qEmail" class="form-control" placeholder="For quotation document"/>
+      </div>
+      <div class="form-row2">
+        <div class="form-group">
+          <label class="form-label" for="qOrg">Organization / Clinic Name</label>
+          <input type="text" id="qOrg" class="form-control" placeholder="Al-Shifa Hijama Center"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="qCity">City / State *</label>
+          <input type="text" id="qCity" class="form-control" placeholder="Chennai, Tamil Nadu" required/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="qProducts">Products Required *</label>
+        <textarea id="qProducts" class="form-control" rows="4" placeholder="e.g. 500x Premium Silicone Cups, 100x Latex Gloves boxes, 50x Lancet Pens..." required></textarea>
+      </div>
+      <div class="form-row2">
+        <div class="form-group">
+          <label class="form-label" for="qBudget">Estimated Budget</label>
+          <select id="qBudget" class="form-control">
+            <option value="">Select range</option>
+            <option>Under ₹5,000</option>
+            <option>₹5,000 – ₹25,000</option>
+            <option>₹25,000 – ₹1,00,000</option>
+            <option>Above ₹1,00,000</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="qTimeline">When do you need it?</label>
+          <select id="qTimeline" class="form-control">
+            <option value="">Select</option>
+            <option>Within 3 days</option>
+            <option>Within 1 week</option>
+            <option>Within 2 weeks</option>
+            <option>This month</option>
+            <option>Recurring order</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="qNotes">Additional Requirements</label>
+        <textarea id="qNotes" class="form-control" rows="2" placeholder="Private labelling, custom packaging, export requirements, etc."></textarea>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
+        <button class="btn btn-primary btn-lg" onclick="submitQuote()">Submit Quote Request</button>
+        <a href="https://wa.me/919566596077?text=Hi%20Detoxy!%20I%20need%20a%20bulk%20quote." class="btn btn-lg" target="_blank" rel="noopener" style="background:#25d366;color:#fff;border:none;font-weight:700;display:flex;align-items:center;gap:8px">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/></svg>
+          WhatsApp Directly
+        </a>
+      </div>
+    </div>
+
+    <aside class="quote-aside">
+      <div class="aside-card">
+        <h3>Bulk Discount Tiers</h3>
+        <div class="tier-row"><span class="tier-qty">1 – 49 units</span><span class="tier-disc">Standard Price</span></div>
+        <div class="tier-row"><span class="tier-qty">50 – 199 units</span><span class="tier-disc">10% off</span></div>
+        <div class="tier-row"><span class="tier-qty">200 – 499 units</span><span class="tier-disc">20% off</span></div>
+        <div class="tier-row"><span class="tier-qty">500 – 999 units</span><span class="tier-disc">30% off</span></div>
+        <div class="tier-row"><span class="tier-qty">1000+ units</span><span class="tier-disc">40%+ off</span></div>
+        <p style="font-size:.75rem;color:var(--muted);margin-top:12px">Discounts apply per product line. Mixed orders qualify for tiered pricing.</p>
+      </div>
+      <div class="aside-card">
+        <h3>What's Included</h3>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px">
+          <li style="display:flex;gap:8px;font-size:.83rem;color:var(--text)"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="var(--t)" stroke-width="2.5" style="flex-shrink:0;margin-top:2px"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Custom price list within 2 hours</li>
+          <li style="display:flex;gap:8px;font-size:.83rem;color:var(--text)"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="var(--t)" stroke-width="2.5" style="flex-shrink:0;margin-top:2px"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>GST invoice for all B2B orders</li>
+          <li style="display:flex;gap:8px;font-size:.83rem;color:var(--text)"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="var(--t)" stroke-width="2.5" style="flex-shrink:0;margin-top:2px"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Private label / custom packaging</li>
+          <li style="display:flex;gap:8px;font-size:.83rem;color:var(--text)"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="var(--t)" stroke-width="2.5" style="flex-shrink:0;margin-top:2px"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Flexible payment (NEFT / UPI / COD)</li>
+          <li style="display:flex;gap:8px;font-size:.83rem;color:var(--text)"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="var(--t)" stroke-width="2.5" style="flex-shrink:0;margin-top:2px"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Export documentation available</li>
+        </ul>
+      </div>
+      <div class="aside-card" style="background:var(--dark);border-color:var(--dark)">
+        <h3 style="color:#fff">Direct Contact</h3>
+        <p style="font-size:.82rem;color:rgba(255,255,255,.7);margin-bottom:14px">For urgent enquiries, reach us directly</p>
+        <a href="tel:+919566596077" class="btn btn-outline-white btn-block btn-sm" style="margin-bottom:8px">+91 95665 96077</a>
+        <a href="https://wa.me/919566596077" class="btn btn-block btn-sm" style="background:#25d366;color:#fff;border:none;font-weight:700" target="_blank" rel="noopener">WhatsApp Now</a>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div id="footer-mount"></div>
+<script src="assets/js/shared.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var hm = document.getElementById('header-mount');
+  if (hm) {
+    var frag = document.createRange().createContextualFragment(renderHeader('Bulk Quote'));
+    hm.replaceWith(frag);
+    Cart.updateUI(); initSearch(); initMobileNav();
+  }
+  var fm = document.getElementById('footer-mount');
+  if (fm) fm.outerHTML = renderFooter();
+});
+
+function submitQuote() {
+  var name = document.getElementById('qName').value.trim();
+  var phone = document.getElementById('qPhone').value.trim();
+  var city = document.getElementById('qCity').value.trim();
+  var products = document.getElementById('qProducts').value.trim();
+  var alertEl = document.getElementById('quoteAlert');
+
+  if (!name || !phone || !city || !products) {
+    alertEl.innerHTML = '<div class="alert alert-error">Please fill in all required fields.</div>';
+    return;
+  }
+
+  // Send via WhatsApp
+  var msg = 'Bulk Quote Request\n\n' +
+    'Name: ' + name + '\n' +
+    'Phone: ' + phone + '\n' +
+    'Email: ' + (document.getElementById('qEmail').value || '-') + '\n' +
+    'Org: ' + (document.getElementById('qOrg').value || '-') + '\n' +
+    'City: ' + city + '\n\n' +
+    'Products Needed:\n' + products + '\n\n' +
+    'Budget: ' + (document.getElementById('qBudget').value || '-') + '\n' +
+    'Timeline: ' + (document.getElementById('qTimeline').value || '-') + '\n' +
+    'Notes: ' + (document.getElementById('qNotes').value || '-');
+
+  alertEl.innerHTML = '<div class="alert alert-success">Thank you! Redirecting to WhatsApp to send your request...</div>';
+  setTimeout(function() {
+    window.open('https://wa.me/919566596077?text=' + encodeURIComponent(msg), '_blank');
+  }, 800);
+}
+</script>
+</body>
+</html>
