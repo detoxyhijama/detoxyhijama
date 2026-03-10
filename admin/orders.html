@@ -116,7 +116,6 @@ function renderOrders() {
     return;
   }
   tbody.innerHTML = list.map((o, ri) => {
-    const realIdx = orders.length - 1 - orders.slice().reverse().findIndex(x => x.id === o.id);
     const isQuote = o.type === 'QUOTE_REQUEST';
     const status = isQuote ? 'Quote' : (o.status || 'New');
     const sbClass = 'sb-' + (isQuote ? 'Quote' : (status));

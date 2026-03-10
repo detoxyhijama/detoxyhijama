@@ -41,6 +41,12 @@
 
   const prods = (window.DETOXY_CONFIG || {}).products || [];
 
+  // Fix image paths for root-level pages (config images use '../assets/...' for products/ subfolder)
+  function fixImg(path) {
+    if (!path) return '';
+    return path.startsWith('../') ? path.replace('../', '') : path;
+  }
+
   function renderCart() {
     const items = Cart.get();
     const el = document.getElementById('cartContent');
@@ -54,7 +60,7 @@
       if (!p) return '';
       const lineTotal = p.price * item.qty;
       subtotal += lineTotal;
-      const img = (p.images && p.images[0]) || '';
+      const img = fixImg(p.images && p.images[0]);
       return `
       <div class="cart-row" id="crow-${p.id}">
         <img class="cart-thumb" src="${img}" alt="${p.name}" onerror="this.src='https://placehold.co/64x64/1a3d35/2dd4bf?text=Item'">

@@ -31,7 +31,8 @@
   if (sessionStorage.getItem('detoxy_admin') === 'true') window.location.href = 'index.html';
   function doLogin() {
     const pass = document.getElementById('adminPass').value;
-    const correct = (window.DETOXY_CONFIG || {}).adminPassword || 'detoxy2024admin';
+    // Check localStorage override first (set via admin/settings.html), then config default
+    const correct = localStorage.getItem('detoxy_admin_pass') || (window.DETOXY_CONFIG || {}).adminPassword || 'detoxy2024admin';
     if (pass === correct) {
       sessionStorage.setItem('detoxy_admin', 'true');
       window.location.href = 'index.html';

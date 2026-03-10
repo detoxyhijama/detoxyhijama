@@ -88,13 +88,14 @@ function changePassword() {
   const old = document.getElementById('oldPass').value;
   const n = document.getElementById('newPass').value;
   const c = document.getElementById('confirmPass').value;
-  const correct = (window.DETOXY_CONFIG||{}).adminPassword || 'detoxy2024admin';
+  // Check localStorage override first, then config default
+  const correct = localStorage.getItem('detoxy_admin_pass') || (window.DETOXY_CONFIG||{}).adminPassword || 'detoxy2024admin';
   const al = document.getElementById('setAlert');
   if (old !== correct) { al.innerHTML='<div class="alert alert--error">Current password is incorrect.</div>'; return; }
   if (n.length < 8) { al.innerHTML='<div class="alert alert--error">New password must be at least 8 characters.</div>'; return; }
   if (n !== c) { al.innerHTML='<div class="alert alert--error">New passwords do not match.</div>'; return; }
   localStorage.setItem('detoxy_admin_pass', n);
-  al.innerHTML='<div class="alert alert--success">✅ Password updated! Remember to update config.js too for permanent change.</div>';
+  al.innerHTML='<div class="alert alert--success">✅ Password updated successfully!</div>';
 }
 
 function saveSettings() {

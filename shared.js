@@ -227,15 +227,20 @@ window.Cart = {
 window.OrderSync = {
   async submit(orderData) {
     const cfg = window.DETOXY_CONFIG || {};
-    const url = cfg.googleSheetsURL;
+    // Check localStorage override first (set via admin/sheets-setup.html), then config
+    const url = localStorage.getItem('detoxy_sheets_url') || cfg.googleSheetsURL;
+    // Assign ID before saving so it's available to caller
+    if (!orderData.id) {
+      orderData.id = 'ORD-' + Date.now();
+      orderData.savedAt = new Date().toISOString();
+    }
+    this._saveLocal(orderData);
     if (!url || url.includes('YOUR_SCRIPT_ID')) {
       console.warn('Google Sheets URL not configured. Order saved locally only.');
-      this._saveLocal(orderData);
       return { success: true, local: true };
     }
     try {
-      this._saveLocal(orderData);
-      const res = await fetch(url, {
+      await fetch(url, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
@@ -244,15 +249,19 @@ window.OrderSync = {
       return { success: true };
     } catch(e) {
       console.error('Sheets sync failed:', e);
-      this._saveLocal(orderData);
       return { success: false, error: e.message };
     }
   },
   _saveLocal(order) {
     const orders = JSON.parse(localStorage.getItem('detoxy_orders') || '[]');
-    order.id = 'ORD-' + Date.now();
-    order.savedAt = new Date().toISOString();
-    orders.push(order);
+    if (!order.id) {
+      order.id = 'ORD-' + Date.now();
+      order.savedAt = new Date().toISOString();
+    }
+    // Update existing or push new
+    const idx = orders.findIndex(o => o.id === order.id);
+    if (idx > -1) orders[idx] = order;
+    else orders.push(order);
     localStorage.setItem('detoxy_orders', JSON.stringify(orders));
   },
   getLocalOrders() {

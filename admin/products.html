@@ -152,6 +152,7 @@
         <td style="color:var(--muted);text-decoration:line-through">₹${p.mrp}</td>
         <td style="font-size:.78rem">₹${p.bulkPrice||'—'} / ${p.bulkQty||'—'}+</td>
         <td style="text-align:right;white-space:nowrap">
+          <a href="../products/${p.id}.html" target="_blank" class="btn btn--outline" style="padding:5px 12px;font-size:.74rem">View</a>
           <button class="btn btn--outline" style="padding:5px 12px;font-size:.74rem" onclick="editProduct(${products.indexOf(p)})">Edit</button>
           <button class="btn" style="padding:5px 12px;font-size:.74rem;background:var(--red);color:#fff;border-radius:8px;margin-left:4px" onclick="deleteProduct(${products.indexOf(p)})">Delete</button>
         </td>

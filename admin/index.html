@@ -124,9 +124,10 @@
       <span class="status-badge ${o.type==='QUOTE_REQUEST'?'status-processing':(o.status==='New'?'status-new':'status-shipped')}">${o.type==='QUOTE_REQUEST'?'Quote':o.status||'New'}</span>
     </div>`).join('')}` : '<div style="text-align:center;padding:32px;color:var(--muted)">No orders yet. They will appear here once customers place orders.</div>';
 
-  // Sheets status
+  // Sheets status — check localStorage override first, then config
   const cfg = window.DETOXY_CONFIG || {};
-  const isConfigured = cfg.googleSheetsURL && !cfg.googleSheetsURL.includes('YOUR_SCRIPT_ID');
+  const sheetsUrl = localStorage.getItem('detoxy_sheets_url') || cfg.googleSheetsURL || '';
+  const isConfigured = sheetsUrl && !sheetsUrl.includes('YOUR_SCRIPT_ID');
   document.getElementById('sheetStatus').innerHTML = isConfigured
     ? `<div class="alert alert--success">✅ Google Sheets URL is configured. Orders will sync automatically.</div><a href="sheets-setup.html" class="btn btn--outline" style="font-size:.8rem">Manage Setup</a>`
     : `<div class="alert alert--error">⚠️ Google Sheets URL not configured. Orders are being saved locally only.</div><a href="sheets-setup.html" class="btn btn--primary" style="font-size:.8rem;margin-top:10px;display:inline-flex">Configure Now →</a>`;
