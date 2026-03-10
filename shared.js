@@ -132,10 +132,8 @@ const Cart = (() => {
       let name  = productId.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
       let price = 0;
       let img   = '';
-      // Check window.PRODUCTS first, then fall back to DETOXY_CONFIG.products
-      const _catalog = window.PRODUCTS || (window.DETOXY_CONFIG && window.DETOXY_CONFIG.products) || [];
-      if (_catalog.length) {
-        const p = _catalog.find(p => p.id === productId);
+      if (window.PRODUCTS) {
+        const p = window.PRODUCTS.find(p => p.id === productId);
         if (p) { name = p.name; price = p.price; img = p.images ? p.images[0] : ''; }
       }
       items.push({ id: productId, name, price, img, qty });
@@ -211,7 +209,7 @@ function getNavHTML(activeLabel, prefix) {
   var cartDisplay = cartCount > 0 ? 'flex' : 'none';
   return '<header class="site-header" id="mainNav">' +
     '<a href="'+prefix+'index.html" class="brand" style="text-decoration:none">' +
-      '<div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--t),#1a8577);display:flex;align-items:center;justify-content:center;font-family:\'Cormorant Garamond\',serif;font-size:1.1rem;font-weight:700;color:#fff;flex-shrink:0">D</div>' +
+      '<div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--t),#1a8577);display:flex;align-items:center;justify-content:center;font-family:Cormorant Garamond,serif;font-size:1.1rem;font-weight:700;color:#fff;flex-shrink:0">D</div>' +
       '<div class="brand-name-wrap">' +
         '<span class="brand-main">Detoxy Hijama</span>' +
         '<span class="brand-sub">Cups · Coimbatore</span>' +
@@ -224,11 +222,11 @@ function getNavHTML(activeLabel, prefix) {
         '<span class="cart-count" style="display:'+cartDisplay+'">'+cartCount+'</span>' +
       '</a>' +
     '</div>' +
-    '<button class="hamburger" onclick="document.getElementById(\'mob-nav-overlay\').classList.toggle(\'open\')" aria-label="Menu">☰</button>' +
+    '<button class="hamburger" onclick="document.getElementById(&quot;mob-nav-overlay&quot;).classList.toggle(&quot;open&quot;)" aria-label="Menu">☰</button>' +
     '<div id="mob-nav-overlay" class="mob-nav">' +
       '<div class="mob-top">' +
-        '<span style="font-family:\'Cormorant Garamond\',serif;font-size:1.1rem;font-weight:700;color:#fff">Detoxy Hijama</span>' +
-        '<button class="mob-close" onclick="document.getElementById(\'mob-nav-overlay\').classList.remove(\'open\')" aria-label="Close">✕</button>' +
+        '<span style="font-family:Cormorant Garamond,serif;font-size:1.1rem;font-weight:700;color:#fff">Detoxy Hijama</span>' +
+        '<button class="mob-close" onclick="document.getElementById(&quot;mob-nav-overlay&quot;).classList.remove(&quot;open&quot;)" aria-label="Close">✕</button>' +
       '</div>' +
       navItems.map(function(item){
         return '<a class="mob-link" href="'+item.href+'">'+item.label+'</a>';
