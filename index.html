@@ -3,345 +3,222 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Detoxy Hijama — India's Direct Manufacturer of Cupping Therapy Products</title>
-  <meta name="description" content="Buy genuine hijama cups, kits, and accessories direct from the manufacturer. Factory prices. Pan India delivery. 5000+ practitioners trust Detoxy Hijama."/>
-  <meta property="og:title" content="Detoxy Hijama — Direct Manufacturer"/>
-  <meta property="og:image" content="assets/logo.png"/>
+  <title>Detoxy Hijama — India's Direct Hijama Manufacturer</title>
+  <meta name="description" content="Buy genuine hijama cups, kits and accessories direct from the manufacturer. Factory prices. Pan India delivery. Trusted by 5000+ practitioners."/>
   <link rel="stylesheet" href="assets/style.css"/>
   <style>
-    /* ---- HERO ---- */
+    /* HERO */
     .hero {
-      min-height: 100vh; display: flex; align-items: center;
-      background: var(--dark);
-      position: relative; overflow: hidden;
+      background: linear-gradient(135deg, var(--dark) 0%, var(--mid) 55%, #1e6357 100%);
+      padding: 100px 5% 72px; position: relative; overflow: hidden;
     }
     .hero::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse 70% 70% at 70% 50%, rgba(26,61,53,.8), transparent),
-                  radial-gradient(ellipse 40% 60% at 10% 80%, rgba(45,212,191,.06), transparent);
+      content:''; position:absolute; inset:0;
+      background: radial-gradient(ellipse 70% 60% at 70% 50%, rgba(42,171,151,.18), transparent 70%);
     }
-    .hero-grid {
-      position: absolute; inset: 0;
-      background-image: linear-gradient(rgba(45,212,191,.04) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(45,212,191,.04) 1px, transparent 1px);
-      background-size: 60px 60px;
+    .hero::after {
+      content:''; position:absolute; bottom:-60px; left:-60px;
+      width:400px; height:400px;
+      background:radial-gradient(circle,rgba(42,171,151,.08),transparent 70%);
+      border-radius:50%;
     }
-    .hero-inner {
-      position: relative; z-index: 2;
-      max-width: 1280px; margin: 0 auto; padding: 100px 24px 60px;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
-    }
-    .hero-eyebrow {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(45,212,191,.1); color: var(--teal);
-      border: 1px solid rgba(45,212,191,.2); border-radius: 20px;
-      font-size: .75rem; font-weight: 600; padding: 6px 14px;
-      letter-spacing: .08em; text-transform: uppercase; margin-bottom: 24px;
-    }
-    .hero-eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
-    .hero-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.8rem, 5vw, 4.5rem); font-weight: 700; color: #fff;
-      line-height: 1.08; margin-bottom: 24px; letter-spacing: -.01em;
-    }
-    .hero-title .accent { color: var(--teal); }
-    .hero-desc { font-size: 1.05rem; color: rgba(255,255,255,.65); line-height: 1.8; margin-bottom: 36px; max-width: 480px; }
-    .hero-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-    .hero-stats { display: flex; gap: 36px; margin-top: 48px; padding-top: 40px; border-top: 1px solid rgba(255,255,255,.08); }
-    .stat-item { text-align: left; }
-    .stat-number { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 700; color: var(--teal); display: block; }
-    .stat-label { font-size: .78rem; color: rgba(255,255,255,.45); text-transform: uppercase; letter-spacing: .06em; }
-    .hero-visual { position: relative; }
-    .hero-product-showcase {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
-    }
-    .showcase-card {
-      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
-      border-radius: 16px; padding: 20px; text-align: center;
-      transition: all .3s; cursor: pointer;
-    }
-    .showcase-card:hover { background: rgba(45,212,191,.06); border-color: rgba(45,212,191,.2); transform: translateY(-2px); }
-    .showcase-card img { height: 90px; width: 90px; object-fit: contain; margin: 0 auto 10px; }
-    .showcase-card-name { font-size: .78rem; color: rgba(255,255,255,.7); font-weight: 500; line-height: 1.4; }
-    .showcase-card-price { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 700; color: var(--teal); margin-top: 6px; }
-    .showcase-card-big {
-      grid-column: span 2;
-    }
-    /* ---- WHY US ---- */
-    .why-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 48px; }
-    .why-card {
-      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07);
-      border-radius: 16px; padding: 28px 24px;
-      transition: var(--transition);
-    }
-    .why-card:hover { background: rgba(45,212,191,.05); border-color: rgba(45,212,191,.15); }
-    .why-icon { font-size: 2rem; margin-bottom: 16px; }
-    .why-title { font-size: 1rem; font-weight: 600; color: #fff; margin-bottom: 8px; }
-    .why-desc { font-size: .84rem; color: rgba(255,255,255,.5); line-height: 1.7; }
-    /* ---- CATEGORY STRIP ---- */
-    .cat-strip { display: flex; gap: 12px; flex-wrap: wrap; }
-    .cat-pill {
-      display: flex; align-items: center; gap: 8px;
-      padding: 12px 20px; border-radius: 50px;
-      background: #fff; border: 1.5px solid var(--border);
-      font-size: .85rem; font-weight: 500; color: var(--text);
-      transition: var(--transition); cursor: pointer; text-decoration: none;
-    }
-    .cat-pill:hover { border-color: var(--teal-dark); color: var(--teal-dark); background: rgba(45,212,191,.05); }
-    .cat-pill-icon { font-size: 1.1rem; }
-    /* ---- FEATURED PRODUCTS ---- */
-    .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 36px; }
-    /* ---- TESTIMONIALS ---- */
-    .testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 48px; }
-    .testimonial-card {
-      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07);
-      border-radius: 16px; padding: 28px;
-    }
-    .t-stars { color: #f59e0b; font-size: .9rem; margin-bottom: 14px; }
-    .t-text { font-size: .9rem; color: rgba(255,255,255,.65); line-height: 1.8; margin-bottom: 20px; font-style: italic; }
-    .t-author { display: flex; align-items: center; gap: 12px; }
-    .t-avatar {
-      width: 40px; height: 40px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--teal-dark), var(--mid));
-      display: flex; align-items: center; justify-content: center;
-      font-size: .9rem; font-weight: 700; color: #fff;
-    }
-    .t-name { font-size: .88rem; font-weight: 600; color: #fff; }
-    .t-role { font-size: .75rem; color: rgba(255,255,255,.4); }
-    /* ---- CTA BANNER ---- */
-    .cta-banner {
-      background: linear-gradient(135deg, var(--teal-dark) 0%, var(--mid) 100%);
-      border-radius: 24px; padding: 56px 64px;
-      display: flex; justify-content: space-between; align-items: center; gap: 32px;
-      position: relative; overflow: hidden;
-    }
-    .cta-banner::before {
-      content: '';
-      position: absolute; right: -60px; top: -60px;
-      width: 300px; height: 300px; border-radius: 50%;
-      background: rgba(255,255,255,.05);
-    }
-    .cta-title { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 700; color: #fff; margin-bottom: 12px; }
-    .cta-sub { font-size: .95rem; color: rgba(255,255,255,.7); }
-    @media (max-width: 1024px) {
-      .hero-inner { grid-template-columns: 1fr; gap: 40px; }
-      .hero-visual { display: none; }
-      .why-grid { grid-template-columns: repeat(2, 1fr); }
-      .testimonials-grid { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 640px) {
-      .why-grid { grid-template-columns: 1fr; }
-      .testimonials-grid { grid-template-columns: 1fr; }
-      .cta-banner { padding: 36px 28px; flex-direction: column; text-align: center; }
-      .section-header { flex-direction: column; align-items: flex-start; gap: 12px; }
-    }
+    .hero-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1.1fr 1fr; gap:60px; align-items:center; position:relative; z-index:2; }
+    .hero-tag { display:inline-flex; align-items:center; gap:8px; background:rgba(42,171,151,.18); border:1px solid rgba(42,171,151,.35); color:var(--tl); font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; padding:6px 16px; border-radius:50px; margin-bottom:20px; font-weight:600; }
+    .hero-tag::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--tl); animation:blink 2s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+    h1.hero-h1 { font-size:clamp(2.2rem,4.5vw,3.6rem); font-weight:700; color:#fff; line-height:1.1; margin-bottom:18px; }
+    h1.hero-h1 span { color:var(--tl); }
+    .hero-desc { color:rgba(255,255,255,.68); font-size:.96rem; line-height:1.75; max-width:520px; margin-bottom:28px; }
+    .hero-btns { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:32px; }
+    .hero-stats { display:flex; gap:28px; flex-wrap:wrap; padding-top:28px; border-top:1px solid rgba(255,255,255,.1); }
+    .stat-num { font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:700; color:var(--tl); display:block; line-height:1; }
+    .stat-lbl { font-size:.68rem; color:rgba(255,255,255,.45); text-transform:uppercase; letter-spacing:.08em; display:block; margin-top:3px; }
+    /* HERO CARD */
+    .hero-card { background:rgba(255,255,255,.07); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.12); border-radius:24px; padding:24px; }
+    .hero-card-tag { display:inline-block; background:rgba(42,171,151,.25); color:var(--tl); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; padding:4px 12px; border-radius:50px; font-weight:600; margin-bottom:14px; }
+    .mini-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .mini-card { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:14px; padding:14px; text-align:center; transition:all .2s; text-decoration:none; display:block; }
+    .mini-card:hover { background:rgba(42,171,151,.18); border-color:rgba(42,171,151,.4); transform:translateY(-3px); }
+    .mini-img { width:64px; height:64px; object-fit:contain; margin:0 auto 8px; }
+    .mini-name { color:#fff; font-size:.76rem; font-weight:600; display:block; margin-bottom:4px; }
+    .mini-price { color:var(--tl); font-size:.88rem; font-weight:700; font-family:'Cormorant Garamond',serif; }
+    /* TRUST BAR */
+    .trust-bar { background:#fff; border-bottom:1px solid var(--border); padding:14px 5%; }
+    .trust-bar-inner { max-width:1200px; margin:0 auto; display:flex; flex-wrap:wrap; gap:20px; justify-content:center; }
+    .trust-item { display:flex; align-items:center; gap:7px; font-size:.79rem; color:var(--muted); font-weight:500; }
+    /* WHY */
+    .why-sec { background:linear-gradient(135deg,var(--dark),var(--mid)); padding:72px 5%; }
+    .why-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:36px; }
+    .why-card { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:16px; padding:24px 20px; transition:all .25s; }
+    .why-card:hover { background:rgba(42,171,151,.12); border-color:rgba(42,171,151,.35); transform:translateY(-3px); }
+    .why-icon { width:46px; height:46px; border-radius:12px; background:rgba(42,171,151,.2); display:flex; align-items:center; justify-content:center; font-size:1.3rem; margin-bottom:14px; }
+    .why-t { font-weight:600; color:#fff; font-size:.9rem; margin-bottom:6px; }
+    .why-d { font-size:.79rem; color:rgba(255,255,255,.5); line-height:1.6; }
+    /* CATEGORIES */
+    .cat-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:36px; }
+    .cat-pill { display:inline-flex; align-items:center; gap:8px; padding:10px 18px; border-radius:50px; background:var(--tp); border:1.5px solid var(--border); font-size:.83rem; font-weight:500; color:var(--td); transition:all .2s; text-decoration:none; }
+    .cat-pill:hover { background:var(--t); color:#fff; border-color:var(--t); }
+    /* TESTIMONIALS */
+    .testimonials { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:36px; }
+    .t-card { background:#fff; border:1px solid var(--border); border-radius:16px; padding:24px; }
+    .t-stars { color:#f59e0b; font-size:.88rem; margin-bottom:12px; }
+    .t-text { font-size:.87rem; color:var(--muted); line-height:1.75; margin-bottom:18px; font-style:italic; }
+    .t-author { display:flex; align-items:center; gap:10px; }
+    .t-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--td),var(--mid)); display:flex; align-items:center; justify-content:center; font-size:.8rem; font-weight:700; color:#fff; flex-shrink:0; }
+    .t-name { font-size:.86rem; font-weight:600; color:var(--dark); }
+    .t-role { font-size:.73rem; color:var(--muted); }
+    /* CTA */
+    .cta-box { background:linear-gradient(135deg,var(--dark),var(--mid)); border-radius:22px; padding:52px 60px; display:flex; justify-content:space-between; align-items:center; gap:28px; position:relative; overflow:hidden; }
+    .cta-box::before { content:''; position:absolute; right:-40px; top:-40px; width:260px; height:260px; border-radius:50%; background:rgba(255,255,255,.04); }
+    .cta-h { font-family:'Cormorant Garamond',serif; font-size:2.2rem; font-weight:700; color:#fff; margin-bottom:10px; }
+    .cta-sub { font-size:.9rem; color:rgba(255,255,255,.65); }
+
+    @media (max-width:1024px) { .hero-inner { grid-template-columns:1fr; gap:32px; } .hero-card { display:none; } .why-grid { grid-template-columns:1fr 1fr; } .testimonials { grid-template-columns:1fr 1fr; } }
+    @media (max-width:640px) { .why-grid { grid-template-columns:1fr; } .testimonials { grid-template-columns:1fr; } .cta-box { padding:36px 24px; flex-direction:column; text-align:center; } }
   </style>
 </head>
 <body>
 <div class="page-wrapper">
 
-  <!-- HEADER -->
   <div id="header-mount"></div>
 
   <!-- HERO -->
   <section class="hero">
-    <div class="hero-grid"></div>
     <div class="hero-inner">
-      <div class="hero-content">
-        <div class="hero-eyebrow">🏭 Direct from Manufacturer — Pollachi, Coimbatore</div>
-        <h1 class="hero-title">
-          India's Finest<br>
-          <span class="accent">Hijama & Cupping</span><br>
-          Therapy Products
-        </h1>
-        <p class="hero-desc">
-          Factory-fresh quality at zero markup. Trusted by 5,000+ practitioners, clinics, and therapists across India — delivered pan India from our Coimbatore facility.
-        </p>
-        <div class="hero-actions">
-          <a href="products.html" class="btn btn--primary btn--lg">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-            Shop All Products
-          </a>
+      <div>
+        <div class="hero-tag">🏭 Direct from Factory — Pollachi, Coimbatore</div>
+        <h1 class="hero-h1">India's Finest<br><span>Hijama & Cupping</span><br>Therapy Products</h1>
+        <p class="hero-desc">Factory-fresh quality at zero markup. Trusted by 5,000+ practitioners, clinics and therapists across India — delivered pan India from our Coimbatore facility.</p>
+        <div class="hero-btns">
+          <a href="products.html" class="btn btn--primary btn--lg">🛒 Shop All Products</a>
           <a href="products.html?cat=kits" class="btn btn--outline-white btn--lg">View Kits & Sets</a>
         </div>
         <div class="hero-stats">
-          <div class="stat-item">
-            <span class="stat-number">5000+</span>
-            <span class="stat-label">Practitioners</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">15+</span>
-            <span class="stat-label">Products</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">Pan India</span>
-            <span class="stat-label">Delivery</span>
-          </div>
+          <div><span class="stat-num">5000+</span><span class="stat-lbl">Practitioners</span></div>
+          <div><span class="stat-num">15+</span><span class="stat-lbl">Products</span></div>
+          <div><span class="stat-num">Pan India</span><span class="stat-lbl">Delivery</span></div>
         </div>
       </div>
-      <div class="hero-visual">
-        <div class="hero-product-showcase" id="heroShowcase"></div>
+      <div>
+        <div class="hero-card">
+          <div class="hero-card-tag">✨ Featured Products</div>
+          <div class="mini-grid" id="heroMini"></div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- WHY US -->
-  <section class="section section--dark">
-    <div class="container">
-      <div class="text-center">
-        <p class="section-label">Why Detoxy Hijama</p>
-        <h2 class="section-title section-title--white">The Direct Manufacturer Advantage</h2>
-      </div>
-      <div class="why-grid">
-        <div class="why-card">
-          <div class="why-icon">🏭</div>
-          <div class="why-title">Direct Factory Price</div>
-          <div class="why-desc">No distributors, no agents — buy straight from our Pollachi factory at true wholesale prices.</div>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">✅</div>
-          <div class="why-title">Medical Grade Quality</div>
-          <div class="why-desc">BPA-free, CE-marked and clinic-tested products that meet international standards.</div>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">🚚</div>
-          <div class="why-title">Pan India Delivery</div>
-          <div class="why-desc">Fast, reliable shipping to every corner of India. Free shipping above ₹999.</div>
-        </div>
-        <div class="why-card">
-          <div class="why-icon">🔄</div>
-          <div class="why-title">Easy Returns</div>
-          <div class="why-desc">Hassle-free 7-day return policy. We stand behind every product we make.</div>
-        </div>
-      </div>
+  <!-- TRUST BAR -->
+  <div class="trust-bar">
+    <div class="trust-bar-inner">
+      <span class="trust-item">🏭 Direct Manufacturer</span>
+      <span class="trust-item">✅ Medical Grade Quality</span>
+      <span class="trust-item">🚚 Free Shipping above ₹999</span>
+      <span class="trust-item">↩️ 7-Day Returns</span>
+      <span class="trust-item">🔒 Secure Checkout</span>
     </div>
-  </section>
+  </div>
 
   <!-- CATEGORIES -->
-  <section class="section" style="background:#fff; padding:48px 0;">
-    <div class="container">
-      <p class="section-label">Browse by Category</p>
-      <h2 class="section-title" style="margin-bottom:28px">Find What You Need</h2>
-      <div class="cat-strip">
-        <a href="products.html" class="cat-pill"><span class="cat-pill-icon">🛍️</span> All Products</a>
-        <a href="products.html?cat=cups" class="cat-pill"><span class="cat-pill-icon">⭕</span> Hijama Cups</a>
-        <a href="products.html?cat=kits" class="cat-pill"><span class="cat-pill-icon">🎁</span> Kits & Sets</a>
-        <a href="products.html?cat=tools" class="cat-pill"><span class="cat-pill-icon">🔧</span> Tools</a>
-        <a href="products.html?cat=consumables" class="cat-pill"><span class="cat-pill-icon">🩺</span> Consumables</a>
-        <a href="products.html?cat=facial" class="cat-pill"><span class="cat-pill-icon">✨</span> Facial Care</a>
+  <section class="sec" style="background:#fff;padding:48px 0">
+    <div class="sec-inner">
+      <span class="sec-tag">Browse</span>
+      <h2 class="sec-h2">Shop by <span>Category</span></h2>
+      <div class="cat-row" style="margin-top:20px">
+        <a href="products.html" class="cat-pill">🛍️ All Products</a>
+        <a href="products.html?cat=cups" class="cat-pill">⭕ Hijama Cups</a>
+        <a href="products.html?cat=kits" class="cat-pill">🎁 Kits & Sets</a>
+        <a href="products.html?cat=tools" class="cat-pill">🔧 Tools</a>
+        <a href="products.html?cat=consumables" class="cat-pill">🩺 Consumables</a>
+        <a href="products.html?cat=facial" class="cat-pill">✨ Facial Care</a>
       </div>
     </div>
   </section>
 
   <!-- FEATURED PRODUCTS -->
-  <section class="section">
-    <div class="container">
-      <div class="section-header">
+  <section class="sec">
+    <div class="sec-inner">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:32px;flex-wrap:wrap;gap:12px">
         <div>
-          <p class="section-label">Our Products</p>
-          <h2 class="section-title">Featured Products</h2>
+          <span class="sec-tag">Our Range</span>
+          <h2 class="sec-h2">Featured <span>Products</span></h2>
         </div>
         <a href="products.html" class="btn btn--outline">View All →</a>
       </div>
-      <div class="products-grid" id="featuredProducts">
-        <div class="spinner"></div>
+      <div class="products-grid" id="featuredGrid"></div>
+    </div>
+  </section>
+
+  <!-- WHY US -->
+  <section class="why-sec">
+    <div class="sec-inner">
+      <div style="text-align:center">
+        <span style="display:inline-block;background:rgba(42,171,151,.2);color:var(--tl);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border-radius:50px;margin-bottom:10px;font-weight:600">Why Choose Us</span>
+        <h2 style="font-size:clamp(1.8rem,3vw,2.4rem);font-weight:700;color:#fff">The Direct Manufacturer <span style="color:var(--tl)">Advantage</span></h2>
+      </div>
+      <div class="why-grid">
+        <div class="why-card"><div class="why-icon">🏭</div><div class="why-t">Direct Factory Price</div><div class="why-d">No distributors, no agents. Buy straight from our Pollachi factory at true wholesale prices.</div></div>
+        <div class="why-card"><div class="why-icon">✅</div><div class="why-t">Medical Grade Quality</div><div class="why-d">BPA-free, CE-marked products tested by thousands of practitioners and clinics.</div></div>
+        <div class="why-card"><div class="why-icon">🚚</div><div class="why-t">Pan India Delivery</div><div class="why-d">Fast, reliable shipping to every corner of India. Free shipping on orders above ₹999.</div></div>
+        <div class="why-card"><div class="why-icon">🔄</div><div class="why-t">Easy Returns</div><div class="why-d">7-day hassle-free returns on unused items. We stand behind every product we make.</div></div>
+        <div class="why-card"><div class="why-icon">🔒</div><div class="why-t">Secure Checkout</div><div class="why-d">Safe payment via UPI, cards, net banking or COD. Your data is always protected.</div></div>
+        <div class="why-card"><div class="why-icon">💬</div><div class="why-t">Dedicated Support</div><div class="why-d">Reach us at detoxyhijama@gmail.com or +91 95665 96077 for any queries.</div></div>
       </div>
     </div>
   </section>
 
   <!-- TESTIMONIALS -->
-  <section class="section section--dark">
-    <div class="container">
-      <div class="text-center">
-        <p class="section-label">Reviews</p>
-        <h2 class="section-title section-title--white">Trusted by Practitioners</h2>
+  <section class="sec">
+    <div class="sec-inner">
+      <div style="text-align:center">
+        <span class="sec-tag">Reviews</span>
+        <h2 class="sec-h2">Trusted by <span>Practitioners</span></h2>
       </div>
-      <div class="testimonials-grid">
-        <div class="testimonial-card">
-          <div class="t-stars">★★★★★</div>
-          <p class="t-text">"Best quality hijama cups I've used in 8 years of practice. The transparency lets me monitor suction perfectly. Will never order from anywhere else."</p>
-          <div class="t-author">
-            <div class="t-avatar">AK</div>
-            <div>
-              <div class="t-name">Dr. Anwar Khan</div>
-              <div class="t-role">Hijama Practitioner, Chennai</div>
-            </div>
-          </div>
-        </div>
-        <div class="testimonial-card">
-          <div class="t-stars">★★★★★</div>
-          <p class="t-text">"Ordered 500 standard cups — arrived in 3 days, packed perfectly. The factory pricing is genuinely unbeatable. My clinic saves thousands every month."</p>
-          <div class="t-author">
-            <div class="t-avatar">SF</div>
-            <div>
-              <div class="t-name">Siddiqui Farhan</div>
-              <div class="t-role">Clinic Owner, Hyderabad</div>
-            </div>
-          </div>
-        </div>
-        <div class="testimonial-card">
-          <div class="t-stars">★★★★★</div>
-          <p class="t-text">"The electric smart cup changed my practice completely. Consistent suction, easy to use, and the hot compress feature is incredible for muscle therapy."</p>
-          <div class="t-author">
-            <div class="t-avatar">MR</div>
-            <div>
-              <div class="t-name">Mohammed Rafi</div>
-              <div class="t-role">Therapist, Bangalore</div>
-            </div>
-          </div>
-        </div>
+      <div class="testimonials">
+        <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"Best quality hijama cups I've used in 8 years of practice. The transparency lets me monitor suction perfectly. Will never order from anywhere else."</p><div class="t-author"><div class="t-avatar">AK</div><div><div class="t-name">Dr. Anwar Khan</div><div class="t-role">Hijama Practitioner, Chennai</div></div></div></div>
+        <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"Ordered 500 standard cups — arrived in 3 days, perfectly packed. The factory pricing is genuinely unbeatable. My clinic saves thousands every month."</p><div class="t-author"><div class="t-avatar">SF</div><div><div class="t-name">Siddiqui Farhan</div><div class="t-role">Clinic Owner, Hyderabad</div></div></div></div>
+        <div class="t-card"><div class="t-stars">★★★★★</div><p class="t-text">"The electric smart cup changed my practice. Consistent suction, easy to use, and the hot compress feature is incredible for muscle therapy."</p><div class="t-author"><div class="t-avatar">MR</div><div><div class="t-name">Mohammed Rafi</div><div class="t-role">Therapist, Bangalore</div></div></div></div>
       </div>
     </div>
   </section>
 
   <!-- CTA -->
-  <section class="section">
-    <div class="container">
-      <div class="cta-banner">
+  <section class="sec" style="padding:48px 0 72px">
+    <div class="sec-inner">
+      <div class="cta-box">
         <div>
-          <h2 class="cta-title">Ready to Order?</h2>
+          <h2 class="cta-h">Ready to Order?</h2>
           <p class="cta-sub">Free shipping on orders above ₹999. All orders dispatched same day from Coimbatore.</p>
         </div>
-        <a href="products.html" class="btn btn--primary btn--lg" style="flex-shrink:0">
-          Shop Now →
-        </a>
+        <a href="products.html" class="btn btn--primary btn--lg" style="flex-shrink:0">Shop Now →</a>
       </div>
     </div>
   </section>
 
-  <!-- FOOTER -->
   <div id="footer-mount"></div>
-
 </div>
 
 <script src="config.js"></script>
 <script src="shared.js"></script>
 <script>
-  // Mount header & footer
   document.getElementById('header-mount').innerHTML = getNavHTML('Home');
   document.getElementById('footer-mount').innerHTML = getFooterHTML();
 
-  // Hero showcase - top 4 products
-  const showcase = document.getElementById('heroShowcase');
-  if (showcase) {
-    const featured = PRODUCTS.slice(0, 4);
-    showcase.innerHTML = featured.map((p, i) => `
-      <a href="products/${p.id}.html" class="showcase-card${i === 0 ? ' showcase-card-big' : ''}">
-        <img src="${getProductImageSrc(p)}" alt="${p.name}"
-             onerror="this.src='https://placehold.co/120x90/1a3d35/2dd4bf?text=${encodeURIComponent(p.shortName)}'">
-        <div class="showcase-card-name">${p.shortName}</div>
-        <div class="showcase-card-price">${formatPrice(p.price)} <span style="font-size:.7rem;opacity:.6">${p.unit}</span></div>
-      </a>
-    `).join('');
-  }
+  // Hero mini cards
+  const heroMini = document.getElementById('heroMini');
+  PRODUCTS.slice(0,4).forEach(p => {
+    const a = document.createElement('a');
+    a.href = `products/${p.id}.html`;
+    a.className = 'mini-card';
+    a.innerHTML = `<img class="mini-img" src="assets/images/products/${p.id}/main.jpg" alt="${p.name}"
+      onerror="this.src='https://placehold.co/64x64/174840/3ecab5?text=+'">
+      <span class="mini-name">${p.shortName}</span>
+      <span class="mini-price">₹${p.price} <span style="font-size:.7rem;font-family:'Outfit';font-weight:400;opacity:.6">${p.unit}</span></span>`;
+    heroMini.appendChild(a);
+  });
 
-  // Featured products - first 8
-  const featuredEl = document.getElementById('featuredProducts');
-  if (featuredEl) {
-    featuredEl.innerHTML = PRODUCTS.slice(0, 8).map(renderProductCard).join('');
-  }
+  // Featured products
+  document.getElementById('featuredGrid').innerHTML = PRODUCTS.slice(0,8).map(renderProductCard).join('');
 </script>
 </body>
 </html>
