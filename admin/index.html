@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Dashboard | Detoxy Hijama</title>
   <meta name="robots" content="noindex,nofollow"/>
+  <meta name="description" content="Detoxy Hijama admin dashboard — internal use only."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -59,6 +60,8 @@
     .admin-form-modal.open{display:flex}
     .admin-modal-box{background:var(--white);border-radius:var(--radius-lg);padding:32px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
     .admin-modal-box h3{font-size:1.1rem;font-weight:700;color:var(--dark);margin-bottom:20px}
+    /* Desktop: sidebar (240px) + scrollable main content */
+    .admin-layout{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
     @media(max-width:900px){.admin-layout{grid-template-columns:1fr}.admin-sidebar{display:none}.stat-grid{grid-template-columns:repeat(2,1fr)}}
     .sheets-url-row{display:flex;gap:8px;margin-bottom:16px}
     .sheets-url-row input{flex:1}

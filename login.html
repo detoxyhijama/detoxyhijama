@@ -16,8 +16,8 @@
     .login-wrapper { flex: 1; display: flex; align-items: center; justify-content: center; padding: 48px 20px; }
     .login-card { background: #fff; border-radius: 24px; padding: 44px 36px; width: 100%; max-width: 420px; border: 1px solid var(--border); box-shadow: var(--shadow-lg); }
     .login-logo { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 28px; }
-    .login-logo-mark { width: 46px; height: 46px; border-radius: 12px; background: var(--dark); display: flex; align-items: center; justify-content: center; }
-    .login-logo-mark svg { width: 24px; height: 24px; }
+    .login-logo-mark { display: none; } /* replaced by real logo */
+    .login-logo-img { width: 46px; height: 46px; border-radius: 12px; object-fit: cover; flex-shrink: 0; }
     .login-logo-name { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 700; color: var(--dark); }
     .login-tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 28px; }
     .login-tab { flex: 1; padding: 12px; text-align: center; font-size: .85rem; font-weight: 600; color: var(--muted); cursor: pointer; border: none; background: none; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: var(--transition); font-family: var(--font-sans); }
@@ -38,9 +38,7 @@
 <div class="login-wrapper">
   <div class="login-card">
     <div class="login-logo">
-      <div class="login-logo-mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
-      </div>
+      <img src="/assets/images/logo.png" alt="Detoxy Hijama" class="login-logo-img" width="46" height="46" loading="eager"/>
       <span class="login-logo-name">Detoxy Hijama</span>
     </div>
 
@@ -91,7 +89,7 @@
     </div>
 
     <p style="text-align:center;font-size:.75rem;color:var(--muted);margin-top:20px">
-      <a href="index.html" style="color:var(--t)">Continue as Guest</a> — no account needed to order
+      <a href="/index.html" style="color:var(--t)">Continue as Guest</a> — no account needed to order
     </p>
   </div>
 </div>

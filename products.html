@@ -45,8 +45,13 @@
     @media(max-width:900px){
       .products-page{grid-template-columns:1fr}
       .filter-sidebar{display:none}
-      .filter-sidebar.open{display:block;position:fixed;top:0;right:0;bottom:0;left:0;z-index:200;background:var(--white);overflow-y:auto;padding:20px}
+      .filter-sidebar.open{display:block;position:fixed;top:0;right:0;bottom:0;left:0;z-index:200;background:var(--white);overflow-y:auto;padding:20px 20px 80px}
     }
+    .filter-sidebar-close{display:none;width:100%;padding:12px;background:var(--dark);color:#fff;border:none;border-radius:var(--radius-sm);font-size:.9rem;font-weight:600;cursor:pointer;margin-bottom:16px;font-family:var(--font-sans)}
+    @media(max-width:900px){.filter-sidebar.open .filter-sidebar-close{display:block}}
+    /* Dim overlay behind open filter */
+    .filter-overlay{display:none;position:fixed;top:0;right:0;bottom:0;left:0;background:rgba(0,0,0,.4);z-index:199}
+    .filter-overlay.show{display:block}
     .mobile-filter-btn{display:none}
     @media(max-width:900px){.mobile-filter-btn{display:flex}}
   </style>
@@ -59,7 +64,7 @@
 <section class="page-hero">
   <div class="container">
     <nav class="breadcrumb" aria-label="Breadcrumb">
-      <a href="index.html">Home</a>
+      <a href="/index.html">Home</a>
       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       <span aria-current="page">All Products</span>
     </nav>
@@ -72,6 +77,7 @@
   <div class="products-page">
     <!-- FILTER SIDEBAR -->
     <aside class="filter-sidebar" id="filterSidebar" aria-label="Product filters">
+      <button class="filter-sidebar-close" onclick="closeFilterSidebar()">✕ Close Filters</button>
       <div class="filter-card">
         <div class="filter-title" style="display:flex;justify-content:space-between;align-items:center">
           Filters
@@ -111,6 +117,7 @@
     </aside>
 
     <!-- PRODUCTS MAIN -->
+    <div class="filter-overlay" id="filterOverlay" onclick="closeFilterSidebar()"></div>
     <main id="productsMain">
       <div class="products-toolbar">
         <div>
@@ -118,7 +125,7 @@
           <p class="products-count"><strong id="productCount">0</strong> products found</p>
         </div>
         <div style="display:flex;gap:10px;align-items:center">
-          <button class="btn btn-outline btn-sm mobile-filter-btn" onclick="document.getElementById('filterSidebar').classList.toggle('open')">
+          <button class="btn btn-outline btn-sm mobile-filter-btn" onclick="openFilterSidebar()">
             <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="10" y2="18"/></svg>
             Filters
           </button>
@@ -232,6 +239,18 @@ function removeCatFilter(cat) {
 function clearAllFilters() {
   document.querySelectorAll('.filter-sidebar input').forEach(function(i){ i.checked = false; i.value = ''; });
   applyFilters();
+}
+
+function openFilterSidebar() {
+  document.getElementById('filterSidebar').classList.add('open');
+  document.getElementById('filterOverlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeFilterSidebar() {
+  document.getElementById('filterSidebar').classList.remove('open');
+  document.getElementById('filterOverlay').classList.remove('show');
+  document.body.style.overflow = '';
 }
 </script>
 </body>

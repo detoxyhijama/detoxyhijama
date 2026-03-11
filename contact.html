@@ -23,6 +23,8 @@
     .info-val a:hover { color: var(--t); }
     .contact-form { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; }
     @media(max-width:800px) { .contact-grid { grid-template-columns: 1fr; } }
+    .contact-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media(max-width:540px) { .contact-form-row { grid-template-columns: 1fr; } }
   </style>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"Detoxy Hijama","telephone":"+91-95665-96077","email":"detoxyhijama@gmail.com","address":{"@type":"PostalAddress","addressLocality":"Madurai","addressRegion":"Tamil Nadu","addressCountry":"IN"},"openingHours":"Mo-Sa 09:00-18:00","url":"https://detoxyhijama.github.io"}</script>
   <link rel="icon" type="image/png" href="/assets/images/favicon.png"/>
@@ -34,7 +36,7 @@
 <section class="page-hero">
   <div class="container">
     <nav class="breadcrumb" aria-label="Breadcrumb">
-      <a href="index.html">Home</a>
+      <a href="/index.html">Home</a>
       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       <span aria-current="page">Contact Us</span>
     </nav>
@@ -72,7 +74,7 @@
       <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--dark);margin-bottom:6px">Send a Message</h2>
       <p style="font-size:.85rem;color:var(--muted);margin-bottom:24px">We'll respond within 2 hours on working days.</p>
       <div id="contactAlert"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="contact-form-row">
         <div class="form-group">
           <label class="form-label" for="cName">Name *</label>
           <input type="text" id="cName" class="form-control" placeholder="Your name" required/>
@@ -107,6 +109,22 @@
     </div>
   </div>
 </div>
+
+<!-- MAP SECTION -->
+<section class="section-sm" style="background:var(--cream)">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:28px">
+      <span class="badge badge-teal" style="margin-bottom:10px">Find Us</span>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.5rem,2.5vw,2rem);font-weight:700;color:var(--dark)">Our Location</h2>
+      <p style="font-size:.88rem;color:var(--muted)">Detoxy Hijama — Madurai, Tamil Nadu, India</p>
+    </div>
+    <div style="border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow-lg)">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3920.855091404985!2d76.98154397417379!3d10.668353889473897!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba8392a59201573%3A0x369da30aa258c9d5!2sDETOXY%20HIJAMA!5e0!3m2!1sen!2sin!4v1773188355949!5m2!1sen!2sin"
+        width="100%" height="420" style="border:0;display:block;" allowfullscreen="" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade" title="Detoxy Hijama location on Google Maps"></iframe>
+    </div>
+  </div>
+</section>
 
 <div id="footer-mount"></div>
 <script src="assets/js/shared.js"></script>

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Checkout | Detoxy Hijama</title>
   <meta name="robots" content="noindex,nofollow"/>
+  <meta name="description" content="Secure checkout at Detoxy Hijama. Enter your delivery details and place your order."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -43,9 +44,9 @@
 <section class="page-hero">
   <div class="container">
     <nav class="breadcrumb" aria-label="Breadcrumb">
-      <a href="index.html">Home</a>
+      <a href="/index.html">Home</a>
       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      <a href="cart.html">Cart</a>
+      <a href="/cart.html">Cart</a>
       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       <span aria-current="page">Checkout</span>
     </nav>
@@ -210,7 +211,7 @@ function renderOrderSummary() {
   itemsEl.innerHTML = items.map(function(item) {
     var p = PRODUCTS.find(function(x){ return x.id === item.id; });
     if (!p) return '';
-    return '<div class="order-item"><img src="'+p.images[0]+'" alt="'+p.name+'" class="order-item-img" onerror="this.src=\'assets/images/placeholder.svg\'"><div style="flex:1"><div class="order-item-name">'+p.name+'</div><div class="order-item-qty">Qty: '+item.qty+'</div></div><div class="order-item-price">'+fmtINR(p.price * item.qty)+'</div></div>';
+    return '<div class="order-item"><img src="/'+p.images[0]+'" alt="'+p.name+'" class="order-item-img" onerror="this.src=\'/assets/images/placeholder.svg\'"><div style="flex:1"><div class="order-item-name">'+p.name+'</div><div class="order-item-qty">Qty: '+item.qty+'</div></div><div class="order-item-price">'+fmtINR(p.price * item.qty)+'</div></div>';
   }).join('');
 
   var subtotal = Cart.total();

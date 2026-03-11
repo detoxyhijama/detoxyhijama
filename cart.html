@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shopping Cart | Detoxy Hijama</title>
   <meta name="robots" content="noindex,nofollow"/>
+  <meta name="description" content="Your shopping cart at Detoxy Hijama. Review your hijama cups and equipment before checkout."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -49,7 +50,7 @@
 <section class="page-hero">
   <div class="container">
     <nav class="breadcrumb" aria-label="Breadcrumb">
-      <a href="index.html">Home</a>
+      <a href="/index.html">Home</a>
       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       <span aria-current="page">Shopping Cart</span>
     </nav>
@@ -98,7 +99,7 @@ function renderCart() {
     var p = PRODUCTS.find(function(x){ return x.id === item.id; });
     if (!p) return '';
     return '<div class="cart-item" id="ci-'+p.id+'">' +
-      '<img src="'+p.images[0]+'" alt="'+p.name+'" class="cart-item-img" onerror="this.src=\'assets/images/placeholder.svg\'">' +
+      '<img src="/'+p.images[0]+'" alt="'+p.name+'" class="cart-item-img" onerror="this.src=\'/assets/images/placeholder.svg\'">' +
       '<div>' +
         '<div class="cart-item-name">'+p.name+'</div>' +
         '<div class="cart-item-cat">'+p.categoryLabel+'</div>' +

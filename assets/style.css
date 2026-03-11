@@ -79,6 +79,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+/* Suppress iOS tap highlight (blue/grey flash) on all interactive elements */
+a, button, input, select, textarea,
+[role="button"], label { -webkit-tap-highlight-color: transparent; }
 
 img { max-width: 100%; height: auto; display: block; }
 a { color: inherit; text-decoration: none; }
@@ -123,6 +126,7 @@ h1, h2, h3, h4, h5, h6 { line-height: 1.25; color: var(--dark); }
   cursor: pointer;
   line-height: 1;
   letter-spacing: .01em;
+  touch-action: manipulation;
 }
 .btn:focus-visible {
   outline: 3px solid rgba(87,162,160,.28);
@@ -444,6 +448,9 @@ h1, h2, h3, h4, h5, h6 { line-height: 1.25; color: var(--dark); }
   flex-direction: column;
   gap: 4px;
   overflow-y: auto;
+  /* Prevents body from scrolling behind the open mobile nav overlay on iOS */
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 .nav-mobile.open { display: flex; }
 .nav-mobile a {
@@ -599,6 +606,12 @@ h1, h2, h3, h4, h5, h6 { line-height: 1.25; color: var(--dark); }
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+/* Reset anchor inside card name — browser default blue+underline overrides card style */
+.product-card-name a {
+  color: inherit;
+  text-decoration: none;
+}
+.product-card-name a:hover { color: var(--t); }
 .product-card-rating { display: flex; align-items: center; gap: 6px; }
 .product-card-rating-score { font-size: .78rem; font-weight: 700; color: var(--dark); }
 .product-card-rating-count { font-size: .73rem; color: var(--muted); }
@@ -655,7 +668,9 @@ h1, h2, h3, h4, h5, h6 { line-height: 1.25; color: var(--dark); }
   top: -60px; right: -60px;
   width: 300px; height: 300px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(87,162,160,.15) 0%, transparent 70%);
+  /* -webkit- prefix for Safari < 12.1 (pre-2018) */
+  background: -webkit-radial-gradient(circle, rgba(87,162,160,.15) 0%, transparent 70%);
+  background:         radial-gradient(circle, rgba(87,162,160,.15) 0%, transparent 70%);
   pointer-events: none;
 }
 .page-hero h1 {
@@ -776,6 +791,8 @@ h1, h2, h3, h4, h5, h6 { line-height: 1.25; color: var(--dark); }
   cursor: pointer;
   transition: var(--transition);
   display: flex; align-items: center; justify-content: center;
+  /* Eliminates 300ms tap delay on iOS/Android without disabling pinch-zoom */
+  touch-action: manipulation;
 }
 .qty-btn:hover { background: var(--cream2); color: var(--t); }
 .qty-input {
@@ -833,4 +850,56 @@ h1, h2, h3, h4, h5, h6 { line-height: 1.25; color: var(--dark); }
   border-radius: 9px;
   object-fit: cover;
   flex-shrink: 0;
+}
+
+/* ── Footer Social Icons ── */
+.footer-social {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.footer-social-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+.footer-social-btn svg { width: 17px; height: 17px; }
+.footer-social-btn.wa  { background: #25d366; color: #fff; }
+.footer-social-btn.ig  { background: linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); color: #fff; }
+.footer-social-btn.fb  { background: #1877f2; color: #fff; }
+.footer-social-btn.tg  { background: #0088cc; color: #fff; }
+.footer-social-btn.gm  { background: #ea4335; color: #fff; }
+.footer-social-btn.yt  { background: #ff0000; color: #fff; }
+.footer-social-btn:hover { transform: translateY(-2px); opacity: .88; }
+
+/* ── Homepage Social Strip ── */
+.social-strip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 50px;
+  font-size: .78rem;
+  font-weight: 600;
+  color: #fff;
+  transition: var(--transition);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.social-strip-btn:hover { opacity: .85; transform: translateY(-1px); }
+.social-strip-btn.wa  { background: rgba(37,211,102,.20); border: 1px solid rgba(37,211,102,.35); }
+.social-strip-btn.ig  { background: rgba(220,39,67,.20); border: 1px solid rgba(220,39,67,.35); }
+.social-strip-btn.fb  { background: rgba(24,119,242,.20); border: 1px solid rgba(24,119,242,.35); }
+.social-strip-btn.tg  { background: rgba(0,136,204,.20); border: 1px solid rgba(0,136,204,.35); }
+.social-strip-btn.yt  { background: rgba(255,0,0,.20); border: 1px solid rgba(255,0,0,.35); }
+.social-strip-btn span { color: rgba(255,255,255,.85); }
+@media(max-width:600px) {
+  .social-strip-btn span { display: none; }
+  .social-strip-btn { padding: 8px 10px; border-radius: 50%; width: 36px; height: 36px; justify-content: center; }
 }
