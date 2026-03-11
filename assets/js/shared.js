@@ -455,8 +455,8 @@ function renderHeader(activePage = '') {
   const navLinks = [
     { href: '/index.html', label: 'Home' },
     { href: '/products.html', label: 'All Products' },
-    { href: '/products.html?cat=kits', label: 'Starter Kits' },
-    { href: '/products.html?cat=electric', label: 'Electric' },
+    { href: '/track-order.html', label: 'Track Your Order' },
+    { href: '/blogs.html', label: 'Blogs' },
     { href: '/quote.html', label: 'Bulk Quote' }
   ];
   const linksHtml = navLinks.map(l =>
@@ -470,7 +470,6 @@ function renderHeader(activePage = '') {
       <img src="/assets/images/logo.png" alt="Detoxy Hijama" class="nav-logo-img" width="44" height="44" loading="eager"/>
       <div>
         <div class="nav-logo-name">Detoxy Hijama</div>
-        <div class="nav-logo-sub">Hijama Specialists</div>
       </div>
     </a>
 
@@ -510,8 +509,8 @@ function renderHeader(activePage = '') {
   </button>
   <a href="/index.html">Home</a>
   <a href="/products.html">All Products</a>
-  <a href="/products.html?cat=kits">Starter Kits</a>
-  <a href="/products.html?cat=electric">Electric Devices</a>
+  <a href="/track-order.html">Track Your Order</a>
+  <a href="/blogs.html">Blogs</a>
   <a href="/products.html?cat=cups">Cupping Sets</a>
   <a href="/cart.html">My Cart</a>
   <a href="/login.html">Account</a>
@@ -544,7 +543,7 @@ function renderFooter() {
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
         </a>
         <a href="mailto:detoxyhijama@gmail.com" class="footer-social-btn gm" aria-label="Gmail">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.910 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 39.5H12V23.55L1.5 16V37C1.5 38.38 2.62 39.5 4.5 39.5Z" fill="#4285F4"/><path d="M36 39.5H43.5C45.38 39.5 46.5 38.38 46.5 36.5V16L36 23.55V39.5Z" fill="#34A853"/><path d="M36 11.5V23.55L46.5 16V13C46.5 10.84 44.04 9.62 42.3 10.9L36 11.5Z" fill="#FBBC04"/><path d="M12 23.55V11.5L24 20.5L36 11.5V23.55L24 32.55L12 23.55Z" fill="#EA4335"/><path d="M1.5 13V16L12 23.55V11.5L5.7 10.9C3.96 9.62 1.5 10.84 1.5 13Z" fill="#C5221F"/></svg>
         </a>
         <a href="https://youtube.com/@detoxyhijama" class="footer-social-btn yt" target="_blank" rel="noopener" aria-label="YouTube">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
@@ -564,8 +563,8 @@ function renderFooter() {
       <ul>
         <li><a href="/products.html">All Products</a></li>
         <li><a href="/products.html?cat=cups">Cupping Sets</a></li>
-        <li><a href="/products.html?cat=electric">Electric Devices</a></li>
-        <li><a href="/products.html?cat=kits">Starter Kits</a></li>
+        <li><a href="/track-order.html">Track Your Order</a></li>
+        <li><a href="/blogs.html">Hijama Blog</a></li>
         <li><a href="/products.html?cat=consumables">Consumables</a></li>
         <li><a href="/products.html?cat=facial">Facial Cups</a></li>
       </ul>
