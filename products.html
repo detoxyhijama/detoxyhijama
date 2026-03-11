@@ -133,9 +133,9 @@
         <div class="filter-group">
           <span class="filter-label">Price Range</span>
           <div class="price-range">
-            <input type="number" id="priceMin" class="price-input" placeholder="Min" min="0" onchange="applyFilters()"/>
+            <input type="number" id="priceMin" class="price-input" placeholder="Min" min="0" max="5000" onchange="applyFilters()"/>
             <span style="color:var(--muted);font-size:.8rem">to</span>
-            <input type="number" id="priceMax" class="price-input" placeholder="Max" min="0" onchange="applyFilters()"/>
+            <input type="number" id="priceMax" class="price-input" placeholder="Max" min="0" max="5000" onchange="applyFilters()"/>
           </div>
         </div>
 
@@ -259,7 +259,7 @@ function applyFilters() {
   } else {
     grid.style.display = 'grid';
     empty.style.display = 'none';
-    grid.innerHTML = results.map(function(p){ return renderProductCard(p); }).join('');
+    grid.innerHTML = results.map(function(p, i){ return renderProductCard(p, i); }).join('');
   }
 
   // Active filters display
@@ -274,7 +274,21 @@ function removeCatFilter(cat) {
 }
 
 function clearAllFilters() {
-  document.querySelectorAll('.filter-sidebar input').forEach(function(i){ i.checked = false; i.value = ''; });
+  /* FIX: Loop only unsets checkboxes and number inputs individually.
+     Setting .value='' on a <select> is unreliable across browsers —
+     Chrome ignores it, Firefox may blank the displayed text.
+     We reset the sort select explicitly via selectedIndex. */
+  document.querySelectorAll('.filter-sidebar input[type="checkbox"]').forEach(function(i){ i.checked = false; });
+  var priceMin = document.getElementById('priceMin');
+  var priceMax = document.getElementById('priceMax');
+  if (priceMin) priceMin.value = '';
+  if (priceMax) priceMax.value = '';
+  var ratingInputs = document.querySelectorAll('input[name="rating"]');
+  ratingInputs.forEach(function(i){ i.checked = false; });
+  var inStock = document.getElementById('inStockOnly');
+  if (inStock) inStock.checked = false;
+  var sortSel = document.getElementById('sortSelect');
+  if (sortSel) sortSel.selectedIndex = 0;
   applyFilters();
 }
 
@@ -289,6 +303,9 @@ function closeFilterSidebar() {
   document.getElementById('filterOverlay').classList.remove('show');
   document.body.style.overflow = '';
 }
+
+/* FIX: Ensure body overflow is cleared if user navigates while filter is open */
+window.addEventListener('pagehide', function() { document.body.style.overflow = ''; });
 </script>
 </body>
 </html>

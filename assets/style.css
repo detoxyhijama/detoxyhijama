@@ -78,6 +78,10 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Prevent iOS from auto-scaling text on orientation change */
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 /* Suppress iOS tap highlight (blue/grey flash) on all interactive elements */
 a, button, input, select, textarea,
@@ -137,13 +141,14 @@ h1, h2, h3, h4, h5, h6 { line-height: 1.25; color: var(--dark); }
 .btn-primary:hover {
   background: var(--td);
   border-color: var(--td);
+  -webkit-transform: translateY(-1px);
   transform: translateY(-1px);
   box-shadow: 0 4px 18px rgba(87,162,160,.38);
 }
-.btn-primary:active { transform: translateY(0); }
+.btn-primary:active { -webkit-transform: translateY(0); transform: translateY(0); }
 
 .btn-dark { background: var(--dark); color: #fff; border-color: var(--dark); }
-.btn-dark:hover { background: var(--mid); border-color: var(--mid); transform: translateY(-1px); }
+.btn-dark:hover { background: var(--mid); border-color: var(--mid); -webkit-transform: translateY(-1px); transform: translateY(-1px); }
 
 .btn-outline { background: transparent; color: var(--dark); border-color: var(--border2); }
 .btn-outline:hover { border-color: var(--t); color: var(--t); background: var(--tp); }
@@ -330,7 +335,8 @@ h1, h2, h3, h4, h5, h6 { line-height: 1.25; color: var(--dark); }
   box-shadow: var(--shadow-lg);
   max-height: 320px;
   overflow-y: auto;
-  z-index: 200;
+  -webkit-overflow-scrolling: touch; /* smooth momentum scroll on iOS */
+  z-index: 210; /* raised above filter-sidebar.open (z:200) and mobile-nav (z:101) */
   display: none;
 }
 .nav-search-results.show { display: block; }
@@ -415,7 +421,7 @@ h1, h2, h3, h4, h5, h6 { line-height: 1.25; color: var(--dark); }
   font-weight: 700;
   transition: var(--transition);
 }
-.nav-whatsapp:hover { background: #128c4e; transform: translateY(-1px); }
+.nav-whatsapp:hover { background: #128c4e; -webkit-transform: translateY(-1px); transform: translateY(-1px); }
 .nav-whatsapp svg { width: 16px; height: 16px; }
 
 /* Mobile toggle */
@@ -565,6 +571,7 @@ h1, h2, h3, h4, h5, h6 { line-height: 1.25; color: var(--dark); }
 .product-card:hover {
   box-shadow: var(--shadow-lg);
   border-color: var(--c300);
+  -webkit-transform: translateY(-3px);
   transform: translateY(-3px);
 }
 .product-card-img {
@@ -576,9 +583,10 @@ h1, h2, h3, h4, h5, h6 { line-height: 1.25; color: var(--dark); }
 .product-card-img img {
   width: 100%; height: 100%;
   object-fit: cover;
+  -webkit-transition: -webkit-transform .35s ease;
   transition: transform .35s ease;
 }
-.product-card:hover .product-card-img img { transform: scale(1.04); }
+.product-card:hover .product-card-img img { -webkit-transform: scale(1.04); transform: scale(1.04); }
 .product-card-badge { position: absolute; top: 10px; left: 10px; }
 .product-card-wishlist {
   position: absolute;
@@ -591,7 +599,7 @@ h1, h2, h3, h4, h5, h6 { line-height: 1.25; color: var(--dark); }
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
 }
-.product-card-wishlist:hover { background: #fff; transform: scale(1.1); }
+.product-card-wishlist:hover { background: #fff; -webkit-transform: scale(1.1); transform: scale(1.1); }
 .product-card-wishlist svg { width: 15px; height: 15px; color: var(--muted); }
 
 .product-card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
@@ -725,6 +733,7 @@ h1, h2, h3, h4, h5, h6 { line-height: 1.25; color: var(--dark); }
   align-items: center;
   gap: 10px;
   pointer-events: auto;
+  -webkit-animation: toastIn .25s ease forwards;
   animation: toastIn .25s ease forwards;
   max-width: 320px;
   border: 1px solid rgba(255,255,255,.08);
@@ -732,7 +741,9 @@ h1, h2, h3, h4, h5, h6 { line-height: 1.25; color: var(--dark); }
 .toast.success { background: #059669; }
 .toast.error   { background: var(--error); }
 .toast svg { width: 16px; height: 16px; flex-shrink: 0; }
+@-webkit-keyframes toastIn  { from { opacity: 0; -webkit-transform: translateY(10px); } to { opacity: 1; -webkit-transform: translateY(0); } }
 @keyframes toastIn  { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@-webkit-keyframes toastOut { to   { opacity: 0; -webkit-transform: translateY(10px); } }
 @keyframes toastOut { to   { opacity: 0; transform: translateY(10px); } }
 
 /* ══════════════════════════════════
@@ -741,9 +752,11 @@ h1, h2, h3, h4, h5, h6 { line-height: 1.25; color: var(--dark); }
 .skeleton {
   background: linear-gradient(90deg, var(--cream) 25%, var(--cream2) 50%, var(--cream) 75%);
   background-size: 200% 100%;
+  -webkit-animation: shimmer 1.4s infinite;
   animation: shimmer 1.4s infinite;
   border-radius: var(--radius-sm);
 }
+@-webkit-keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
 /* ══════════════════════════════════
@@ -876,7 +889,7 @@ h1, h2, h3, h4, h5, h6 { line-height: 1.25; color: var(--dark); }
 .footer-social-btn.tg  { background: #0088cc; color: #fff; }
 .footer-social-btn.gm  { background: #ea4335; color: #fff; }
 .footer-social-btn.yt  { background: #ff0000; color: #fff; }
-.footer-social-btn:hover { transform: translateY(-2px); opacity: .88; }
+.footer-social-btn:hover { -webkit-transform: translateY(-2px); transform: translateY(-2px); opacity: .88; }
 
 /* ── Homepage Social Strip ── */
 .social-strip-btn {
@@ -892,7 +905,7 @@ h1, h2, h3, h4, h5, h6 { line-height: 1.25; color: var(--dark); }
   text-decoration: none;
   white-space: nowrap;
 }
-.social-strip-btn:hover { opacity: .85; transform: translateY(-1px); }
+.social-strip-btn:hover { opacity: .85; -webkit-transform: translateY(-1px); transform: translateY(-1px); }
 .social-strip-btn.wa  { background: rgba(37,211,102,.20); border: 1px solid rgba(37,211,102,.35); }
 .social-strip-btn.ig  { background: rgba(220,39,67,.20); border: 1px solid rgba(220,39,67,.35); }
 .social-strip-btn.fb  { background: rgba(24,119,242,.20); border: 1px solid rgba(24,119,242,.35); }
@@ -1045,4 +1058,73 @@ h1, h2, h3, h4, h5, h6 { line-height: 1.25; color: var(--dark); }
 .nav-cart-count {
   min-width: 17px;
   line-height: 17px;
+}
+
+/* ══════════════════════════════════
+   ADDITIONAL CROSS-BROWSER FIXES v2
+══════════════════════════════════ */
+
+/* ── accent-color fallback for Safari < 15.4 ──
+   accent-color sets the teal colour on checkboxes/radios.
+   Safari < 15.4 ignores it, showing default grey.
+   We can't fully replicate it without custom checkbox CSS,
+   but we can at least add the -webkit- form for future compat. */
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--t);
+}
+
+/* ── button -webkit-appearance reset for Safari ──
+   Safari applies OS-native button styles that override custom CSS.
+   Adding -webkit-appearance:none ensures buttons look consistent. */
+button,
+.btn,
+input[type="submit"],
+input[type="button"],
+input[type="reset"] {
+  -webkit-appearance: none;
+}
+
+/* ── filter-sidebar smooth open/close on mobile ──
+   The sidebar snaps in/out without a transition on mobile.
+   Using opacity+visibility for a fade prevents reflow jank. */
+@media (max-width: 900px) {
+  .filter-sidebar {
+    -webkit-transition: opacity .2s ease, visibility .2s ease;
+    transition: opacity .2s ease, visibility .2s ease;
+    opacity: 0;
+    visibility: hidden;
+  }
+  .filter-sidebar.open {
+    opacity: 1;
+    visibility: visible;
+  }
+  .filter-overlay {
+    -webkit-transition: opacity .2s ease;
+    transition: opacity .2s ease;
+    opacity: 0;
+  }
+  .filter-overlay.show {
+    opacity: 1;
+  }
+}
+
+/* ── -webkit-user-select for text selection consistency ──
+   Interactive labels and badges shouldn't be selectable (accidental
+   double-tap on mobile selects them, which looks broken). */
+.badge, .nav-links a, .footer-col a, .filter-option,
+.tab-btn, .payment-badge, .trust-pill {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+/* ── Safe area inset for iPhone notch/Dynamic Island ──
+   The fixed toast container and fixed cart button can be
+   obscured by the iPhone bottom home indicator without padding. */
+#toast-container {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.fixed-cart-btn {
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
 }

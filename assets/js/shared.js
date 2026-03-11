@@ -13,7 +13,12 @@ const SITE = {
   address: 'Pollachi, Coimbatore, Tamil Nadu, India',
   freeShippingAt: 999,
   defaultShipping: 60,
-  sheetsUrl: localStorage.getItem('detoxy_sheets_url') || '',
+  get sheetsUrl() {
+    /* FIX: Lazy getter prevents SecurityError crash in iOS private mode.
+       localStorage access at parse-time throws in private browsing on iOS 10-12,
+       which would crash shared.js entirely — making PRODUCTS and Cart undefined. */
+    try { return localStorage.getItem('detoxy_sheets_url') || ''; } catch(e) { return ''; }
+  },
   social: {
     whatsapp:  'https://wa.me/919566596077',
     instagram: 'https://instagram.com/detoxyhijama_',
@@ -411,14 +416,14 @@ function discountPct(price, mrp) { return mrp > price ? Math.round((mrp - price)
 //   interactive elements cannot be nested. It also caused a UX bug: clicking
 //   the wishlist heart also navigated to the product page.
 //   Fix: <a> wraps only the image; wishlist button is a sibling positioned absolutely.
-function renderProductCard(p) {
+function renderProductCard(p, cardIndex) {
   const discount = discountPct(p.price, p.mrp);
   const badgeHtml = p.badge ? `<div class="product-card-badge"><span class="badge badge-${p.badgeType || 'teal'}">${p.badge}</span></div>` : '';
   return `
 <article class="product-card" itemscope itemtype="https://schema.org/Product">
   <div class="product-card-img">
     <a href="/products/${p.slug}.html" aria-label="${p.name}" style="display:block;width:100%;height:100%">
-      <img src="/${p.images[0]}" alt="${p.name}" loading="lazy" itemprop="image"
+      <img src="/${p.images[0]}" alt="${p.name}" loading="${(cardIndex !== undefined && cardIndex < 4) ? 'eager' : 'lazy'}" itemprop="image"
         onerror="this.src='/assets/images/placeholder.svg'">
     </a>
     ${badgeHtml}
@@ -473,14 +478,14 @@ function renderHeader(activePage = '') {
       </div>
     </a>
 
-    <nav class="nav-search" role="search" aria-label="Search products">
+    <div class="nav-search" role="search" aria-label="Search products">
       <input type="search" id="navSearch" placeholder="Search hijama cups, kits..." autocomplete="off"
         aria-label="Search products" aria-expanded="false" aria-autocomplete="list"/>
       <button class="nav-search-btn" aria-label="Search">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       </button>
       <div id="searchResults" class="nav-search-results" role="listbox" aria-label="Search suggestions"></div>
-    </nav>
+    </div>
 
     <ul class="nav-links" role="list">${linksHtml}</ul>
 
@@ -648,16 +653,31 @@ function initMobileNav() {
   const mobile = document.getElementById('navMobile');
   const close = document.getElementById('navClose');
   if (!toggle || !mobile) return;
-  toggle.addEventListener('click', () => {
-    mobile.classList.toggle('open');
-    toggle.setAttribute('aria-expanded', mobile.classList.contains('open'));
-    document.body.style.overflow = mobile.classList.contains('open') ? 'hidden' : '';
-  });
-  if (close) close.addEventListener('click', () => {
+
+  function openNav() {
+    mobile.classList.add('open');
+    toggle.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeNav() {
     mobile.classList.remove('open');
     toggle.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
+  }
+
+  toggle.addEventListener('click', () => {
+    mobile.classList.contains('open') ? closeNav() : openNav();
   });
+  if (close) close.addEventListener('click', closeNav);
+
+  /* FIX A: ESC key closes the nav — standard dismiss UX for overlays/menus */
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobile.classList.contains('open')) closeNav();
+  });
+
+  /* FIX B: Clear body overflow if user navigates away while nav is open.
+     Without this, the new page loads with overflow:hidden and is unscrollable. */
+  window.addEventListener('pagehide', () => { document.body.style.overflow = ''; });
 }
 
 // ── Init ───────────────────────────────────────

@@ -87,7 +87,7 @@ function renderCart() {
   if (!page) return;
 
   if (items.length === 0) {
-    page.innerHTML = '<div style="grid-column:1/-1"><div class="empty-state"><div class="empty-state-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg></div><h3>Your cart is empty</h3><p>Add some products to get started</p><a href="products.html" class="btn btn-primary">Shop Now</a></div></div>';
+    page.innerHTML = '<div style="grid-column:1/-1"><div class="empty-state"><div class="empty-state-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg></div><h3>Your cart is empty</h3><p>Add some products to get started</p><a href="/products.html" class="btn btn-primary">Shop Now</a></div></div>';
     return;
   }
 
@@ -130,8 +130,8 @@ function renderCart() {
       '<hr class="summary-divider">' +
       '<div class="summary-total"><span>Total</span><span>'+fmtINR(total)+'</span></div>' +
       '<div style="margin-top:20px;display:flex;flex-direction:column;gap:10px">' +
-        '<a href="checkout.html" class="btn btn-primary btn-block btn-lg">Proceed to Checkout</a>' +
-        '<a href="products.html" class="btn btn-outline btn-block">Continue Shopping</a>' +
+        '<a href="/checkout.html" class="btn btn-primary btn-block btn-lg">Proceed to Checkout</a>' +
+        '<a href="/products.html" class="btn btn-outline btn-block">Continue Shopping</a>' +
       '</div>' +
       '<p style="font-size:.73rem;color:var(--muted);margin-top:14px;text-align:center">Secure checkout · COD available · 7-day returns</p>' +
     '</div>';
