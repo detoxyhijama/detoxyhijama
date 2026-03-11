@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-IN">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -70,6 +70,7 @@
 
     @media(max-width:860px){.pd-page{grid-template-columns:1fr;gap:28px}.pd-gallery{position:static}}
     @media(max-width:480px){.pd-actions{flex-direction:column}.pd-trust{grid-template-columns:1fr 1fr}}
+    @media(max-width:600px){.tab-list{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}.tab-list::-webkit-scrollbar{display:none}.tab-btn{white-space:nowrap;flex-shrink:0}.pd-price{font-size:1.6rem}.pd-thumbs{gap:6px}.pd-thumb{width:60px;height:60px}}
   </style>
   <script id="productSchemaScript" type="application/ld+json"></script>
   <link rel="icon" type="image/png" href="/assets/images/favicon.png"/>
@@ -80,9 +81,9 @@
 
 <div class="container" style="padding-top:24px">
   <nav class="breadcrumb" id="breadcrumb" aria-label="Breadcrumb">
-    <a href="../index.html">Home</a>
+    <a href="/index.html">Home</a>
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-    <a href="../products.html">All Products</a>
+    <a href="/products.html">All Products</a>
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
     <span id="breadcrumbCurrent" aria-current="page">Product</span>
   </nav>
@@ -107,6 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
        Double-calling initMobileNav would attach duplicate event listeners to navToggle. */
     var frag = document.createRange().createContextualFragment(renderHeader(''));
     hm.replaceWith(frag);
+    Cart.updateUI(); initSearch(); initMobileNav();
   }
   var fm = document.getElementById('footer-mount');
   if (fm) fm.outerHTML = renderFooter();
@@ -116,13 +118,13 @@ document.addEventListener('DOMContentLoaded', function() {
   var p = PRODUCTS.find(function(x){ return x.slug === slug; });
 
   if (!p) {
-    document.getElementById('productPage').innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><h3>Product not found</h3><a href="../products.html" class="btn btn-primary">Browse All Products</a></div>';
+    document.getElementById('productPage').innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><h3>Product not found</h3><a href="/products.html" class="btn btn-primary">Browse All Products</a></div>';
     return;
   }
 
   // Update page meta
   document.getElementById('pageTitle').textContent = p.name + ' | Detoxy Hijama';
-  document.getElementById('pageDesc').setAttribute('content', p.shortDesc + ' ' + fmtINR(p.price) + '. Factory direct from Detoxy Hijama, Madurai.');
+  document.getElementById('pageDesc').setAttribute('content', p.shortDesc + ' ' + fmtINR(p.price) + '. Factory direct from Detoxy Hijama, Pollachi.');
   document.getElementById('breadcrumbCurrent').textContent = p.name;
 
   // Structured data
@@ -185,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
       '<div class="pd-features"><h4>Key Features</h4><ul class="pd-feature-list">'+featHtml+'</ul></div>' +
       '<div class="pd-qty-row"><span class="pd-qty-label">Quantity:</span><div class="qty-control"><button class="qty-btn" onclick="adjustQty(-1)">-</button><input type="number" id="pdQty" class="qty-input" value="1" min="1" max="20"><button class="qty-btn" onclick="adjustQty(1)">+</button></div></div>' +
       '<div class="pd-actions">' +
-        '<a href="../checkout.html?buy='+p.id+'" class="btn btn-primary">Buy Now</a>' +
+        '<a href="/checkout.html?buy='+p.id+'" class="btn btn-primary">Buy Now</a>' +
         '<button class="btn btn-outline" onclick="addToCartPD()">Add to Cart</button>' +
       '</div>' +
       '<div class="pd-trust">' +

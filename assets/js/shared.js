@@ -301,7 +301,7 @@ const PRODUCTS = [
     specs: { Weight: '400g', Material: '100% cotton', Grade: 'Surgical / medical', Use: 'Pre & post hijama care', Pack: 'Single roll' },
     images: ['assets/images/products/surgical-cotton/main.jpg']
   }
-];;
+];
 
 // ── Cart Utils ────────────────────────────────
 const Cart = {
@@ -572,7 +572,7 @@ function renderFooter() {
     <div class="footer-col">
       <h4>Company</h4>
       <ul>
-        <li><a href="/about.html">About Us</a></li>
+        <li><a href="/contact.html">About Us</a></li>
         <li><a href="/quote.html">Bulk Quote</a></li>
         <li><a href="/contact.html">Contact</a></li>
         <li><a href="/blogs.html">Hijama Blog</a></li>

@@ -1,8 +1,38 @@
+# Robots.txt — Detoxy Hijama (https://detoxyhijama.github.io)
+# Optimized for GitHub Pages — Updated 2026-03-11
+
 User-agent: *
+Allow: /
+Allow: /products/
+Allow: /assets/images/
+
+# Block non-indexable utility pages
+Disallow: /admin/
+Disallow: /cart.html
+Disallow: /checkout.html
+Disallow: /confirmation.html
+Disallow: /login.html
+Disallow: /track-order.html
+Disallow: /products/product-template.html
+Disallow: /assets/js/
+Disallow: /google-apps-script.gs
+
+# Allow important crawlers full access
+User-agent: Googlebot
 Allow: /
 Disallow: /admin/
 Disallow: /cart.html
 Disallow: /checkout.html
 Disallow: /confirmation.html
 Disallow: /login.html
+Disallow: /track-order.html
+Disallow: /products/product-template.html
+
+User-agent: Googlebot-Image
+Allow: /assets/images/
+
+User-agent: Bingbot
+Allow: /
+
+# Sitemap location
 Sitemap: https://detoxyhijama.github.io/sitemap.xml
