@@ -350,7 +350,13 @@ function renderHeader(activePage = '') {
 <header class="nav" role="banner">
   <div class="nav-inner">
     <a href="/index.html" class="nav-logo" aria-label="Detoxy Hijama Home">
-      <img src="/assets/images/logo.png" alt="Detoxy Hijama" class="nav-logo-img" width="44" height="44" loading="eager"/>
+      <div class="nav-logo-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
+          <path d="M8 8c-2 1-3 3-3 4s1 3 3 4"/>
+        </svg>
+      </div>
       <div>
         <div class="nav-logo-name">Detoxy Hijama</div>
         <div class="nav-logo-sub">Manufacturer Direct</div>
@@ -409,7 +415,9 @@ function renderFooter() {
   <div class="footer-grid">
     <div>
       <div class="footer-brand-logo">
-        <img src="/assets/images/logo.png" alt="Detoxy Hijama" class="footer-logo-img" width="44" height="44" loading="lazy"/>
+        <div class="footer-brand-logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+        </div>
         <span class="footer-brand-name">Detoxy Hijama</span>
       </div>
       <p class="footer-desc">India's trusted manufacturer of clinical-grade hijama equipment. Factory direct pricing. Pan-India delivery from Madurai, Tamil Nadu.</p>
