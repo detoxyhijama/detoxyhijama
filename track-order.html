@@ -216,115 +216,6 @@
     </div>
   </div>
 
-  <hr class="section-divider" style="max-width:900px;margin:56px auto"/>
-
-  <!-- ── ADMIN SECTION ── -->
-  <section class="admin-section">
-    <div id="adminLoginSection">
-      <div style="text-align:center;margin-bottom:28px">
-        <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;color:var(--dark)">Admin — Order Management</h2>
-        <p style="color:var(--muted);font-size:.88rem">Sign in to manage orders, update statuses, and add tracking info.</p>
-      </div>
-      <div class="admin-login-wrap">
-        <h3 style="font-weight:700;font-size:.95rem;color:var(--dark);margin-bottom:18px">Admin Login</h3>
-        <div style="display:flex;flex-direction:column;gap:12px">
-          <input type="text" id="adminUser" placeholder="Username" style="padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:.9rem;font-family:'Outfit',sans-serif;outline:none"/>
-          <input type="password" id="adminPass" placeholder="Password" style="padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:.9rem;font-family:'Outfit',sans-serif;outline:none"/>
-          <button class="btn-track" onclick="adminLogin()">Sign In</button>
-          <p style="font-size:.72rem;color:var(--muted);text-align:center">Demo: admin / detoxy2024</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="admin-panel" id="adminPanel">
-      <div class="admin-top">
-        <h2>Order Management</h2>
-        <div style="display:flex;gap:10px;align-items:center">
-          <button class="btn btn-primary" onclick="openAddModal()" style="font-size:.82rem;padding:9px 20px">+ Add Order</button>
-          <button class="btn btn-outline" onclick="exportCSV()" style="font-size:.82rem;padding:9px 20px">⬇ Export CSV</button>
-          <button class="btn-action danger" onclick="adminLogout()">Logout</button>
-        </div>
-      </div>
-
-      <!-- Stats -->
-      <div class="admin-stats" id="adminStats"></div>
-
-      <!-- Filters -->
-      <div class="admin-filters">
-        <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
-        <button class="filter-btn" onclick="setFilter('pending',this)">Pending</button>
-        <button class="filter-btn" onclick="setFilter('processing',this)">Processing</button>
-        <button class="filter-btn" onclick="setFilter('shipped',this)">Shipped</button>
-        <button class="filter-btn" onclick="setFilter('out-for-delivery',this)">Out for Delivery</button>
-        <button class="filter-btn" onclick="setFilter('delivered',this)">Delivered</button>
-        <button class="filter-btn" onclick="setFilter('cancelled',this)">Cancelled</button>
-        <input type="text" class="admin-search-input" id="adminSearch" placeholder="Search by name, order ID, phone..." oninput="renderAdminTable()"/>
-      </div>
-
-      <!-- Table -->
-      <div class="orders-table-wrap">
-        <table class="orders-table" id="ordersTable">
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Customer</th>
-              <th>Phone</th>
-              <th>Items</th>
-              <th>Amount</th>
-              <th>Date</th>
-              <th>Status</th>
-              <th>Tracking</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="ordersTableBody"></tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- Add / Edit Order Modal -->
-  <div class="modal-overlay" id="orderModal">
-    <div class="modal-box">
-      <h3 id="modalTitle">Add New Order</h3>
-      <div class="modal-form">
-        <div class="modal-form-row">
-          <div><label>Order ID *</label><input type="text" id="f-id" placeholder="DH-2024-001"/></div>
-          <div><label>Order Date *</label><input type="date" id="f-date"/></div>
-        </div>
-        <div class="modal-form-row">
-          <div><label>Customer Name *</label><input type="text" id="f-name" placeholder="Full Name"/></div>
-          <div><label>Phone *</label><input type="tel" id="f-phone" placeholder="9566596077"/></div>
-        </div>
-        <div><label>Items Ordered *</label><textarea id="f-items" placeholder="e.g. Premium Silicone Cups ×2, Lancet Pen ×1"></textarea></div>
-        <div class="modal-form-row">
-          <div><label>Amount (₹) *</label><input type="number" id="f-amount" placeholder="1299"/></div>
-          <div><label>Status *</label>
-            <select id="f-status">
-              <option value="pending">Pending</option>
-              <option value="processing">Processing</option>
-              <option value="shipped">Shipped</option>
-              <option value="out-for-delivery">Out for Delivery</option>
-              <option value="delivered">Delivered</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
-          </div>
-        </div>
-        <div><label>Delivery Address</label><textarea id="f-address" placeholder="Full shipping address"></textarea></div>
-        <div class="modal-form-row">
-          <div><label>Courier</label><input type="text" id="f-courier" placeholder="Delhivery / DTDC / Speed Post"/></div>
-          <div><label>Tracking Number</label><input type="text" id="f-tracking" placeholder="Courier tracking ID"/></div>
-        </div>
-        <div><label>Expected Delivery</label><input type="date" id="f-eta"/></div>
-        <div><label>Notes</label><textarea id="f-notes" placeholder="Internal notes (not visible to customer)"></textarea></div>
-      </div>
-      <div class="modal-actions">
-        <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
-        <button class="btn-track" onclick="saveOrder()">Save Order</button>
-      </div>
-    </div>
-  </div>
-
   <div id="footer-root"></div>
   <div id="toast-container"></div>
 
@@ -335,12 +226,6 @@
       document.getElementById('header-root').innerHTML = renderHeader('Track Your Order');
       document.getElementById('footer-root').innerHTML = renderFooter();
       initSearch(); initMobileNav(); Cart.updateUI();
-
-      // Set today as default date for new order form
-      const today = new Date().toISOString().split('T')[0];
-      document.getElementById('f-date').value = today;
-
-      renderAdminStats(); renderAdminTable();
     });
 
     // ── ORDERS STORE ─────────────────────────────
