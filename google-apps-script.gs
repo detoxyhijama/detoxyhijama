@@ -122,8 +122,8 @@ function _styleHeader(sheet, numCols, bg) {
 // ═══════════════════════════════════════════════════════════════════════════════
 var ALL_PRODUCTS = [
   {
-    id:'premium-cups', title:'Detoxy Hijama Premium Silicone Cups',
-    description:'Detoxy Hijama Premium Silicone Cups are crafted from 100% medical-grade silicone, ensuring safe and effective cupping therapy. The flexible material allows for precise pressure control, making them ideal for both wet and dry cupping. Each set includes 12 cups in various sizes to cover different body areas.',
+    id:'premium-cups', title:'Detoxy Hijama Premium China Made Cups',
+    description:'Detoxy Hijama Premium China Made Cups are crafted from 100% medical-grade silicone, ensuring safe and effective cupping therapy. The flexible material allows for precise pressure control, making them ideal for both wet and dry cupping. Each set includes 12 cups in various sizes to cover different body areas.',
     price:649, mrp:999, category:'cups', categoryLabel:'Cupping Sets',
     image:'assets/images/products/premium-cups/main.jpg',
     images:'["assets/images/products/premium-cups/main.jpg","assets/images/products/premium-cups/image2.jpg","assets/images/products/premium-cups/image3.jpg","assets/images/products/premium-cups/image4.jpg","assets/images/products/premium-cups/image5.jpg","assets/images/products/premium-cups/image6.jpg"]',
@@ -242,8 +242,8 @@ var ALL_PRODUCTS = [
     hidden:'false'
   },
   {
-    id:'indian-standard-cup', title:'Detoxy Hijama Indian Standard Hijama Cup',
-    description:'Detoxy Hijama Indian Standard Hijama Cup is our entry-level silicone cup manufactured in India for everyday clinic use. Soft, flexible, and easy to apply — ideal for practitioners looking for reliable quality at an accessible price point. Suitable for both wet and dry cupping.',
+    id:'indian-standard-cup', title:'Detoxy Hijama Indian Standard Hijama Cups',
+    description:'Detoxy Hijama Indian Standard Hijama Cups is our entry-level silicone cup manufactured in India for everyday clinic use. Soft, flexible, and easy to apply — ideal for practitioners looking for reliable quality at an accessible price point. Suitable for both wet and dry cupping.',
     price:199, mrp:349, category:'cups', categoryLabel:'Cupping Sets',
     image:'assets/images/products/indian-standard-cup/main.jpg',
     images:'["assets/images/products/indian-standard-cup/main.jpg"]',
@@ -603,11 +603,31 @@ function getOrderById(orderId) {
 }
 
 function trackOrder(orderId, phone) {
-  var clean = function(s){return String(s).replace(/\D/g,'').slice(-10);};
-  var o = getOrders({}).orders.filter(function(x){
-    return String(x.order_id)===String(orderId) && clean(x.phone)===clean(phone);
+  var orders = getOrders({}).orders;
+  var idUpper = String(orderId||'').toUpperCase().trim();
+  var clean   = function(s){ return String(s||'').replace(/\D/g,'').slice(-10); };
+  var phoneClean = clean(phone||'');
+
+  // Search by AWB/tracking number first
+  var o = orders.filter(function(x){
+    return String(x.tracking_number||'').toUpperCase() === idUpper;
   })[0];
-  return o ? {order:o} : {error:'Order not found. Please check your Order ID and phone number.'};
+
+  // If not found by AWB, search by order_id (phone optional)
+  if (!o) {
+    var byId = orders.filter(function(x){
+      return String(x.order_id||'').toUpperCase() === idUpper;
+    });
+    if (byId.length === 1) {
+      o = byId[0]; // unique match — no phone needed
+    } else if (byId.length > 1 && phoneClean) {
+      o = byId.filter(function(x){ return clean(x.phone) === phoneClean; })[0];
+    } else if (byId.length === 1) {
+      o = byId[0];
+    }
+  }
+
+  return o ? {order:o} : {error:'Order not found. Please check your AWB or Order ID.'};
 }
 
 function updateOrderStatus(orderId, status) {

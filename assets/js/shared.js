@@ -47,7 +47,7 @@ const PRODUCTS = [
     badge: 'Best Seller',
     badgeType: 'teal',
     shortDesc: 'Medical-grade silicone cupping set for professional hijama therapy.',
-    description: 'Detoxy Hijama Premium Silicone Cups are crafted from 100% medical-grade silicone, ensuring safe and effective cupping therapy. The flexible material allows for precise pressure control, making them ideal for both wet and dry cupping. Each set includes 12 cups in various sizes to cover different body areas.',
+    description: 'Detoxy Hijama Premium China Made Cups are crafted from 100% medical-grade silicone, ensuring safe and effective cupping therapy. The flexible material allows for precise pressure control, making them ideal for both wet and dry cupping. Each set includes 12 cups in various sizes to cover different body areas.',
     features: ['12 cups in 4 sizes', 'Medical-grade silicone', 'BPA-free material', 'Easy suction control', 'Sterilizable & reusable'],
     specs: { Material: 'Medical-grade silicone', Sizes: '4 sizes (S/M/L/XL)', Quantity: '12 cups per set', Usage: 'Wet & Dry cupping', Sterilization: 'Autoclave safe' },
     images: ['assets/images/products/premium-cups/main.jpg','assets/images/products/premium-cups/image2.jpg','assets/images/products/premium-cups/image3.jpg','assets/images/products/premium-cups/image4.jpg','assets/images/products/premium-cups/image5.jpg','assets/images/products/premium-cups/image6.jpg']

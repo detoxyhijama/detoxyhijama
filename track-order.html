@@ -144,7 +144,7 @@
     <div class="track-search-wrap">
       <h3>🔍 Enter Order Details</h3>
       <div class="track-input-group">
-        <input type="text" id="trackOrderId" placeholder="Order ID (e.g. DH-2024-001)" autocomplete="off"/>
+        <input type="text" id="trackOrderId" placeholder="AWB / Tracking Number or Order ID" autocomplete="off" style="min-width:260px"/>
         <input type="tel" id="trackPhone" placeholder="Phone Number (e.g. 9566596077)" autocomplete="off"/>
         <button class="btn-track" onclick="trackOrder()">Track My Order</button>
       </div>
@@ -343,7 +343,7 @@
 
       // Try Google Sheets API first
       if (apiUrl) {
-        fetch(apiUrl + '?action=trackOrder&orderId=' + encodeURIComponent(id) + '&phone=' + encodeURIComponent(phone))
+        fetch(apiUrl + '?action=trackOrder&orderId=' + encodeURIComponent(id) + '&phone=' + encodeURIComponent(phone||''))
           .then(r => r.json())
           .then(d => {
             if (d.order) showResult(d.order);

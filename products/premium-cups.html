@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function buildThumbs() {
   var thumbs = document.getElementById('thumbs');
   var images = ['/assets/images/products/premium-cups/main.jpg'];
-  for (var i=2; i<=6; i++) images.push('/assets/images/products/premium-cups/image'+i+'.jpg');
+  for (var i=2; i<=8; i++) images.push('/assets/images/products/premium-cups/image'+i+'.jpg');
   images.forEach(function(src, i) {
     var img = document.createElement('img');
     img.src = src; img.className = 'pd-img-thumb' + (i===0?' active':'');

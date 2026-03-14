@@ -202,6 +202,10 @@
     <button class="sb-link" onclick="showSection('blogs',this)">
       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>Blogs
     </button>
+    <button class="sb-link" onclick="showSection('accounts',this)">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+      Accounts &amp; Finance
+    </button>
     <div class="sb-section">Config</div>
     <button class="sb-link" onclick="showSection('settings',this)">
       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>Settings
@@ -396,6 +400,100 @@
     </div>
 
     <!-- ── SETTINGS ── -->
+    <!-- ═══ ACCOUNTS ═══ -->
+    <div id="sec-accounts" class="section">
+      <div class="section-header">
+        <div>
+          <h2>Accounts &amp; Finance</h2>
+          <p>Complete financial overview — revenue, GST, payments, profit &amp; loss (Indian accounting standards)</p>
+        </div>
+        <div style="display:flex;gap:8px">
+          <select id="acPeriodFilter" class="form-control" style="width:160px" onchange="loadAccounts()">
+            <option value="all">All Time</option>
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+            <option value="month" selected>This Month</option>
+            <option value="quarter">This Quarter</option>
+            <option value="year">This Year</option>
+          </select>
+          <button class="btn btn-outline btn-sm" onclick="exportAccountsCSV()">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            Export CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Cards -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px">
+        <div class="stat-card"><div class="stat-label">Gross Revenue</div><div class="stat-value" id="ac-gross">—</div><div class="stat-change" id="ac-gross-sub">Incl. GST</div></div>
+        <div class="stat-card"><div class="stat-label">Net Revenue</div><div class="stat-value" id="ac-net">—</div><div class="stat-change" id="ac-net-sub">Excl. GST</div></div>
+        <div class="stat-card"><div class="stat-label">GST Collected</div><div class="stat-value" id="ac-gst">—</div><div class="stat-change">@18% (CGST 9% + SGST 9%)</div></div>
+        <div class="stat-card"><div class="stat-label">Avg Order Value</div><div class="stat-value" id="ac-aov">—</div><div class="stat-change" id="ac-orders-count">0 orders</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px">
+        <div class="stat-card"><div class="stat-label">COD Orders</div><div class="stat-value" id="ac-cod">—</div><div class="stat-change" id="ac-cod-amt">₹0</div></div>
+        <div class="stat-card"><div class="stat-label">Prepaid (UPI/NEFT)</div><div class="stat-value" id="ac-prepaid">—</div><div class="stat-change" id="ac-prepaid-amt">₹0</div></div>
+        <div class="stat-card"><div class="stat-label">Delivered</div><div class="stat-value" id="ac-delivered">—</div><div class="stat-change" id="ac-delivered-amt">₹0</div></div>
+        <div class="stat-card"><div class="stat-label">Cancelled</div><div class="stat-value" id="ac-cancelled">—</div><div class="stat-change" id="ac-cancelled-amt">₹0 lost</div></div>
+      </div>
+
+      <!-- GST Summary Box -->
+      <div style="background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:22px">
+        <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-weight:700;font-size:.9rem;color:var(--dark)">GST Summary — GSTR-1 View</div>
+            <div style="font-size:.75rem;color:var(--muted)">As per Indian GST Act. For filing reference only — consult your CA.</div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="exportGSTReport()">Export GSTR-1</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);padding:14px 18px;gap:12px" id="ac-gst-breakdown">
+          <div style="text-align:center"><div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Taxable Value</div><div style="font-size:1.1rem;font-weight:700;color:var(--dark);margin-top:4px" id="ac-taxable">—</div></div>
+          <div style="text-align:center"><div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">CGST (9%)</div><div style="font-size:1.1rem;font-weight:700;color:var(--dark);margin-top:4px" id="ac-cgst">—</div></div>
+          <div style="text-align:center"><div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">SGST (9%)</div><div style="font-size:1.1rem;font-weight:700;color:var(--dark);margin-top:4px" id="ac-sgst">—</div></div>
+          <div style="text-align:center"><div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Total GST</div><div style="font-size:1.1rem;font-weight:700;color:var(--t);margin-top:4px" id="ac-total-gst">—</div></div>
+          <div style="text-align:center"><div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Gross Amount</div><div style="font-size:1.1rem;font-weight:700;color:var(--dark);margin-top:4px" id="ac-gross2">—</div></div>
+        </div>
+      </div>
+
+      <!-- Payment-wise breakdown -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px">
+        <div style="background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:18px">
+          <div style="font-weight:700;font-size:.87rem;color:var(--dark);margin-bottom:14px">Payment Method Breakdown</div>
+          <div id="ac-payment-breakdown"></div>
+        </div>
+        <div style="background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:18px">
+          <div style="font-weight:700;font-size:.87rem;color:var(--dark);margin-bottom:14px">Order Status Revenue Split</div>
+          <div id="ac-status-revenue"></div>
+        </div>
+      </div>
+
+      <!-- Transaction ledger -->
+      <div style="background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden">
+        <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+          <div style="font-weight:700;font-size:.87rem;color:var(--dark)">Transaction Ledger</div>
+          <input type="text" id="acLedgerSearch" class="form-control" placeholder="Search orders…" style="width:200px;padding:6px 10px" oninput="renderLedger()"/>
+        </div>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:.81rem">
+            <thead>
+              <tr style="background:var(--cream)">
+                <th style="padding:9px 14px;text-align:left;font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1.5px solid var(--border)">Date</th>
+                <th style="padding:9px 14px;text-align:left;font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1.5px solid var(--border)">Order ID</th>
+                <th style="padding:9px 14px;text-align:left;font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1.5px solid var(--border)">Customer</th>
+                <th style="padding:9px 14px;text-align:left;font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1.5px solid var(--border)">Payment</th>
+                <th style="padding:9px 14px;text-align:right;font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1.5px solid var(--border)">Taxable</th>
+                <th style="padding:9px 14px;text-align:right;font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1.5px solid var(--border)">GST</th>
+                <th style="padding:9px 14px;text-align:right;font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1.5px solid var(--border)">Total</th>
+                <th style="padding:9px 14px;text-align:center;font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1.5px solid var(--border)">Status</th>
+              </tr>
+            </thead>
+            <tbody id="acLedgerBody"></tbody>
+          </table>
+        </div>
+        <div id="acLedgerFooter" style="padding:12px 18px;background:var(--cream);border-top:1.5px solid var(--border);display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--dark)"></div>
+      </div>
+    </div>
+
     <div id="sec-settings" class="section">
       <div class="card" style="max-width:640px;margin-bottom:20px">
         <div class="card-head"><h3>Google Sheets API Connection</h3></div>
@@ -685,12 +783,13 @@ function showSection(name, btn) {
   document.getElementById('sec-' + name).classList.add('active');
   if (btn) btn.classList.add('active');
   _currentSection = name;
-  var titles = {dashboard:'Dashboard',orders:'Orders',products:'Products',quotes:'Quote Requests',blogs:'Blog Posts',settings:'Settings'};
+  var titles = {dashboard:'Dashboard',orders:'Orders',products:'Products',quotes:'Quote Requests',blogs:'Blog Posts',accounts:'Accounts & Finance',settings:'Settings'};
   document.getElementById('topbarTitle').textContent = titles[name] || name;
   if (name === 'orders')   loadOrders();
   if (name === 'products') loadProducts();
   if (name === 'quotes')   loadQuotes();
   if (name === 'blogs')    loadBlogs();
+  if (name === 'accounts') loadAccounts();
 }
 
 function refreshCurrent() { showSection(_currentSection, null); }
@@ -1303,139 +1402,129 @@ function generateShippingLabel(orderId) {
   if (!o) { toast('Order not found','error'); return; }
   if (!o.tracking_number) { toast('Please add AWB/Tracking Number first','error'); return; }
 
-  var doc  = new jspdf.jsPDF({unit:'mm', format:'a5'}); // A5 = compact label size
-  var W    = 148, H = 210, M = 10;
-  var teal = [26,61,53], tealLight = [42,171,151], white = [255,255,255];
-  var ink  = [26,42,58], muted = [90,105,115], border = [210,220,218];
+  // 4" × 6" label = 101.6mm × 152.4mm
+  var doc = new jspdf.jsPDF({unit:'mm', format:[101.6, 152.4]});
+  var W = 101.6, H = 152.4, M = 5;
+  var teal      = [26,61,53];
+  var tealLight = [42,171,151];
+  var white     = [255,255,255];
+  var ink       = [20,30,40];
+  var muted     = [85,100,110];
 
-  // ── HEADER BAND ───────────────────────────────────────────────────────────
+  // ── HEADER BAND (compact) ─────────────────────────────────────────────────
   doc.setFillColor(teal[0],teal[1],teal[2]);
-  doc.rect(0, 0, W, 28, 'F');
-  try { doc.addImage(LOGO_DATA,'PNG', M, 5, 18, 18); } catch(e){}
-  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(white[0],white[1],white[2]);
-  doc.text('DETOXY HIJAMA', M+22, 13);
-  doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(160,215,200);
-  doc.text('Pollachi, Coimbatore, Tamil Nadu — 642 002', M+22, 19);
-  doc.text('+91 95665 96077 | detoxyhijama@gmail.com', M+22, 24);
+  doc.rect(0, 0, W, 22, 'F');
+  try { doc.addImage(LOGO_DATA,'PNG', M, 3, 16, 16); } catch(e){}
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(white[0],white[1],white[2]);
+  doc.text('DETOXY HIJAMA', M+20, 10);
+  doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(160,215,200);
+  doc.text('detoxyhijama@gmail.com | +91 95665 96077', M+20, 16);
 
-  // SHIPPING LABEL badge
+  // SHIPPING LABEL strip
   doc.setFillColor(tealLight[0],tealLight[1],tealLight[2]);
-  doc.rect(0, 28, W, 9, 'F');
-  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(white[0],white[1],white[2]);
-  doc.text('SHIPPING LABEL', W/2, 34, {align:'center'});
+  doc.rect(0, 22, W, 7, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(white[0],white[1],white[2]);
+  doc.text('SHIPPING LABEL', W/2, 27, {align:'center'});
 
-  var y = 42;
+  var y = 32;
 
-  // ── TRACKING / AWB ────────────────────────────────────────────────────────
-  doc.setFillColor(248,252,250);
-  doc.roundedRect(M, y, W-M*2, 22, 2, 2, 'F');
-  doc.setDrawColor(tealLight[0],tealLight[1],tealLight[2]); doc.setLineWidth(0.8);
-  doc.roundedRect(M, y, W-M*2, 22, 2, 2, 'S');
-
-  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(tealLight[0],tealLight[1],tealLight[2]);
-  doc.text('AWB / TRACKING NUMBER', M+4, y+6);
-  doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.setTextColor(teal[0],teal[1],teal[2]);
-  doc.text(String(o.tracking_number||''), M+4, y+16);
-  if (o.courier_name) {
-    doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(muted[0],muted[1],muted[2]);
-    doc.text('Courier: '+o.courier_name, W-M-4, y+16, {align:'right'});
-  }
-  y += 28;
-
-  // ── BARCODE (text-based Code128 representation) ──────────────────────────
-  doc.setFont('helvetica','bold'); doc.setFontSize(6.5); doc.setTextColor(muted[0],muted[1],muted[2]);
-  doc.text('BARCODE', M, y+4);
-  // Draw barcode as alternating black/white bars
+  // ── BARCODE ───────────────────────────────────────────────────────────────
   var barcodeStr = String(o.tracking_number||o.order_id||'');
-  var barX = M;
-  var barY = y+6;
-  var barH = 14;
-  var totalW = W - M*2;
-  // Generate simple barcode pattern from string chars
+  var barY = y, barH = 18, barW = W - M*2;
+  // Draw bars based on char codes
   var bars = [];
-  for (var ci = 0; ci < barcodeStr.length; ci++) {
-    var code = barcodeStr.charCodeAt(ci);
-    // Simple alternating wide/narrow pattern based on char value
-    bars.push((code % 3) + 1); // 1,2,3 width units
-    bars.push(1); // space
+  // Start/stop bars
+  bars.push(3,1,2,1,1,1,3,1); // simplified Code128 start
+  for (var ci=0; ci<barcodeStr.length; ci++) {
+    var code = barcodeStr.charCodeAt(ci) % 11;
+    bars.push(code<3?3:code<6?2:1, 1, code<5?2:1, code<8?2:1);
   }
-  var totalUnits = bars.reduce(function(s,b){return s+b;}, 0);
-  var unitW = totalW / totalUnits;
-  var bx = barX;
-  var isBar = true;
-  bars.forEach(function(w) {
-    var bw = w * unitW;
-    if (isBar) {
+  bars.push(2,3,3,1,1); // stop
+  var totalUnits = bars.reduce(function(s,b){return s+b;},0);
+  var unitW = barW / totalUnits;
+  var bx = M;
+  bars.forEach(function(w, i) {
+    if (i%2===0) { // odd indexes are bars, even are spaces
       doc.setFillColor(ink[0],ink[1],ink[2]);
-      doc.rect(bx, barY, bw-0.3, barH, 'F');
+      doc.rect(bx, barY, w*unitW - 0.15, barH, 'F');
     }
-    bx += bw;
-    isBar = !isBar;
+    bx += w*unitW;
   });
-  // Barcode text below
-  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(ink[0],ink[1],ink[2]);
-  doc.text(barcodeStr, W/2, barY+barH+5, {align:'center'});
-  y += barH + 14;
+  // Tracking number under barcode
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(ink[0],ink[1],ink[2]);
+  doc.text(barcodeStr, W/2, barY+barH+5, {align:'center', charSpace:1.5});
+  y = barY + barH + 10;
 
-  // ── ORDER REFERENCE ───────────────────────────────────────────────────────
-  doc.setFillColor(teal[0],teal[1],teal[2]);
-  doc.roundedRect(M, y, 50, 10, 2, 2, 'F');
-  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(white[0],white[1],white[2]);
-  doc.text('ORDER: '+o.order_id, M+4, y+7);
-  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(muted[0],muted[1],muted[2]);
-  doc.text('Date: '+(o.date?new Date(o.date).toLocaleDateString('en-IN'):''), M+56, y+7);
-  doc.text('Pay: '+(o.payment||'COD').toUpperCase(), W-M-4, y+7, {align:'right'});
-  y += 16;
-
-  // ── FROM ADDRESS (small) ──────────────────────────────────────────────────
+  // ── ORDER / COURIER STRIP ─────────────────────────────────────────────────
   doc.setFillColor(245,248,247);
-  doc.roundedRect(M, y, (W-M*2)/2-4, 26, 2, 2, 'F');
-  doc.setFont('helvetica','bold'); doc.setFontSize(6.5); doc.setTextColor(tealLight[0],tealLight[1],tealLight[2]);
-  doc.text('FROM', M+3, y+6);
-  doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(ink[0],ink[1],ink[2]);
-  doc.text('Detoxy Hijama', M+3, y+12);
-  doc.text('Pollachi, Coimbatore', M+3, y+17);
-  doc.text('Tamil Nadu — 642 002', M+3, y+22);
+  doc.rect(M, y, W-M*2, 8, 'F');
+  doc.setDrawColor(220,228,225); doc.setLineWidth(0.3);
+  doc.rect(M, y, W-M*2, 8, 'S');
+  doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(ink[0],ink[1],ink[2]);
+  doc.text('ORDER: '+String(o.order_id||''), M+3, y+5.5);
+  if (o.courier_name) {
+    doc.setFont('helvetica','normal'); doc.setFontSize(7);
+    doc.text(o.courier_name.toUpperCase(), W-M-3, y+5.5, {align:'right'});
+  }
+  y += 12;
 
-  // ── TO ADDRESS (large / prominent) ───────────────────────────────────────
-  var toX = M + (W-M*2)/2;
-  var toW = (W-M*2)/2;
+  // ── SEPARATOR ─────────────────────────────────────────────────────────────
+  doc.setFont('helvetica','bold'); doc.setFontSize(6); doc.setTextColor(tealLight[0],tealLight[1],tealLight[2]);
+  doc.text('DELIVER TO', M, y+3);
+  doc.setDrawColor(tealLight[0],tealLight[1],tealLight[2]); doc.setLineWidth(0.5);
+  doc.line(M+22, y+1, W-M, y+1);
+  y += 6;
+
+  // ── TO ADDRESS — fill most of the label space ─────────────────────────────
+  var toBoxH = H - y - 22; // leave space for payment/items footer
   doc.setFillColor(teal[0],teal[1],teal[2]);
-  doc.roundedRect(toX, y, toW, 26, 2, 2, 'F');
-  doc.setFont('helvetica','bold'); doc.setFontSize(6.5); doc.setTextColor(tealLight[0],tealLight[1],tealLight[2]);
-  doc.text('DELIVER TO', toX+3, y+6);
-  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(white[0],white[1],white[2]);
-  doc.text(String(o.name||'').substring(0,20), toX+3, y+13);
-  doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(160,215,200);
-  var addr = doc.splitTextToSize([o.address,o.city,o.state].filter(Boolean).join(', '), toW-6);
-  doc.text(addr[0]||'', toX+3, y+19);
-  doc.text(String(o.pincode||''), toX+3, y+24);
-  y += 32;
+  doc.roundedRect(M, y, W-M*2, toBoxH, 3, 3, 'F');
 
-  // Phone prominently
-  doc.setFillColor(248,252,250);
-  doc.roundedRect(M, y, W-M*2, 11, 2, 2, 'F');
-  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(ink[0],ink[1],ink[2]);
-  doc.text('📞  ' + (o.phone||''), W/2, y+7.5, {align:'center'});
-  y += 17;
+  // Name (large)
+  doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(white[0],white[1],white[2]);
+  var nameStr = String(o.name||'').substring(0,22);
+  doc.text(nameStr, M+4, y+12);
 
-  // ── ITEMS ─────────────────────────────────────────────────────────────────
-  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(tealLight[0],tealLight[1],tealLight[2]);
-  doc.text('CONTENTS', M, y+5);
-  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(ink[0],ink[1],ink[2]);
-  var itemsText = String(o.items||'').substring(0,120);
-  var itemLines = doc.splitTextToSize(itemsText, W-M*2);
-  doc.text(itemLines.slice(0,3), M, y+11);
-  y += 8 + Math.min(itemLines.length,3)*4.5;
+  // Phone
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(160,220,210);
+  doc.text(String(o.phone||''), M+4, y+22);
 
-  // ── FOOTER BAND ───────────────────────────────────────────────────────────
-  doc.setFillColor(teal[0],teal[1],teal[2]);
-  doc.rect(0, H-14, W, 14, 'F');
-  doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(160,215,200);
-  doc.text('This package is handled by Detoxy Hijama | Do not bend | Keep dry', W/2, H-6, {align:'center'});
+  // Address lines
+  var addrFull = [o.address, o.city, o.state].filter(Boolean).join(', ');
+  var addrLines = doc.splitTextToSize(addrFull, W-M*2-8);
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(210,235,230);
+  doc.text(addrLines.slice(0,3), M+4, y+32);
+
+  // PIN code (large)
+  if (o.pincode) {
+    doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(255,255,255);
+    doc.text('PIN: '+String(o.pincode), M+4, y+toBoxH-10);
+  }
+  y += toBoxH + 4;
+
+  // ── FOOTER: Payment + Invoice Value ──────────────────────────────────────
+  doc.setFillColor(245,248,247);
+  doc.roundedRect(M, y, W-M*2, 16, 2, 2, 'F');
+  doc.setDrawColor(220,228,225); doc.setLineWidth(0.3);
+  doc.roundedRect(M, y, W-M*2, 16, 2, 2, 'S');
+
+  // Payment
+  var payLabel = (o.payment||'cod').toUpperCase() === 'COD' ? 'CASH ON DELIVERY' : 'PREPAID';
+  var payColor = (o.payment||'cod') === 'cod' ? [220,80,40] : [5,120,80];
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(payColor[0],payColor[1],payColor[2]);
+  doc.text(payLabel, M+3, y+7);
+  doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(muted[0],muted[1],muted[2]);
+  doc.text('Payment Method', M+3, y+12);
+
+  // Invoice value
+  var total = Number(o.total||0);
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(teal[0],teal[1],teal[2]);
+  doc.text('₹'+total.toLocaleString('en-IN'), W-M-3, y+8, {align:'right'});
+  doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(muted[0],muted[1],muted[2]);
+  doc.text('Invoice Value', W-M-3, y+13, {align:'right'});
 
   doc.save('ShippingLabel-'+o.order_id+'.pdf');
-  toast('Shipping label downloaded!','success');
+  toast('Shipping label (4"x6") downloaded!','success');
 }
 
 
@@ -1713,35 +1802,79 @@ function renderQuotes() {
 function viewQuote(qid) {
   var q = _quotes.find(function(x){return x.quote_id===qid;});
   if (!q) return;
-  document.getElementById('quoteModalTitle').textContent = 'Quote '+q.quote_id;
-  var prods = Array.isArray(q.products) ? q.products.join(', ') : (q.products||'—');
+  document.getElementById('quoteModalTitle').textContent = 'Quotation — ' + q.quote_id;
+
+  var prods = Array.isArray(q.products) ? q.products : (typeof q.products==='string' ? q.products.split(',').map(function(s){return s.trim();}) : []);
+
+  // Parse products to show as professional table rows
+  var prodRows = prods.map(function(p, i) {
+    // Try to extract qty from strings like "50x ProductName"
+    var m = String(p).match(/^(\d+)[x×]\s*(.*)/i);
+    var qty  = m ? m[1] : '—';
+    var name = m ? m[2] : String(p);
+    return '<tr style="'+(i%2===0?'background:#fff':'background:var(--cream)')+'">'+
+      '<td style="padding:8px 12px;font-size:.8rem;border-bottom:1px solid var(--border)">'+(i+1)+'</td>'+
+      '<td style="padding:8px 12px;font-size:.83rem;font-weight:500;border-bottom:1px solid var(--border)">'+name+'</td>'+
+      '<td style="padding:8px 12px;font-size:.83rem;text-align:center;border-bottom:1px solid var(--border)">'+qty+'</td>'+
+      '<td style="padding:8px 12px;font-size:.83rem;text-align:right;font-weight:600;border-bottom:1px solid var(--border)">'+(q.quoted_amount && prods.length===1?'₹'+Number(q.quoted_amount).toLocaleString('en-IN'):'TBD')+'</td>'+
+      '</tr>';
+  }).join('');
+
   document.getElementById('quoteModalContent').innerHTML =
-    '<div class="detail-grid">' +
-    '<div class="detail-item"><label>Quote ID</label><span style="font-family:monospace">'+q.quote_id+'</span></div>' +
-    '<div class="detail-item"><label>Date</label><span>'+(q.date?new Date(q.date).toLocaleDateString('en-IN'):'—')+'</span></div>' +
-    '<div class="detail-item"><label>Customer</label><span>'+q.name+'</span></div>' +
-    '<div class="detail-item"><label>Phone</label><span>'+q.phone+'</span></div>' +
-    '<div class="detail-item"><label>Email</label><span>'+(q.email||'—')+'</span></div>' +
-    '<div class="detail-item"><label>Organization</label><span>'+(q.org||'—')+'</span></div>' +
-    '<div class="detail-item"><label>City</label><span>'+(q.city||'—')+'</span></div>' +
-    '<div class="detail-item" style="grid-column:1/-1"><label>Products Requested</label><span>'+prods+'</span></div>' +
-    (q.message?'<div class="detail-item" style="grid-column:1/-1"><label>Message</label><span>'+q.message+'</span></div>':'') +
+    // Header info band
+    '<div style="background:linear-gradient(135deg,var(--dark),var(--td));border-radius:8px;padding:16px 18px;margin-bottom:16px;color:#fff">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start">' +
+        '<div>' +
+          '<div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;opacity:.7;margin-bottom:4px">Quotation Reference</div>' +
+          '<div style="font-family:monospace;font-size:1.1rem;font-weight:700">'+q.quote_id+'</div>' +
+        '</div>' +
+        '<div style="text-align:right">' +
+          '<div style="font-size:.68rem;opacity:.7">Date</div>' +
+          '<div style="font-size:.87rem;font-weight:600">'+(q.date?new Date(q.date).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—')+'</div>' +
+        '</div>' +
+      '</div>' +
     '</div>' +
-    '<hr style="border:none;border-top:1px solid var(--border);margin:14px 0"/>' +
-    '<div class="form-row2">' +
-    '<div class="form-group"><label class="form-label">Quoted Amount (₹)</label><input type="number" id="qAmountInput" class="form-control" value="'+(q.quoted_amount||'')+'"/></div>' +
-    '<div class="form-group"><label class="form-label">Validity Date</label><input type="date" id="qValidityInput" class="form-control" value="'+(q.validity_date||'')+'"/></div>' +
+    // Customer + company info
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">' +
+      '<div style="background:var(--cream);border-radius:8px;padding:13px 15px">' +
+        '<div style="font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:8px">Customer Details</div>' +
+        '<div style="font-size:.88rem;font-weight:700;color:var(--dark)">'+q.name+'</div>' +
+        (q.org?'<div style="font-size:.78rem;color:var(--muted)">'+q.org+'</div>':'')+
+        '<div style="font-size:.78rem;color:var(--muted);margin-top:4px">'+q.phone+'</div>' +
+        (q.email?'<div style="font-size:.78rem;color:var(--muted)">'+q.email+'</div>':'')+
+        (q.city?'<div style="font-size:.78rem;color:var(--muted)">'+q.city+'</div>':'')+
+      '</div>' +
+      '<div style="background:var(--cream);border-radius:8px;padding:13px 15px">' +
+        '<div style="font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:8px">Quote Status</div>' +
+        '<div style="margin-bottom:8px"><select id="qStatusInput" class="form-control" style="width:100%">' +
+          ['new','quoted','closed'].map(function(s){return '<option value="'+s+'"'+(q.status===s?' selected':'')+'>'+s.charAt(0).toUpperCase()+s.slice(1)+'</option>';}).join('') +
+        '</select></div>' +
+        (q.quoted_amount?'<div style="font-size:.78rem;color:var(--muted)">Quoted: <strong style="color:var(--dark)">₹'+Number(q.quoted_amount).toLocaleString('en-IN')+'</strong></div>':'')+
+        (q.validity_date?'<div style="font-size:.78rem;color:var(--muted)">Valid until: '+new Date(q.validity_date).toLocaleDateString('en-IN')+'</div>':'')+
+      '</div>' +
     '</div>' +
-    '<div class="form-group"><label class="form-label">Notes</label><textarea id="qNotesInput" class="form-control" rows="2">'+(q.notes||'')+'</textarea></div>' +
-    '<div class="form-group"><label class="form-label">Status</label><select id="qStatusInput" class="form-control" style="width:auto">' +
-    ['new','quoted','closed'].map(function(s){return '<option value="'+s+'"'+(q.status===s?' selected':'')+'>'+s.charAt(0).toUpperCase()+s.slice(1)+'</option>';}).join('') +
-    '</select></div>';
+    // Products table
+    '<div style="border:1.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:14px">' +
+      '<div style="background:var(--dark);padding:9px 12px;display:grid;grid-template-columns:32px 1fr 60px 80px;gap:8px">' +
+        '<span style="font-size:.66rem;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase">#</span>' +
+        '<span style="font-size:.66rem;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase">Product / Description</span>' +
+        '<span style="font-size:.66rem;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;text-align:center">Qty</span>' +
+        '<span style="font-size:.66rem;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;text-align:right">Amount</span>' +
+      '</div>' +
+      '<table style="width:100%;border-collapse:collapse"><tbody>'+prodRows+'</tbody></table>' +
+      (q.message?'<div style="padding:10px 12px;border-top:1px solid var(--border);background:var(--cream);font-size:.78rem;color:var(--muted)"><strong>Note:</strong> '+q.message+'</div>':'')+
+    '</div>' +
+    // Quote form
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">' +
+      '<div class="form-group"><label class="form-label">Quoted Amount (₹) <span style="color:var(--danger)">*</span></label><input type="number" id="qAmountInput" class="form-control" value="'+(q.quoted_amount||'')+'" placeholder="Total quoted amount"/></div>' +
+      '<div class="form-group"><label class="form-label">Valid Until</label><input type="date" id="qValidityInput" class="form-control" value="'+(q.validity_date||'')+'"/></div>' +
+    '</div>' +
+    '<div class="form-group"><label class="form-label">Notes for Customer</label><textarea id="qNotesInput" class="form-control" rows="2" placeholder="Delivery timeline, special conditions, payment terms…">'+(q.notes||'')+'</textarea></div>';
 
   document.getElementById('quoteModalFooter').innerHTML =
-    '<button class="btn btn-outline" onclick="closeModal(\'quoteModal\')">Close</button>' +
-    '<button class="btn btn-outline" onclick="generateQuotePDF(\''+q.quote_id+'\')"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>PDF</button>' +
-    '<button class="btn btn-primary" onclick="saveQuote(\''+q.quote_id+'\')">Save Changes</button>';
-
+    '<button class="btn btn-outline" onclick="closeModal(&apos;quoteModal&apos;)">Close</button>' +
+    '<button class="btn btn-outline" onclick="generateQuotePDF(&apos;'+q.quote_id+'&apos;)"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> PDF</button>' +
+    '<button class="btn btn-primary" onclick="saveQuote(&apos;'+q.quote_id+'&apos;)">Save &amp; Update</button>';
   openModal('quoteModal');
 }
 
@@ -2169,6 +2302,220 @@ function syncProductsToSheets() {
     if (done > 0) toast('Products synced!', 'success');
   });
 }
+
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ACCOUNTS & FINANCE
+// ═══════════════════════════════════════════════════════════════════════════════
+var _allOrdersForAccounts = [];
+
+function loadAccounts() {
+  if (!API_URL) {
+    _allOrdersForAccounts = _orders || [];
+    renderAccounts();
+    return;
+  }
+  apiGet({action:'getOrders'}).then(function(d){
+    _allOrdersForAccounts = d.orders || [];
+    renderAccounts();
+  }).catch(function(){ _allOrdersForAccounts = _orders||[]; renderAccounts(); });
+}
+
+function _filterByPeriod(orders) {
+  var period = (document.getElementById('acPeriodFilter')||{}).value || 'month';
+  if (period === 'all') return orders;
+  var now = new Date();
+  return orders.filter(function(o) {
+    var d = new Date(o.date||0);
+    if (period === 'today')   return d.toDateString() === now.toDateString();
+    if (period === 'week')    { var w=new Date(now); w.setDate(now.getDate()-7); return d>=w; }
+    if (period === 'month')   return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
+    if (period === 'quarter') { var q=Math.floor(now.getMonth()/3); return Math.floor(d.getMonth()/3)===q && d.getFullYear()===now.getFullYear(); }
+    if (period === 'year')    return d.getFullYear()===now.getFullYear();
+    return true;
+  });
+}
+
+function renderAccounts() {
+  var orders  = _filterByPeriod(_allOrdersForAccounts);
+  var active  = orders.filter(function(o){ return o.status !== 'cancelled'; });
+  var GST_RATE = 0.18; // 18% GST (9% CGST + 9% SGST)
+
+  var gross    = active.reduce(function(s,o){ return s+Number(o.total||0); }, 0);
+  var taxable  = Math.round(gross / (1+GST_RATE));
+  var totalGST = gross - taxable;
+  var cgst     = Math.round(totalGST/2);
+  var sgst     = Math.round(totalGST/2);
+  var aov      = active.length ? Math.round(gross/active.length) : 0;
+
+  var cod     = active.filter(function(o){ return (o.payment||'cod')==='cod'; });
+  var prepaid = active.filter(function(o){ return (o.payment||'')==='upi'||(o.payment||'')==='neft'; });
+  var delivered  = active.filter(function(o){ return o.status==='delivered'; });
+  var cancelled  = orders.filter(function(o){ return o.status==='cancelled'; });
+
+  var fmt = function(n){ return '₹'+Math.round(n).toLocaleString('en-IN'); };
+
+  // KPI
+  _setEl('ac-gross',   fmt(gross));
+  _setEl('ac-net',     fmt(taxable));
+  _setEl('ac-gst',     fmt(totalGST));
+  _setEl('ac-aov',     fmt(aov));
+  _setEl('ac-orders-count', active.length + ' orders');
+  _setEl('ac-cod',     cod.length + '');
+  _setEl('ac-cod-amt', fmt(cod.reduce(function(s,o){return s+Number(o.total||0);},0)));
+  _setEl('ac-prepaid', prepaid.length + '');
+  _setEl('ac-prepaid-amt', fmt(prepaid.reduce(function(s,o){return s+Number(o.total||0);},0)));
+  _setEl('ac-delivered', delivered.length + '');
+  _setEl('ac-delivered-amt', fmt(delivered.reduce(function(s,o){return s+Number(o.total||0);},0)));
+  _setEl('ac-cancelled', cancelled.length + '');
+  _setEl('ac-cancelled-amt', fmt(cancelled.reduce(function(s,o){return s+Number(o.total||0);},0)));
+
+  // GST breakdown
+  _setEl('ac-taxable',   fmt(taxable));
+  _setEl('ac-cgst',      fmt(cgst));
+  _setEl('ac-sgst',      fmt(sgst));
+  _setEl('ac-total-gst', fmt(totalGST));
+  _setEl('ac-gross2',    fmt(gross));
+
+  // Payment breakdown bars
+  var pmData = [
+    {label:'COD',        count:cod.length,     amt:cod.reduce(function(s,o){return s+Number(o.total||0);},0),     color:'var(--warn)'},
+    {label:'UPI/NEFT',   count:prepaid.length,  amt:prepaid.reduce(function(s,o){return s+Number(o.total||0);},0), color:'var(--t)'},
+  ];
+  var pmEl = document.getElementById('ac-payment-breakdown');
+  if (pmEl) pmEl.innerHTML = pmData.map(function(p){
+    var pct = gross > 0 ? Math.round(p.amt/gross*100) : 0;
+    return '<div style="margin-bottom:12px">'+
+      '<div style="display:flex;justify-content:space-between;font-size:.79rem;margin-bottom:4px">'+
+        '<span style="font-weight:600">'+p.label+' ('+p.count+')</span>'+
+        '<span style="font-weight:700">'+fmt(p.amt)+' ('+pct+'%)</span>'+
+      '</div>'+
+      '<div style="height:6px;background:var(--border);border-radius:50px">'+
+        '<div style="height:6px;width:'+pct+'%;background:'+p.color+';border-radius:50px;transition:width .5s ease"></div>'+
+      '</div></div>';
+  }).join('');
+
+  // Status revenue
+  var statusData = [
+    {label:'Pending',   orders:orders.filter(function(o){return o.status==='pending';}),   color:'var(--warn)'},
+    {label:'Confirmed', orders:orders.filter(function(o){return o.status==='confirmed';}), color:'var(--info)'},
+    {label:'Dispatched',orders:orders.filter(function(o){return o.status==='dispatched';}),color:'var(--t)'},
+    {label:'Delivered', orders:delivered,   color:'var(--success)'},
+    {label:'Cancelled', orders:cancelled,   color:'var(--danger)'},
+  ];
+  var srEl = document.getElementById('ac-status-revenue');
+  if (srEl) srEl.innerHTML = statusData.map(function(s){
+    var amt = s.orders.reduce(function(a,o){return a+Number(o.total||0);},0);
+    var pct = gross>0 ? Math.round(amt/gross*100) : 0;
+    return '<div style="margin-bottom:10px">'+
+      '<div style="display:flex;justify-content:space-between;font-size:.79rem;margin-bottom:4px">'+
+        '<span style="font-weight:600">'+s.label+' ('+s.orders.length+')</span>'+
+        '<span style="font-weight:700">'+fmt(amt)+'</span>'+
+      '</div>'+
+      '<div style="height:5px;background:var(--border);border-radius:50px">'+
+        '<div style="height:5px;width:'+pct+'%;background:'+s.color+';border-radius:50px"></div>'+
+      '</div></div>';
+  }).join('');
+
+  renderLedger();
+}
+
+function _setEl(id, val) {
+  var el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+function renderLedger() {
+  var q = (document.getElementById('acLedgerSearch')||{}).value || '';
+  q = q.toLowerCase();
+  var orders  = _filterByPeriod(_allOrdersForAccounts);
+  var filtered = q ? orders.filter(function(o){
+    return (String(o.order_id||'')+String(o.name||'')+String(o.phone||'')).toLowerCase().includes(q);
+  }) : orders;
+
+  var GST_RATE = 0.18;
+  var fmt = function(n){ return '₹'+Math.round(n).toLocaleString('en-IN'); };
+  var statusClass = {pending:'status-pending',confirmed:'status-confirmed',dispatched:'status-dispatched',delivered:'status-confirmed',cancelled:'status-cancelled'};
+
+  var tbody = document.getElementById('acLedgerBody');
+  if (!tbody) return;
+
+  tbody.innerHTML = filtered.slice(0,200).map(function(o, idx) {
+    var total   = Number(o.total||0);
+    var taxable = Math.round(total/(1+GST_RATE));
+    var gst     = total - taxable;
+    var d = o.date ? new Date(o.date).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+    var bg = idx%2===0 ? '' : 'style="background:var(--cream)"';
+    return '<tr '+bg+'>' +
+      '<td style="padding:9px 14px;border-bottom:1px solid var(--border)">'+d+'</td>' +
+      '<td style="padding:9px 14px;border-bottom:1px solid var(--border);font-family:monospace;font-size:.78rem">'+String(o.order_id||'')+'</td>' +
+      '<td style="padding:9px 14px;border-bottom:1px solid var(--border)"><div style="font-weight:600">'+String(o.name||'—')+'</div><div style="font-size:.72rem;color:var(--muted)">'+String(o.phone||'')+'</div></td>' +
+      '<td style="padding:9px 14px;border-bottom:1px solid var(--border)"><span style="background:var(--cream);padding:2px 8px;border-radius:50px;font-size:.71rem;font-weight:700">'+String(o.payment||'COD').toUpperCase()+'</span></td>' +
+      '<td style="padding:9px 14px;border-bottom:1px solid var(--border);text-align:right">'+fmt(taxable)+'</td>' +
+      '<td style="padding:9px 14px;border-bottom:1px solid var(--border);text-align:right;color:var(--muted)">'+fmt(gst)+'</td>' +
+      '<td style="padding:9px 14px;border-bottom:1px solid var(--border);text-align:right;font-weight:700">'+fmt(total)+'</td>' +
+      '<td style="padding:9px 14px;border-bottom:1px solid var(--border);text-align:center"><span class="status-badge status-'+(o.status||'pending')+'">'+String(o.status||'pending')+'</span></td>' +
+      '</tr>';
+  }).join('');
+
+  // Footer totals
+  var totals = filtered.reduce(function(acc,o){
+    var t = Number(o.total||0);
+    if (o.status!=='cancelled') { acc.gross+=t; acc.gst+=(t-Math.round(t/(1+GST_RATE))); }
+    return acc;
+  }, {gross:0,gst:0});
+  var footEl = document.getElementById('acLedgerFooter');
+  if (footEl) footEl.innerHTML =
+    '<span>'+filtered.length+' transactions shown</span>' +
+    '<span style="display:flex;gap:32px"><span>GST: '+fmt(totals.gst)+'</span><span>Total: '+fmt(totals.gross)+'</span></span>';
+}
+
+function exportAccountsCSV() {
+  var GST_RATE = 0.18;
+  var orders = _filterByPeriod(_allOrdersForAccounts);
+  var rows = [['Date','Order ID','Customer','Phone','Payment','Status','Taxable Value','CGST (9%)','SGST (9%)','Total GST','Grand Total']];
+  orders.forEach(function(o){
+    var total   = Number(o.total||0);
+    var taxable = Math.round(total/(1+GST_RATE));
+    var gst     = total - taxable;
+    rows.push([
+      o.date?new Date(o.date).toLocaleDateString('en-IN'):'',
+      o.order_id, o.name, o.phone, (o.payment||'cod').toUpperCase(), o.status||'pending',
+      taxable, Math.round(gst/2), Math.round(gst/2), gst, total
+    ]);
+  });
+  var csv = rows.map(function(r){ return r.map(function(c){ return '"'+String(c||'').replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
+  var blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'DetoxHijama-Accounts-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  toast('CSV exported!','success');
+}
+
+function exportGSTReport() {
+  var GST_RATE = 0.18;
+  var orders = _filterByPeriod(_allOrdersForAccounts).filter(function(o){ return o.status!=='cancelled'; });
+  var rows = [['GSTIN','Invoice No','Date','Customer','Phone','City','State','Taxable Value','CGST Rate','CGST Amt','SGST Rate','SGST Amt','Total Tax','Invoice Value']];
+  orders.forEach(function(o){
+    var total   = Number(o.total||0);
+    var taxable = Math.round(total/(1+GST_RATE));
+    var gst     = total - taxable;
+    rows.push([
+      'Applied For', o.invoice_number||o.order_id, o.date?new Date(o.date).toLocaleDateString('en-IN'):'',
+      o.name, o.phone, o.city||'', o.state||'',
+      taxable, '9%', Math.round(gst/2), '9%', Math.round(gst/2), gst, total
+    ]);
+  });
+  var csv = rows.map(function(r){ return r.map(function(c){ return '"'+String(c||'').replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
+  var blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'DetoxHijama-GSTR1-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  toast('GSTR-1 export ready!','success');
+}
+
 
 // ── Load PRODUCTS from shared.js ───────────────────────────────────────────────
 var _sharedScript = document.createElement('script');
