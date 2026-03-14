@@ -45,12 +45,13 @@ function SETUP_EVERYTHING() {
 
 // ── Sheet column definitions ───────────────────────────────────────────────────
 var O_HDRS = ['order_id','name','phone','email','address','city','state','pincode',
-              'items','subtotal','shipping','total','payment','notes','status','date',
+              'items','items_detail','subtotal','shipping','total','payment','notes','status','date',
               'courier_name','tracking_number','tracking_url','invoice_number'];
 
 var P_COLS = ['id','title','description','price','mrp','category','categoryLabel',
-              'image','images','rating','reviews','stock','badge','badgeType',
-              'shortDesc','features','specs','hidden'];
+              'image','image1','image2','image3','image4','image5','image6',
+              'images','youtube','rating','reviews','stock','badge','badgeType',
+              'shortDesc','features','specs','hidden','variants','variantLabel','variantStock'];
 
 var Q_HDRS = ['quote_id','name','phone','email','address','org','city',
               'products','message','status','notes','quoted_amount','validity_date','date'];
@@ -58,7 +59,7 @@ var Q_HDRS = ['quote_id','name','phone','email','address','org','city',
 var U_HDRS = ['id','name','email','password_hash','phone','address','city','state','pincode','date'];
 
 var B_HDRS = ['blog_id','title','category','emoji','author','read_time','excerpt',
-              'content','tags','status','date','updated_date'];
+              'content','tags','status','date','updated_date','url'];
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // SHEET SETUP FUNCTIONS
@@ -512,11 +513,19 @@ function addProduct(data) {
 function editProduct(data) {
   var s=_getSheet('Products'), found=_findRow(s,'id',data.id);
   if (!found) return {error:'Product not found: ' + data.id};
+  // Ensure all columns exist (P_COLS may have expanded)
+  var sheetHeaders = s.getRange(1,1,1,s.getLastColumn()).getValues()[0];
+  P_COLS.forEach(function(col){
+    if (sheetHeaders.indexOf(col) === -1) {
+      s.getRange(1, sheetHeaders.length+1).setValue(col);
+      sheetHeaders.push(col);
+    }
+  });
+  // Re-find after potential column additions
+  found = _findRow(s,'id',data.id);
   found.headers.forEach(function(k,j){
     if (data[k] === undefined) return;
     var v = data[k];
-    // If it is already a JSON string (arrays/objects sent as strings from frontend) keep as-is.
-    // If it is a plain JS object/array, stringify it.
     if (typeof v === 'object' && v !== null) v = JSON.stringify(v);
     s.getRange(found.row, j+1).setValue(v);
   });
@@ -532,11 +541,19 @@ function deleteProduct(id) {
 
 function toggleProductHide(id, hidden) {
   var s=_getSheet('Products'), found=_findRow(s,'id',id);
-  if (!found) return {error:'Product not found'};
-  var hIdx = found.headers.indexOf('hidden');
-  if (hIdx===-1) { s.getRange(1,found.headers.length+1).setValue('hidden'); hIdx=found.headers.length; }
-  s.getRange(found.row, hIdx+1).setValue(hidden?'true':'false');
-  return {success:true};
+  if (!found) return {error:'Product not found: '+id};
+  // Find 'hidden' column — search by header value for robustness
+  var h = s.getRange(1,1,1,s.getLastColumn()).getValues()[0];
+  var hIdx = h.indexOf('hidden');
+  if (hIdx === -1) {
+    // Add hidden column if missing
+    hIdx = h.length;
+    s.getRange(1, hIdx+1).setValue('hidden');
+  }
+  var val = (hidden === true || hidden === 'true') ? 'true' : 'false';
+  s.getRange(found.row, hIdx+1).setValue(val);
+  Logger.log('toggleProductHide: id='+id+' hidden='+val+' row='+found.row+' col='+(hIdx+1));
+  return {success:true, id:id, hidden:val};
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -547,15 +564,29 @@ function createOrder(data) {
   if (s.getLastRow()===0) { s.appendRow(O_HDRS); _styleHeader(s,O_HDRS.length,'#1a3d35'); s.setFrozenRows(1); }
   var id  = data.orderId || ('DH' + Date.now().toString().slice(-8));
   var inv = 'INV-' + id;
+
+  // Build human-readable items string and JSON detail
+  var itemsStr = (data.items||[]).map(function(i){
+    var line = i.name + ' x' + i.qty;
+    if (i.size) line += ' [' + i.size + ']';
+    return line;
+  }).join(', ');
+
+  var itemsDetail = JSON.stringify(data.items||[]);
+
   s.appendRow([
     id, data.name||'', data.phone||'', data.email||'',
     data.address||'', data.city||'', data.state||'', data.pincode||'',
-    (data.items||[]).map(function(i){return i.name+' x'+i.qty;}).join(', '),
+    itemsStr, itemsDetail,
     data.subtotal||0, data.shipping||0, data.total||0,
     data.payment||'cod', data.notes||'', 'pending',
     data.date||new Date().toISOString(),
     '','','', inv
   ]);
+
+  // Send notifications
+  try { _notifyNewOrder(id, data); } catch(e){ Logger.log('Notify error: '+e); }
+
   return {success:true, orderId:id, invoiceNumber:inv};
 }
 
@@ -769,26 +800,26 @@ function _seedAllBlogs() {
   existing.forEach(function(b){ if(b.blog_id) existingIds[String(b.blog_id)] = true; });
 
   var builtin = [
-    {blog_id:'builtin-1',  title:'What is Hijama? A Complete Beginner\'s Guide to Cupping Therapy',       category:'Benefits',    emoji:'🩸', read_time:8,  excerpt:'Hijama (Al-Hijamah) is the ancient practice of therapeutic cupping. Discover the history, types, and how it works on your body.',                               tags:'["Hijama Basics","Wet Cupping","Dry Cupping","Beginners"]', date:'2024-12-02T00:00:00.000Z'},
-    {blog_id:'builtin-2',  title:'Hijama in Islam: Sunnah Days, Prophetic Guidance & Spiritual Benefits', category:'Sunnah',      emoji:'🌙', read_time:7,  excerpt:'Understand the deep Islamic roots of hijama, the recommended lunar calendar days, and why Sunnah cupping is considered one of the best prophetic medicines.',  tags:'["Sunnah","Prophetic Medicine","Tibb Nabawi","Islamic Healing"]', date:'2024-11-28T00:00:00.000Z'},
-    {blog_id:'builtin-3',  title:'Hijama for Back Pain: Clinical Evidence & Treatment Points',            category:'Conditions',  emoji:'🦴', read_time:9,  excerpt:'Back pain is among the top 5 global health burdens. Discover the clinical evidence behind hijama for back pain relief.',                                          tags:'["Back Pain","Pain Relief","Evidence","Spine"]', date:'2024-11-25T00:00:00.000Z'},
-    {blog_id:'builtin-4',  title:'Hijama for Migraines & Chronic Headaches: Complete Guide',             category:'Conditions',  emoji:'🧠', read_time:8,  excerpt:'Millions suffer from migraines globally. Explore how hijama provides long-term relief for chronic headaches and migraines.',                                      tags:'["Migraines","Headaches","Chronic Pain","Neurology"]', date:'2024-11-22T00:00:00.000Z'},
-    {blog_id:'builtin-5',  title:'How to Perform Wet Hijama: A Step-by-Step Practitioner\'s Guide',      category:'How-To',      emoji:'💉', read_time:12, excerpt:'A professional practitioner\'s Guide to performing wet hijama safely and effectively, from preparation to aftercare.',                                            tags:'["Wet Hijama","Technique","Practitioners","Step-by-Step"]', date:'2024-11-18T00:00:00.000Z'},
-    {blog_id:'builtin-6',  title:'Hijama for PCOS & Hormonal Imbalances in Women',                       category:'Conditions',  emoji:'⚕️', read_time:9,  excerpt:'PCOS affects millions of women globally. Discover how hijama helps regulate hormones and improve reproductive health.',                                            tags:'["PCOS","Hormones","Women\'s Health","Fertility"]', date:'2024-11-15T00:00:00.000Z'},
-    {blog_id:'builtin-7',  title:'Dry Cupping vs Wet Hijama: Which is Right for You?',                  category:'How-To',      emoji:'⚖️', read_time:7,  excerpt:'Compare dry cupping and wet hijama — understand the differences, benefits, and which form is best for your condition.',                                           tags:'["Dry Cupping","Wet Hijama","Comparison","Beginners"]', date:'2024-11-12T00:00:00.000Z'},
-    {blog_id:'builtin-8',  title:'The Complete Guide to Hijama Equipment & Tools',                       category:'Products',    emoji:'🔬', read_time:10, excerpt:'A practitioner\'s handbook on cups, lancets, suction devices, and consumables for safe and professional hijama therapy.',                                          tags:'["Equipment","Cups","Lancets","Practitioner Guide"]', date:'2024-11-08T00:00:00.000Z'},
-    {blog_id:'builtin-9',  title:'Hijama Aftercare: What to Do After Your Session',                      category:'Aftercare',   emoji:'🌿', read_time:6,  excerpt:'Proper aftercare is critical for maximising hijama benefits and safe recovery. Follow these evidence-based guidelines.',                                          tags:'["Aftercare","Recovery","Safety","Post-Session"]', date:'2024-11-05T00:00:00.000Z'},
-    {blog_id:'builtin-10', title:'Top 10 Evidence-Based Benefits of Hijama Cupping Therapy',            category:'Benefits',    emoji:'✨', read_time:8,  excerpt:'From pain relief to improved immunity, explore the top 10 clinically-supported benefits of regular hijama cupping therapy.',                                    tags:'["Benefits","Immunity","Wellness","Clinical Evidence"]', date:'2024-11-02T00:00:00.000Z'},
-    {blog_id:'builtin-11', title:'Hijama for Athletes & Sports Performance Recovery',                    category:'Benefits',    emoji:'🏃', read_time:7,  excerpt:'Elite athletes worldwide use cupping therapy for faster muscle recovery. Discover how hijama enhances sports performance.',                                       tags:'["Sports","Recovery","Athletes","Performance"]', date:'2024-10-28T00:00:00.000Z'},
-    {blog_id:'builtin-12', title:'Facial Cupping: The Natural Anti-Aging Skincare Treatment',           category:'How-To',      emoji:'💆', read_time:8,  excerpt:'Facial cupping is revolutionising natural skincare. Learn the technique, benefits, and how to use facial cups for glowing skin.',                               tags:'["Facial","Anti-Aging","Skincare","Beauty"]', date:'2024-10-24T00:00:00.000Z'},
-    {blog_id:'builtin-13', title:'Hijama for Diabetes Management & Blood Sugar Control',                category:'Conditions',  emoji:'🩺', read_time:9,  excerpt:'Type 2 diabetes is a growing epidemic in India. Explore how hijama helps regulate blood sugar and reduce diabetic complications.',                               tags:'["Diabetes","Blood Sugar","Management","Insulin"]', date:'2024-10-20T00:00:00.000Z'},
-    {blog_id:'builtin-14', title:'Hijama for Hair Loss, Alopecia & Scalp Rejuvenation',                category:'Conditions',  emoji:'💇', read_time:7,  excerpt:'Hair loss affects millions. Discover how scalp hijama stimulates dormant follicles and promotes natural hair regrowth.',                                           tags:'["Hair Loss","Alopecia","Scalp Health","Regrowth"]', date:'2024-10-16T00:00:00.000Z'},
-    {blog_id:'builtin-15', title:'How to Set Up a Professional Hijama Clinic in India',                category:'How-To',      emoji:'🏥', read_time:11, excerpt:'A complete business and clinical guide to setting up a hygienic, professional, and profitable hijama clinic in India.',                                           tags:'["Clinic Setup","Business","Practitioners","India"]', date:'2024-10-12T00:00:00.000Z'},
-    {blog_id:'builtin-16', title:'Hijama Points Map: A Comprehensive Full Body Guide',                  category:'Aftercare',   emoji:'🗺️', read_time:10, excerpt:'A comprehensive visual guide to traditional and modern hijama cupping points across the human body for common conditions.',                                       tags:'["Points","Map","Practitioners","Anatomy"]', date:'2024-10-08T00:00:00.000Z'},
-    {blog_id:'builtin-17', title:'Hijama for Fertility & Reproductive Health',                          category:'Benefits',    emoji:'🌸', read_time:9,  excerpt:'Fertility challenges affect 1 in 6 couples in India. Explore how hijama supports reproductive health for both men and women.',                                   tags:'["Fertility","Reproductive Health","IVF","Hormones"]', date:'2024-10-04T00:00:00.000Z'},
-    {blog_id:'builtin-18', title:'Silicone vs Glass vs Bamboo Hijama Cups: Which to Choose?',          category:'Products',    emoji:'🏆', read_time:8,  excerpt:'Not all hijama cups are equal. Compare silicone, glass, and bamboo cups to find the best material for your practice.',                                           tags:'["Cups","Equipment","Comparison","Materials"]', date:'2024-09-30T00:00:00.000Z'},
-    {blog_id:'builtin-19', title:'Hijama for Mental Health: Anxiety, Depression & Stress',             category:'Benefits',    emoji:'🧘', read_time:8,  excerpt:'Mental health is a growing crisis. Discover the neuroscience behind how hijama supports the nervous system to reduce anxiety.',                                  tags:'["Mental Health","Anxiety","Depression","Stress"]', date:'2024-09-26T00:00:00.000Z'},
-    {blog_id:'builtin-20', title:'Hijama Safety: Contraindications, Risks & Precautions',             category:'Aftercare',   emoji:'⚠️', read_time:7,  excerpt:'Hijama is safe when performed correctly — but there are critical contraindications every practitioner and patient must know.',                                  tags:'["Safety","Contraindications","Precautions","Risks"]', date:'2024-09-22T00:00:00.000Z'}
+    {blog_id:'builtin-1', url:'/blog/what-is-hijama.html',  title:'What is Hijama? A Complete Beginner\'s Guide to Cupping Therapy',       category:'Benefits',    emoji:'🩸', read_time:8,  excerpt:'Hijama (Al-Hijamah) is the ancient practice of therapeutic cupping. Discover the history, types, and how it works on your body.',                               tags:'["Hijama Basics","Wet Cupping","Dry Cupping","Beginners"]', date:'2024-12-02T00:00:00.000Z'},
+    {blog_id:'builtin-2', url:'/blog/hijama-in-islam.html',  title:'Hijama in Islam: Sunnah Days, Prophetic Guidance & Spiritual Benefits', category:'Sunnah',      emoji:'🌙', read_time:7,  excerpt:'Understand the deep Islamic roots of hijama, the recommended lunar calendar days, and why Sunnah cupping is considered one of the best prophetic medicines.',  tags:'["Sunnah","Prophetic Medicine","Tibb Nabawi","Islamic Healing"]', date:'2024-11-28T00:00:00.000Z'},
+    {blog_id:'builtin-3', url:'/blog/hijama-for-back-pain.html',  title:'Hijama for Back Pain: Clinical Evidence & Treatment Points',            category:'Conditions',  emoji:'🦴', read_time:9,  excerpt:'Back pain is among the top 5 global health burdens. Discover the clinical evidence behind hijama for back pain relief.',                                          tags:'["Back Pain","Pain Relief","Evidence","Spine"]', date:'2024-11-25T00:00:00.000Z'},
+    {blog_id:'builtin-4', url:'/blog/hijama-for-migraines.html',  title:'Hijama for Migraines & Chronic Headaches: Complete Guide',             category:'Conditions',  emoji:'🧠', read_time:8,  excerpt:'Millions suffer from migraines globally. Explore how hijama provides long-term relief for chronic headaches and migraines.',                                      tags:'["Migraines","Headaches","Chronic Pain","Neurology"]', date:'2024-11-22T00:00:00.000Z'},
+    {blog_id:'builtin-5', url:'/blog/wet-hijama-guide.html',  title:'How to Perform Wet Hijama: A Step-by-Step Practitioner\'s Guide',      category:'How-To',      emoji:'💉', read_time:12, excerpt:'A professional practitioner\'s Guide to performing wet hijama safely and effectively, from preparation to aftercare.',                                            tags:'["Wet Hijama","Technique","Practitioners","Step-by-Step"]', date:'2024-11-18T00:00:00.000Z'},
+    {blog_id:'builtin-6', url:'/blog/hijama-for-pcos.html',  title:'Hijama for PCOS & Hormonal Imbalances in Women',                       category:'Conditions',  emoji:'⚕️', read_time:9,  excerpt:'PCOS affects millions of women globally. Discover how hijama helps regulate hormones and improve reproductive health.',                                            tags:'["PCOS","Hormones","Women\'s Health","Fertility"]', date:'2024-11-15T00:00:00.000Z'},
+    {blog_id:'builtin-7', url:'/blog/dry-vs-wet-cupping.html',  title:'Dry Cupping vs Wet Hijama: Which is Right for You?',                  category:'How-To',      emoji:'⚖️', read_time:7,  excerpt:'Compare dry cupping and wet hijama — understand the differences, benefits, and which form is best for your condition.',                                           tags:'["Dry Cupping","Wet Hijama","Comparison","Beginners"]', date:'2024-11-12T00:00:00.000Z'},
+    {blog_id:'builtin-8', url:'/blog/hijama-equipment-guide.html',  title:'The Complete Guide to Hijama Equipment & Tools',                       category:'Products',    emoji:'🔬', read_time:10, excerpt:'A practitioner\'s handbook on cups, lancets, suction devices, and consumables for safe and professional hijama therapy.',                                          tags:'["Equipment","Cups","Lancets","Practitioner Guide"]', date:'2024-11-08T00:00:00.000Z'},
+    {blog_id:'builtin-9', url:'/blog/hijama-aftercare.html',  title:'Hijama Aftercare: What to Do After Your Session',                      category:'Aftercare',   emoji:'🌿', read_time:6,  excerpt:'Proper aftercare is critical for maximising hijama benefits and safe recovery. Follow these evidence-based guidelines.',                                          tags:'["Aftercare","Recovery","Safety","Post-Session"]', date:'2024-11-05T00:00:00.000Z'},
+    {blog_id:'builtin-10', url:'/blog/hijama-benefits.html', title:'Top 10 Evidence-Based Benefits of Hijama Cupping Therapy',            category:'Benefits',    emoji:'✨', read_time:8,  excerpt:'From pain relief to improved immunity, explore the top 10 clinically-supported benefits of regular hijama cupping therapy.',                                    tags:'["Benefits","Immunity","Wellness","Clinical Evidence"]', date:'2024-11-02T00:00:00.000Z'},
+    {blog_id:'builtin-11', url:'/blog/hijama-for-athletes.html', title:'Hijama for Athletes & Sports Performance Recovery',                    category:'Benefits',    emoji:'🏃', read_time:7,  excerpt:'Elite athletes worldwide use cupping therapy for faster muscle recovery. Discover how hijama enhances sports performance.',                                       tags:'["Sports","Recovery","Athletes","Performance"]', date:'2024-10-28T00:00:00.000Z'},
+    {blog_id:'builtin-12', url:'/blog/facial-cupping.html', title:'Facial Cupping: The Natural Anti-Aging Skincare Treatment',           category:'How-To',      emoji:'💆', read_time:8,  excerpt:'Facial cupping is revolutionising natural skincare. Learn the technique, benefits, and how to use facial cups for glowing skin.',                               tags:'["Facial","Anti-Aging","Skincare","Beauty"]', date:'2024-10-24T00:00:00.000Z'},
+    {blog_id:'builtin-13', url:'/blog/hijama-for-diabetes.html', title:'Hijama for Diabetes Management & Blood Sugar Control',                category:'Conditions',  emoji:'🩺', read_time:9,  excerpt:'Type 2 diabetes is a growing epidemic in India. Explore how hijama helps regulate blood sugar and reduce diabetic complications.',                               tags:'["Diabetes","Blood Sugar","Management","Insulin"]', date:'2024-10-20T00:00:00.000Z'},
+    {blog_id:'builtin-14', url:'/blog/hijama-for-hair-loss.html', title:'Hijama for Hair Loss, Alopecia & Scalp Rejuvenation',                category:'Conditions',  emoji:'💇', read_time:7,  excerpt:'Hair loss affects millions. Discover how scalp hijama stimulates dormant follicles and promotes natural hair regrowth.',                                           tags:'["Hair Loss","Alopecia","Scalp Health","Regrowth"]', date:'2024-10-16T00:00:00.000Z'},
+    {blog_id:'builtin-15', url:'/blog/hijama-clinic-setup.html', title:'How to Set Up a Professional Hijama Clinic in India',                category:'How-To',      emoji:'🏥', read_time:11, excerpt:'A complete business and clinical guide to setting up a hygienic, professional, and profitable hijama clinic in India.',                                           tags:'["Clinic Setup","Business","Practitioners","India"]', date:'2024-10-12T00:00:00.000Z'},
+    {blog_id:'builtin-16', url:'/blog/hijama-points-map.html', title:'Hijama Points Map: A Comprehensive Full Body Guide',                  category:'Aftercare',   emoji:'🗺️', read_time:10, excerpt:'A comprehensive visual guide to traditional and modern hijama cupping points across the human body for common conditions.',                                       tags:'["Points","Map","Practitioners","Anatomy"]', date:'2024-10-08T00:00:00.000Z'},
+    {blog_id:'builtin-17', url:'/blog/hijama-for-fertility.html', title:'Hijama for Fertility & Reproductive Health',                          category:'Benefits',    emoji:'🌸', read_time:9,  excerpt:'Fertility challenges affect 1 in 6 couples in India. Explore how hijama supports reproductive health for both men and women.',                                   tags:'["Fertility","Reproductive Health","IVF","Hormones"]', date:'2024-10-04T00:00:00.000Z'},
+    {blog_id:'builtin-18', url:'/blog/silicone-vs-glass-cups.html', title:'Silicone vs Glass vs Bamboo Hijama Cups: Which to Choose?',          category:'Products',    emoji:'🏆', read_time:8,  excerpt:'Not all hijama cups are equal. Compare silicone, glass, and bamboo cups to find the best material for your practice.',                                           tags:'["Cups","Equipment","Comparison","Materials"]', date:'2024-09-30T00:00:00.000Z'},
+    {blog_id:'builtin-19', url:'/blog/hijama-mental-health.html', title:'Hijama for Mental Health: Anxiety, Depression & Stress',             category:'Benefits',    emoji:'🧘', read_time:8,  excerpt:'Mental health is a growing crisis. Discover the neuroscience behind how hijama supports the nervous system to reduce anxiety.',                                  tags:'["Mental Health","Anxiety","Depression","Stress"]', date:'2024-09-26T00:00:00.000Z'},
+    {blog_id:'builtin-20', url:'/blog/hijama-safety.html', title:'Hijama Safety: Contraindications, Risks & Precautions',             category:'Aftercare',   emoji:'⚠️', read_time:7,  excerpt:'Hijama is safe when performed correctly — but there are critical contraindications every practitioner and patient must know.',                                  tags:'["Safety","Contraindications","Precautions","Risks"]', date:'2024-09-22T00:00:00.000Z'}
   ];
 
   var h = s.getRange(1,1,1,s.getLastColumn()).getValues()[0];
@@ -802,6 +833,26 @@ function _seedAllBlogs() {
 
   var rows = newBlogs.map(function(b){
     return h.map(function(col){
+      if (col === 'url')          return b.url || '';
+      if (col === 'url')          return b.url || '';
+      if (col === 'url')          return b.url || '';
+      if (col === 'url')          return b.url || '';
+      if (col === 'url')          return b.url || '';
+      if (col === 'url')          return b.url || '';
+      if (col === 'url')          return b.url || '';
+      if (col === 'url')          return b.url || '';
+      if (col === 'url')          return b.url || '';
+      if (col === 'url')          return b.url || '';
+      if (col === 'url')          return b.url || '';
+      if (col === 'url')          return b.url || '';
+      if (col === 'url')          return b.url || '';
+      if (col === 'url')          return b.url || '';
+      if (col === 'url')          return b.url || '';
+      if (col === 'url')          return b.url || '';
+      if (col === 'url')          return b.url || '';
+      if (col === 'url')          return b.url || '';
+      if (col === 'url')          return b.url || '';
+      if (col === 'url')          return b.url || '';
       if (col === 'content')      return b.content || ('Full article: ' + b.title);
       if (col === 'author')       return b.author || 'Detoxy Hijama Team';
       if (col === 'status')       return 'published';
@@ -813,6 +864,143 @@ function _seedAllBlogs() {
   s.getRange(s.getLastRow()+1, 1, rows.length, h.length).setValues(rows);
   s.autoResizeColumns(1, B_HDRS.length);
   Logger.log('_seedAllBlogs: inserted ' + newBlogs.length + ' built-in blogs.');
+}
+
+
+function updateVariantStock(data) {
+  // data: {id, variantStockJson: '{"Size 1":10,"Size 2":5,...}'}
+  var s=_getSheet('Products'), found=_findRow(s,'id',data.id);
+  if (!found) return {error:'Product not found'};
+  var h = found.headers;
+  var vsIdx = h.indexOf('variantStock');
+  if (vsIdx === -1) {
+    // Add column
+    vsIdx = s.getLastColumn();
+    s.getRange(1, vsIdx+1).setValue('variantStock');
+  }
+  s.getRange(found.row, vsIdx+1).setValue(data.variantStockJson||'{}');
+  return {success:true};
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// NOTIFICATION SYSTEM — Email + WhatsApp alerts for every order event
+// ═══════════════════════════════════════════════════════════════════════════════
+
+var ADMIN_EMAIL   = 'detoxyhijama@gmail.com';
+var ADMIN_PHONE   = '919566596077';
+var NOTIFY_WA_URL = 'https://wa.me/'; // Base WhatsApp URL
+
+function _notifyNewOrder(orderId, data) {
+  var subject = '🛍 New Order Received — #' + orderId;
+  var itemsList = (data.items||[]).map(function(i){
+    return '  • ' + i.name + (i.size?' ['+i.size+']':'') + ' × ' + i.qty + ' = ₹' + (i.price*i.qty);
+  }).join('\n');
+
+  var body = [
+    'NEW ORDER PLACED — Detoxy Hijama',
+    '=====================================',
+    'Order ID   : ' + orderId,
+    'Customer   : ' + (data.name||''),
+    'Phone      : ' + (data.phone||''),
+    'Email      : ' + (data.email||''),
+    'Address    : ' + [data.address,data.city,data.state,data.pincode].filter(Boolean).join(', '),
+    'Payment    : ' + (data.payment||'cod').toUpperCase(),
+    '',
+    'ITEMS:',
+    itemsList,
+    '',
+    'Subtotal   : ₹' + (data.subtotal||0),
+    'Shipping   : ₹' + (data.shipping||0),
+    'TOTAL      : ₹' + (data.total||0),
+    '',
+    'Login to admin panel to update status and add tracking.',
+    'https://detoxyhijama.github.io/admin/'
+  ].join('\n');
+
+  // Email to admin
+  try {
+    GmailApp.sendEmail(ADMIN_EMAIL, subject, body);
+  } catch(e) { Logger.log('Admin email failed: '+e); }
+
+  // Email to customer (if email provided)
+  if (data.email) {
+    try {
+      var custBody = [
+        'Dear ' + (data.name||'Customer') + ',',
+        '',
+        'Thank you for your order at Detoxy Hijama! 🎉',
+        '',
+        'Order ID : ' + orderId,
+        'Total    : ₹' + (data.total||0),
+        'Payment  : ' + (data.payment||'cod').toUpperCase(),
+        '',
+        'We will dispatch your order within 24 hours.',
+        'Track your order at: https://detoxyhijama.github.io/track-order.html',
+        '',
+        'Questions? Call/WhatsApp: +91 95665 96077',
+        '',
+        'Warm regards,',
+        'Team Detoxy Hijama'
+      ].join('\n');
+      GmailApp.sendEmail(data.email, 'Your Detoxy Hijama Order #'+orderId+' is Confirmed!', custBody);
+    } catch(e) { Logger.log('Customer email failed: '+e); }
+  }
+}
+
+function _notifyStatusUpdate(orderId, newStatus, orderData) {
+  if (!orderData || !orderData.email) return;
+  var statusMsg = {
+    confirmed:  'Your order has been confirmed and is being prepared.',
+    dispatched: 'Great news! Your order has been dispatched.',
+    delivered:  'Your order has been delivered. Thank you!'
+  };
+  var msg = statusMsg[newStatus];
+  if (!msg) return;
+
+  var tracking = '';
+  if (newStatus === 'dispatched' && orderData.tracking_number) {
+    tracking = '\nCourier  : ' + (orderData.courier_name||'') +
+               '\nAWB No.  : ' + orderData.tracking_number +
+               (orderData.tracking_url ? '\nTrack at : ' + orderData.tracking_url : '');
+  }
+
+  var body = [
+    'Dear ' + (orderData.name||'Customer') + ',',
+    '',
+    msg,
+    '',
+    'Order ID : ' + orderId,
+    tracking,
+    '',
+    'Track your order: https://detoxyhijama.github.io/track-order.html',
+    '',
+    'Team Detoxy Hijama | +91 95665 96077'
+  ].join('\n');
+
+  try {
+    GmailApp.sendEmail(
+      orderData.email,
+      'Detoxy Hijama Order #'+orderId+' — '+newStatus.charAt(0).toUpperCase()+newStatus.slice(1),
+      body
+    );
+  } catch(e) { Logger.log('Status email failed: '+e); }
+}
+
+// Wrap updateOrderStatus to send notification
+function updateStatus(data) {
+  var orderId = data.orderId || data.order_id;
+  var status  = data.status;
+  var s=_getSheet('Orders'), found=_findRow(s,'order_id',orderId);
+  if (!found) return {error:'Order not found'};
+  var si = found.headers.indexOf('status');
+  s.getRange(found.row, si+1).setValue(status);
+  // Send status notification email
+  try {
+    var orderObj = _toObjects(s).filter(function(o){return String(o.order_id)===String(orderId);})[0];
+    _notifyStatusUpdate(orderId, status, orderObj);
+  } catch(e){ Logger.log('Notify status error: '+e); }
+  return {success:true};
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════

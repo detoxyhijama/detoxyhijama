@@ -33,7 +33,9 @@ const SITE = {
 const PRODUCTS = [
   {
     id: 'premium-cups',
-    name: 'Detoxy Hijama Premium Silicone Cups',
+    name: 'Detoxy Hijama Premium China Made Cups',
+    variants: [{size:'Size 1'},{size:'Size 2'},{size:'Size 3'},{size:'Size 4'},{size:'Size 5'},{size:'Size 6'},{size:'Curve Cup 3'},{size:'Curve Cup 4'}],
+    variantLabel: 'Size',
     slug: 'premium-cups',
     category: 'cups',
     categoryLabel: 'Cupping Sets',
@@ -106,24 +108,6 @@ const PRODUCTS = [
     features: ['24 cups (4 sizes)', 'Magnetic vacuum pump', 'Airtight seal technology', 'Extension hose included', 'Carry case included'],
     specs: { Cups: '24 pcs in 4 sizes', Pump: 'Magnetic lock system', Material: 'ABS + silicone', Includes: 'Pump, cups, case, hose', Usage: 'Professional & home' },
     images: ['assets/images/products/magnetic-vacuum-kit/main.jpg','assets/images/products/magnetic-vacuum-kit/image2.jpg']
-  },
-  {
-    id: 'curve-cups',
-    name: 'Detoxy Hijama Curve Cup Set (Size 3 & 4)',
-    slug: 'curve-cups',
-    category: 'cups',
-    categoryLabel: 'Cupping Sets',
-    price: 749,
-    mrp: 1099,
-    rating: 4.5,
-    reviews: 62,
-    stock: 28,
-    badge: null,
-    shortDesc: 'Ergonomically curved cups designed for joints, shoulders and curved body areas.',
-    description: 'Detoxy Hijama Curve Cups feature a unique ergonomic design that adapts to curved body surfaces like shoulders, knees, and joints. Made from flexible medical-grade silicone, these cups deliver optimal suction even on uneven surfaces, ideal for targeted therapy in hard-to-reach areas.',
-    features: ['Ergonomic curved design', 'Flexible silicone', 'Fits curved body parts', 'Deep tissue therapy', 'Sizes No. 3 & 4'],
-    specs: { Design: 'Ergonomic curve', Material: 'Medical silicone', Sizes: 'No. 3 & 4', Ideal: 'Joints & shoulders', Set: '2 cups' },
-    images: ['assets/images/products/curve-cups/main.jpg','assets/images/products/curve-cups/image2.jpg']
   },
   {
     id: 'lancet-pen',

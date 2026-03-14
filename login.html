@@ -110,7 +110,16 @@ document.addEventListener('DOMContentLoaded', function() {
   // Auto-fill if already logged in
   var user = null;
   try { user = JSON.parse(localStorage.getItem('dh_user') || 'null'); } catch(e) {}
-  if (user) var redir = new URLSearchParams(window.location.search).get('redirect'); window.location.href = redir || '/account.html';
+  if (user) {
+    var redir = new URLSearchParams(window.location.search).get('redirect') || '/account.html';
+    window.location.href = redir;
+    return;
+  }
+  var urlMsg = new URLSearchParams(window.location.search).get('msg');
+  if (urlMsg === 'login_to_order') {
+    var aEl = document.getElementById('loginAlert');
+    if (aEl) aEl.innerHTML = '<div style="background:#fef3c7;color:#92400e;padding:11px 14px;border-radius:8px;margin-bottom:14px;font-size:.83rem;border-left:3px solid #d97706">⚠️ Please sign in or create an account to place your order.</div>';
+  }
 });
 
 function switchTab(tab) {

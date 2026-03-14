@@ -170,6 +170,16 @@
 var selectedPayment = 'cod';
 
 document.addEventListener('DOMContentLoaded', function() {
+  // ── Auth guard: require login before checkout ──────────────────────────────
+  var _checkoutUser = null;
+  try { _checkoutUser = JSON.parse(localStorage.getItem('dh_user')||'null'); } catch(e){}
+  if (!_checkoutUser) {
+    // Save cart state and redirect
+    localStorage.setItem('dh_redirect_after_login','/checkout.html');
+    window.location.href = '/login.html?redirect=' + encodeURIComponent('/checkout.html') + '&msg=login_to_order';
+    return;
+  }
+
   var hm = document.getElementById('header-mount');
   if (hm) {
     var frag = document.createRange().createContextualFragment(renderHeader(''));
