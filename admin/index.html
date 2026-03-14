@@ -580,14 +580,30 @@ function refreshCurrent() { showSection(_currentSection, null); }
 // ── API Helpers ────────────────────────────────────────────────────────────────
 function apiGet(params) {
   if (!API_URL) return Promise.reject(new Error('No API URL set'));
-  var url = API_URL + '?' + Object.keys(params).map(function(k){return encodeURIComponent(k)+'='+encodeURIComponent(params[k]);}).join('&');
-  return fetch(url).then(function(r){return r.json();});
+  var url = API_URL + '?' + Object.keys(params).map(function(k){
+    return encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+  }).join('&');
+  return fetch(url, { redirect: 'follow' })
+    .then(function(r) { return r.json(); });
 }
 
 function apiPost(params, body) {
   if (!API_URL) return Promise.reject(new Error('No API URL set'));
-  var url = API_URL + '?' + Object.keys(params).map(function(k){return encodeURIComponent(k)+'='+encodeURIComponent(params[k]);}).join('&');
-  return fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)}).then(function(r){return r.json();});
+  // ── WHY text/plain ──────────────────────────────────────────────────────────
+  // Google Apps Script Web Apps do NOT handle CORS preflight (OPTIONS).
+  // application/json triggers a preflight → GAS can't respond → "Failed to fetch".
+  // text/plain is a "simple request" — no preflight — GAS responds directly.
+  // The body is still valid JSON, GAS parses it fine with JSON.parse().
+  // ───────────────────────────────────────────────────────────────────────────
+  var url = API_URL + '?' + Object.keys(params).map(function(k){
+    return encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+  }).join('&');
+  return fetch(url, {
+    method:   'POST',
+    redirect: 'follow',
+    headers:  { 'Content-Type': 'text/plain;charset=utf-8' },
+    body:     JSON.stringify(body)
+  }).then(function(r) { return r.json(); });
 }
 
 // ── Toast ──────────────────────────────────────────────────────────────────────
