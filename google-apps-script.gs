@@ -28,18 +28,20 @@ function SETUP_EVERYTHING() {
   _setupUsersSheet();
   _setupProductsSheet();
   _seedAllProducts();
+  _setupBlogsSheet();
+  _seedAllBlogs();
 
   SpreadsheetApp.getUi().alert(
     '✅ Detoxy Hijama Setup Complete!\n\n' +
     '• Orders sheet    → headers ready\n' +
-    '• Products sheet  → all 15 products loaded\n' +
+    '• Products sheet  → 15 products loaded\n' +
     '• Quotes sheet    → headers ready\n' +
-    '• Users sheet     → headers ready\n\n' +
-    'Next step: Deploy this file as a Web App, then paste the URL in Admin → Settings.'
+    '• Users sheet     → headers ready\n' +
+    '• Blogs sheet     → 20 built-in blogs loaded\n\n' +
+    'Next step: Deploy as Web App → paste URL in Admin → Settings.'
   );
 }
 
-// NOTE: Blogs are managed via localStorage on the frontend — no Sheets needed.
 
 // ── Sheet column definitions ───────────────────────────────────────────────────
 var O_HDRS = ['order_id','name','phone','email','address','city','state','pincode',
@@ -54,6 +56,9 @@ var Q_HDRS = ['quote_id','name','phone','email','address','org','city',
               'products','message','status','notes','quoted_amount','validity_date','date'];
 
 var U_HDRS = ['id','name','email','password_hash','phone','address','city','state','pincode','date'];
+
+var B_HDRS = ['blog_id','title','category','emoji','author','read_time','excerpt',
+              'content','tags','status','date','updated_date'];
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // SHEET SETUP FUNCTIONS
@@ -85,6 +90,16 @@ function _setupUsersSheet() {
     _styleHeader(s, U_HDRS.length, '#1a3d35');
     s.setFrozenRows(1);
     s.autoResizeColumns(1, U_HDRS.length);
+  }
+}
+
+function _setupBlogsSheet() {
+  var s = _getSheet('Blogs');
+  if (s.getLastRow() === 0) {
+    s.appendRow(B_HDRS);
+    _styleHeader(s, B_HDRS.length, '#2c3e50');
+    s.setFrozenRows(1);
+    s.autoResizeColumns(1, B_HDRS.length);
   }
 }
 
@@ -359,7 +374,9 @@ function doGet(e) {
     else if (a==='updateStatus')  r = updateOrderStatus(p.orderId, p.status);
     else if (a==='getQuotes')     r = getQuotes(p);
     else if (a==='getDashboard')  r = getDashboardStats();
-    else if (a==='ping')          r = {status:'ok', message:'Detoxy Hijama API v2.0 is connected ✓', sheets:['Orders','Products','Quotes','Users']};
+    else if (a==='getBlogs')       r = getBlogs(p);
+    else if (a==='getBlog')        r = getBlogById(p.blogId);
+    else if (a==='ping')           r = {status:'ok', message:'Detoxy Hijama API v2.0 is connected ✓', sheets:['Orders','Products','Quotes','Users','Blogs']};
     else if (a==='getUserOrders') r = getUserOrders(p.email, p.phone);
     else r = {status:'ok', message:'Detoxy Hijama API v2.0 — use ?action=ping to test', sheets:['Orders','Products','Quotes','Users']};
     return _resp(r);
@@ -389,6 +406,9 @@ function doPost(e) {
     else if (a==='toggleProductHide') r = toggleProductHide(body.id, body.hidden);
     else if (a==='createQuote')       r = createQuote(body);
     else if (a==='updateQuote')       r = updateQuote(body);
+    else if (a==='createBlog')        r = createBlog(body);
+    else if (a==='updateBlog')        r = updateBlog(body);
+    else if (a==='deleteBlog')        r = deleteBlog(body.blogId);
     else if (a==='updateUser')        r = updateUser(body);
     else if (a==='changePassword')    r = changePassword(body);
     else r = {error:'Unknown action: ' + a};
@@ -644,6 +664,155 @@ function getDashboardStats() {
     recentOrders:orders.filter(function(o){return (now-new Date(o.date))<7*86400000;}).length,
     recentOrdersList:orders.slice(0,10)
   };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BLOGS API
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function getBlogs(params) {
+  var rows = _toObjects(_getSheet('Blogs'));
+  if (params && params.status) {
+    rows = rows.filter(function(b){ return b.status === params.status; });
+  }
+  rows.forEach(function(b){
+    try { b.tags = JSON.parse(b.tags || '[]'); } catch(e){ b.tags = []; }
+    b.read_time = Number(b.read_time) || 5;
+  });
+  rows.sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+  return {blogs: rows, total: rows.length};
+}
+
+function getBlogById(blogId) {
+  var b = getBlogs({}).blogs.filter(function(x){
+    return String(x.blog_id) === String(blogId);
+  })[0];
+  return b ? {blog: b} : {error: 'Blog not found'};
+}
+
+function createBlog(data) {
+  var s = _getSheet('Blogs');
+  if (s.getLastRow() === 0) {
+    s.appendRow(B_HDRS);
+    _styleHeader(s, B_HDRS.length, '#2c3e50');
+    s.setFrozenRows(1);
+  }
+  // Duplicate check by title
+  var existing = _toObjects(s);
+  var dup = existing.filter(function(b){
+    return String(b.title||'').trim().toLowerCase() === String(data.title||'').trim().toLowerCase();
+  })[0];
+  if (dup) return {error: 'A blog with this title already exists (ID: ' + dup.blog_id + ')'};
+
+  var h      = s.getRange(1,1,1,s.getLastColumn()).getValues()[0];
+  var blogId = data.blog_id || ('BL' + Date.now().toString().slice(-8));
+  var now    = new Date().toISOString();
+  var rowData = {
+    blog_id:      blogId,
+    title:        String(data.title||'').substring(0,200),
+    category:     String(data.category||'General').substring(0,50),
+    emoji:        String(data.emoji||'📝').substring(0,10),
+    author:       String(data.author||'Detoxy Hijama Team').substring(0,100),
+    read_time:    Number(data.read_time)||5,
+    excerpt:      String(data.excerpt||'').substring(0,500),
+    content:      String(data.content||''),
+    tags:         typeof data.tags === 'object' ? JSON.stringify(data.tags) : String(data.tags||'[]'),
+    status:       data.status === 'draft' ? 'draft' : 'published',
+    date:         data.date || now,
+    updated_date: now
+  };
+  s.appendRow(h.map(function(col){ return rowData[col] !== undefined ? rowData[col] : ''; }));
+  return {success: true, blogId: blogId};
+}
+
+function updateBlog(data) {
+  var s     = _getSheet('Blogs');
+  var found = _findRow(s, 'blog_id', data.blog_id);
+  if (!found) return {error: 'Blog not found: ' + data.blog_id};
+
+  var allowed = ['title','category','emoji','author','read_time','excerpt','content','tags','status'];
+  found.headers.forEach(function(col, j) {
+    if (allowed.indexOf(col) === -1) return;
+    if (data[col] === undefined) return;
+    var val = col === 'tags' && typeof data[col] === 'object'
+      ? JSON.stringify(data[col])
+      : String(data[col]);
+    s.getRange(found.row, j+1).setValue(val);
+  });
+  // Always update updated_date
+  var updCol = found.headers.indexOf('updated_date');
+  if (updCol > -1) s.getRange(found.row, updCol+1).setValue(new Date().toISOString());
+
+  return {success: true};
+}
+
+function deleteBlog(blogId) {
+  var s     = _getSheet('Blogs');
+  var found = _findRow(s, 'blog_id', blogId);
+  if (!found) return {error: 'Blog not found: ' + blogId};
+  s.deleteRow(found.row);
+  return {success: true};
+}
+
+// ── Seed all 20 built-in blogs (runs once via SETUP_EVERYTHING) ──────────────
+function _seedAllBlogs() {
+  var s = _getSheet('Blogs');
+  if (s.getLastRow() === 0) {
+    s.appendRow(B_HDRS);
+    _styleHeader(s, B_HDRS.length, '#2c3e50');
+    s.setFrozenRows(1);
+  }
+
+  // Read existing blog IDs to avoid duplicates
+  var existing = _toObjects(s);
+  var existingIds = {};
+  existing.forEach(function(b){ if(b.blog_id) existingIds[String(b.blog_id)] = true; });
+
+  var builtin = [
+    {blog_id:'builtin-1',  title:'What is Hijama? A Complete Beginner's Guide to Cupping Therapy',       category:'Benefits',    emoji:'🩸', read_time:8,  excerpt:'Hijama (Al-Hijamah) is the ancient practice of therapeutic cupping. Discover the history, types, and how it works on your body.',                               tags:'["Hijama Basics","Wet Cupping","Dry Cupping","Beginners"]', date:'2024-12-02T00:00:00.000Z'},
+    {blog_id:'builtin-2',  title:'Hijama in Islam: Sunnah Days, Prophetic Guidance & Spiritual Benefits', category:'Sunnah',      emoji:'🌙', read_time:7,  excerpt:'Understand the deep Islamic roots of hijama, the recommended lunar calendar days, and why Sunnah cupping is considered one of the best prophetic medicines.',  tags:'["Sunnah","Prophetic Medicine","Tibb Nabawi","Islamic Healing"]', date:'2024-11-28T00:00:00.000Z'},
+    {blog_id:'builtin-3',  title:'Hijama for Back Pain: Clinical Evidence & Treatment Points',            category:'Conditions',  emoji:'🦴', read_time:9,  excerpt:'Back pain is among the top 5 global health burdens. Discover the clinical evidence behind hijama for back pain relief.',                                          tags:'["Back Pain","Pain Relief","Evidence","Spine"]', date:'2024-11-25T00:00:00.000Z'},
+    {blog_id:'builtin-4',  title:'Hijama for Migraines & Chronic Headaches: Complete Guide',             category:'Conditions',  emoji:'🧠', read_time:8,  excerpt:'Millions suffer from migraines globally. Explore how hijama provides long-term relief for chronic headaches and migraines.',                                      tags:'["Migraines","Headaches","Chronic Pain","Neurology"]', date:'2024-11-22T00:00:00.000Z'},
+    {blog_id:'builtin-5',  title:'How to Perform Wet Hijama: A Step-by-Step Practitioner's Guide',      category:'How-To',      emoji:'💉', read_time:12, excerpt:'A professional practitioner's guide to performing wet hijama safely and effectively, from preparation to aftercare.',                                            tags:'["Wet Hijama","Technique","Practitioners","Step-by-Step"]', date:'2024-11-18T00:00:00.000Z'},
+    {blog_id:'builtin-6',  title:'Hijama for PCOS & Hormonal Imbalances in Women',                       category:'Conditions',  emoji:'⚕️', read_time:9,  excerpt:'PCOS affects millions of women globally. Discover how hijama helps regulate hormones and improve reproductive health.',                                            tags:'["PCOS","Hormones","Women's Health","Fertility"]', date:'2024-11-15T00:00:00.000Z'},
+    {blog_id:'builtin-7',  title:'Dry Cupping vs Wet Hijama: Which is Right for You?',                  category:'How-To',      emoji:'⚖️', read_time:7,  excerpt:'Compare dry cupping and wet hijama — understand the differences, benefits, and which form is best for your condition.',                                           tags:'["Dry Cupping","Wet Hijama","Comparison","Beginners"]', date:'2024-11-12T00:00:00.000Z'},
+    {blog_id:'builtin-8',  title:'The Complete Guide to Hijama Equipment & Tools',                       category:'Products',    emoji:'🔬', read_time:10, excerpt:'A practitioner's handbook on cups, lancets, suction devices, and consumables for safe and professional hijama therapy.',                                          tags:'["Equipment","Cups","Lancets","Practitioner Guide"]', date:'2024-11-08T00:00:00.000Z'},
+    {blog_id:'builtin-9',  title:'Hijama Aftercare: What to Do After Your Session',                      category:'Aftercare',   emoji:'🌿', read_time:6,  excerpt:'Proper aftercare is critical for maximising hijama benefits and safe recovery. Follow these evidence-based guidelines.',                                          tags:'["Aftercare","Recovery","Safety","Post-Session"]', date:'2024-11-05T00:00:00.000Z'},
+    {blog_id:'builtin-10', title:'Top 10 Evidence-Based Benefits of Hijama Cupping Therapy',            category:'Benefits',    emoji:'✨', read_time:8,  excerpt:'From pain relief to improved immunity, explore the top 10 clinically-supported benefits of regular hijama cupping therapy.',                                    tags:'["Benefits","Immunity","Wellness","Clinical Evidence"]', date:'2024-11-02T00:00:00.000Z'},
+    {blog_id:'builtin-11', title:'Hijama for Athletes & Sports Performance Recovery',                    category:'Benefits',    emoji:'🏃', read_time:7,  excerpt:'Elite athletes worldwide use cupping therapy for faster muscle recovery. Discover how hijama enhances sports performance.',                                       tags:'["Sports","Recovery","Athletes","Performance"]', date:'2024-10-28T00:00:00.000Z'},
+    {blog_id:'builtin-12', title:'Facial Cupping: The Natural Anti-Aging Skincare Treatment',           category:'How-To',      emoji:'💆', read_time:8,  excerpt:'Facial cupping is revolutionising natural skincare. Learn the technique, benefits, and how to use facial cups for glowing skin.',                               tags:'["Facial","Anti-Aging","Skincare","Beauty"]', date:'2024-10-24T00:00:00.000Z'},
+    {blog_id:'builtin-13', title:'Hijama for Diabetes Management & Blood Sugar Control',                category:'Conditions',  emoji:'🩺', read_time:9,  excerpt:'Type 2 diabetes is a growing epidemic in India. Explore how hijama helps regulate blood sugar and reduce diabetic complications.',                               tags:'["Diabetes","Blood Sugar","Management","Insulin"]', date:'2024-10-20T00:00:00.000Z'},
+    {blog_id:'builtin-14', title:'Hijama for Hair Loss, Alopecia & Scalp Rejuvenation',                category:'Conditions',  emoji:'💇', read_time:7,  excerpt:'Hair loss affects millions. Discover how scalp hijama stimulates dormant follicles and promotes natural hair regrowth.',                                           tags:'["Hair Loss","Alopecia","Scalp Health","Regrowth"]', date:'2024-10-16T00:00:00.000Z'},
+    {blog_id:'builtin-15', title:'How to Set Up a Professional Hijama Clinic in India',                category:'How-To',      emoji:'🏥', read_time:11, excerpt:'A complete business and clinical guide to setting up a hygienic, professional, and profitable hijama clinic in India.',                                           tags:'["Clinic Setup","Business","Practitioners","India"]', date:'2024-10-12T00:00:00.000Z'},
+    {blog_id:'builtin-16', title:'Hijama Points Map: A Comprehensive Full Body Guide',                  category:'Aftercare',   emoji:'🗺️', read_time:10, excerpt:'A comprehensive visual guide to traditional and modern hijama cupping points across the human body for common conditions.',                                       tags:'["Points","Map","Practitioners","Anatomy"]', date:'2024-10-08T00:00:00.000Z'},
+    {blog_id:'builtin-17', title:'Hijama for Fertility & Reproductive Health',                          category:'Benefits',    emoji:'🌸', read_time:9,  excerpt:'Fertility challenges affect 1 in 6 couples in India. Explore how hijama supports reproductive health for both men and women.',                                   tags:'["Fertility","Reproductive Health","IVF","Hormones"]', date:'2024-10-04T00:00:00.000Z'},
+    {blog_id:'builtin-18', title:'Silicone vs Glass vs Bamboo Hijama Cups: Which to Choose?',          category:'Products',    emoji:'🏆', read_time:8,  excerpt:'Not all hijama cups are equal. Compare silicone, glass, and bamboo cups to find the best material for your practice.',                                           tags:'["Cups","Equipment","Comparison","Materials"]', date:'2024-09-30T00:00:00.000Z'},
+    {blog_id:'builtin-19', title:'Hijama for Mental Health: Anxiety, Depression & Stress',             category:'Benefits',    emoji:'🧘', read_time:8,  excerpt:'Mental health is a growing crisis. Discover the neuroscience behind how hijama supports the nervous system to reduce anxiety.',                                  tags:'["Mental Health","Anxiety","Depression","Stress"]', date:'2024-09-26T00:00:00.000Z'},
+    {blog_id:'builtin-20', title:'Hijama Safety: Contraindications, Risks & Precautions',             category:'Aftercare',   emoji:'⚠️', read_time:7,  excerpt:'Hijama is safe when performed correctly — but there are critical contraindications every practitioner and patient must know.',                                  tags:'["Safety","Contraindications","Precautions","Risks"]', date:'2024-09-22T00:00:00.000Z'}
+  ];
+
+  var h = s.getRange(1,1,1,s.getLastColumn()).getValues()[0];
+  var now = new Date().toISOString();
+  var newBlogs = builtin.filter(function(b){ return !existingIds[b.blog_id]; });
+
+  if (newBlogs.length === 0) {
+    Logger.log('_seedAllBlogs: all built-in blogs already exist — nothing to add.');
+    return;
+  }
+
+  var rows = newBlogs.map(function(b){
+    return h.map(function(col){
+      if (col === 'content')      return b.content || ('Full article: ' + b.title);
+      if (col === 'author')       return b.author || 'Detoxy Hijama Team';
+      if (col === 'status')       return 'published';
+      if (col === 'updated_date') return now;
+      return b[col] !== undefined ? b[col] : '';
+    });
+  });
+
+  s.getRange(s.getLastRow()+1, 1, rows.length, h.length).setValues(rows);
+  s.autoResizeColumns(1, B_HDRS.length);
+  Logger.log('_seedAllBlogs: inserted ' + newBlogs.length + ' built-in blogs.');
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════

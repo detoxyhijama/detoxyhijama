@@ -1588,12 +1588,14 @@ function saveQuote(qid) {
 
 
 // ── BLOGS ──────────────────────────────────────────────────────────────────────
-var BLOGS_KEY = 'detoxy_blogs';
+// ── Blog storage: Sheets API primary, localStorage cache secondary ─────────────
+var BLOGS_KEY   = 'detoxy_blogs_cache';
+var BLOGS_DIRTY = false;
 
-function _getBlogs() {
+function _getLocalBlogs() {
   try { return JSON.parse(localStorage.getItem(BLOGS_KEY) || '[]'); } catch(e){ return []; }
 }
-function _saveBlogs(list) {
+function _setLocalBlogs(list) {
   try { localStorage.setItem(BLOGS_KEY, JSON.stringify(list)); } catch(e){}
 }
 
@@ -1705,10 +1707,24 @@ function previewProductImage(src) {
 }
 
 function loadBlogs() {
-  // Seed built-in blogs from frontend if not already seeded
-  _seedBuiltinBlogs();
-  var blogs = _getBlogs();
-  renderBlogs(blogs);
+  renderBlogs(_getLocalBlogs()); // show cached data immediately
+  if (!API_URL) {
+    // No API — seed built-in blogs into local cache if empty
+    if (!_getLocalBlogs().length) { _seedBuiltinBlogs(); renderBlogs(_getLocalBlogs()); }
+    return;
+  }
+  // Fetch live from Google Sheets
+  apiGet({action:'getBlogs'}).then(function(d){
+    if (d.blogs && d.blogs.length) {
+      _setLocalBlogs(d.blogs);
+      renderBlogs(d.blogs);
+    } else if (!_getLocalBlogs().length) {
+      _seedBuiltinBlogs();
+      renderBlogs(_getLocalBlogs());
+    }
+  }).catch(function(){
+    if (!_getLocalBlogs().length) { _seedBuiltinBlogs(); renderBlogs(_getLocalBlogs()); }
+  });
 }
 
 function _seedBuiltinBlogs() {
@@ -1750,6 +1766,7 @@ function renderBlogs(blogs) {
   if (!blogs.length) { tbody.innerHTML=''; empty.style.display='block'; return; }
   empty.style.display='none';
   tbody.innerHTML = blogs.map(function(b){
+    var blogKey = b.blog_id || b.id || '';
     var d = b.date ? new Date(b.date).toLocaleDateString('en-IN') : '';
     var statusBadge = b.status==='published'
       ? '<span class="badge badge-confirmed">Published</span>'
@@ -1761,8 +1778,8 @@ function renderBlogs(blogs) {
       '<td style="font-size:.76rem">'+d+'</td>' +
       '<td>'+statusBadge+'</td>' +
       '<td><div style="display:flex;gap:4px">' +
-        '<button class="btn btn-outline btn-sm btn-icon" onclick="openBlogModal(\''+b.id+'\')" title="Edit"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>' +
-        '<button class="btn btn-danger btn-sm btn-icon" onclick="deleteBlog(\''+b.id+'\')" title="Delete"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>' +
+        '<button class="btn btn-outline btn-sm btn-icon" onclick="openBlogModal(\''+blogKey+'\')" title="Edit"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>' +
+        '<button class="btn btn-danger btn-sm btn-icon" onclick="deleteBlog(\''+blogKey+'\')" title="Delete"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>' +
       '</div></td></tr>';
   }).join('');
 }
@@ -1829,22 +1846,63 @@ function saveBlog() {
     blogs.unshift(post);
   }
 
-  _saveBlogs(blogs);
-  toast(existingId ? 'Blog updated!' : 'Blog post published!', 'success');
-  closeModal('blogModal');
-  renderBlogs(blogs);
+  // Save to Sheets if API available, otherwise cache locally
+  if (API_URL) {
+    var apiAction = existingId ? 'updateBlog' : 'createBlog';
+    var apiPayload = Object.assign({action: apiAction, blog_id: post.id}, post);
+    btn.disabled    = true;
+    btn.textContent = existingId ? 'Saving…' : 'Publishing…';
+
+    apiPost({action: apiAction}, apiPayload)
+      .then(function(d) {
+        if (d.success || d.blogId) {
+          if (d.blogId) post.id = d.blogId;
+          toast(existingId ? 'Blog updated!' : 'Blog post published!', 'success');
+          closeModal('blogModal');
+          loadBlogs(); // reload from Sheets
+        } else {
+          toast('Error: ' + (d.error || 'Unknown error'), 'error');
+        }
+      })
+      .catch(function(e){ toast('Network error: ' + e.message, 'error'); })
+      .finally(function(){ btn.disabled=false; btn.textContent=existingId?'Save Changes':'Save Post'; });
+  } else {
+    // No API — save to localStorage cache only
+    var blogs = _getLocalBlogs();
+    if (existingId) {
+      var idx = blogs.findIndex(function(b){ return b.id===existingId; });
+      if (idx > -1) blogs[idx] = post; else blogs.unshift(post);
+    } else { blogs.unshift(post); }
+    _setLocalBlogs(blogs);
+    toast(existingId ? 'Blog updated (local)!' : 'Blog published (local)!', 'success');
+    closeModal('blogModal');
+    renderBlogs(blogs);
+  }
 }
 
 function deleteBlog(id) {
-  var b = _getBlogs().find(function(x){return x.id===id;});
+  var blogs = _getLocalBlogs();
+  var b = blogs.find(function(x){ return (x.id||x.blog_id)===id; });
   if (!confirm('Delete "' + (b?b.title:'this post') + '"?\n\nThis cannot be undone.')) return;
-  _saveBlogs(_getBlogs().filter(function(x){ return x.id!==id; }));
-  toast('Blog post deleted','success');
-  renderBlogs(_getBlogs());
+
+  if (API_URL) {
+    apiPost({action:'deleteBlog'}, {action:'deleteBlog', blogId: id})
+      .then(function(d){
+        if (d.success) {
+          toast('Blog post deleted','success');
+          loadBlogs();
+        } else { toast(d.error||'Error deleting blog','error'); }
+      })
+      .catch(function(e){ toast('Network error: '+e.message,'error'); });
+  } else {
+    _setLocalBlogs(blogs.filter(function(x){ return (x.id||x.blog_id)!==id; }));
+    toast('Blog post deleted','success');
+    renderBlogs(_getLocalBlogs());
+  }
 }
 
 function exportBlogsJSON() {
-  var blogs = _getBlogs();
+  var blogs = _getLocalBlogs();
   var json  = JSON.stringify(blogs, null, 2);
   var blob  = new Blob([json], {type:'application/json'});
   var url   = URL.createObjectURL(blob);
@@ -1855,7 +1913,7 @@ function exportBlogsJSON() {
 }
 
 function copyBlogsEmbed() {
-  var blogs = _getBlogs();
+  var blogs = _getLocalBlogs();
   var code  = '<scr'+'ipt>window.DETOXY_BLOGS = ' + JSON.stringify(blogs) + ';<\/scr'+'ipt>';
   navigator.clipboard.writeText(code).then(function(){
     document.getElementById('blogExportResult').innerHTML = '<span style="color:var(--success)">✓ Embed code copied! Paste it into blogs.html before &lt;/body&gt;</span>';

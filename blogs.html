@@ -140,33 +140,65 @@
       if (_bHm) { var _bFrag = document.createRange().createContextualFragment(renderHeader('Blogs')); _bHm.replaceWith(_bFrag); }
       var _bFm = document.getElementById('footer-mount'); if (_bFm) _bFm.outerHTML = renderFooter();
       initSearch(); initMobileNav(); Cart.updateUI();
-      // Load admin-created blogs from localStorage and merge with built-in posts
-      try {
-        var adminBlogs = JSON.parse(localStorage.getItem('detoxy_blogs') || '[]');
-        if (adminBlogs.length) {
-          var adminMapped = adminBlogs
+      // Load blogs from Google Sheets API (with localStorage cache fallback)
+      function mergeAndRender(apiBlogs) {
+        if (apiBlogs && apiBlogs.length) {
+          var mapped = apiBlogs
             .filter(function(b){ return b.status === 'published'; })
-            .map(function(b, i) {
+            .map(function(b) {
+              var cat = (b.category||'benefits').toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+              var tagsArr = [];
+              try { tagsArr = typeof b.tags==='string' ? JSON.parse(b.tags||'[]') : (b.tags||[]); } catch(e){}
               return {
-                id: 'admin-' + b.id,
-                cat: (b.category||'benefits').toLowerCase().replace(/[^a-z]/g,'-'),
+                id: b.blog_id || b.id,
+                cat: cat,
                 catLabel: b.category || 'Blog',
                 emoji: b.emoji || '📝',
                 color: '#2aab97',
-                title: b.title,
-                excerpt: b.excerpt,
+                title: b.title || '',
+                excerpt: b.excerpt || '',
                 date: b.date ? new Date(b.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '',
-                readTime: (b.readTime||5) + ' min read',
-                tags: b.tags || [],
-                body: b.content || b.excerpt,
+                readTime: (Number(b.read_time)||5) + ' min read',
+                tags: tagsArr,
+                body: b.content || b.excerpt || '',
                 isAdmin: true
               };
             });
-          // Prepend admin blogs to front of list
-          adminMapped.forEach(function(ab){ BLOGS.unshift(ab); });
+          // Prepend Sheets blogs (newest first) before built-in articles
+          mapped.reverse().forEach(function(b){ BLOGS.unshift(b); });
         }
-      } catch(e){}
-      renderBlogGrid('all');
+        renderBlogGrid('all');
+      }
+
+      var apiUrl = '';
+      try { apiUrl = localStorage.getItem('detoxy_sheets_url') || ''; } catch(e){}
+
+      if (apiUrl) {
+        // Try Sheets API first
+        fetch(apiUrl + '?action=getBlogs&status=published', {redirect:'follow'})
+          .then(function(r){ return r.json(); })
+          .then(function(d){
+            if (d.blogs && d.blogs.length) {
+              try { localStorage.setItem('detoxy_blogs_cache', JSON.stringify(d.blogs)); } catch(e){}
+              mergeAndRender(d.blogs);
+            } else {
+              // Fallback to cache
+              var cached = [];
+              try { cached = JSON.parse(localStorage.getItem('detoxy_blogs_cache')||'[]'); } catch(e){}
+              mergeAndRender(cached);
+            }
+          })
+          .catch(function(){
+            var cached = [];
+            try { cached = JSON.parse(localStorage.getItem('detoxy_blogs_cache')||'[]'); } catch(e){}
+            mergeAndRender(cached);
+          });
+      } else {
+        // No API — use localStorage cache (admin-created blogs saved there)
+        var cached = [];
+        try { cached = JSON.parse(localStorage.getItem('detoxy_blogs_cache')||JSON.parse(localStorage.getItem('detoxy_blogs')||'[]')); } catch(e){}
+        mergeAndRender(cached);
+      }
     });
 
     const BLOGS = [
