@@ -171,7 +171,7 @@
     </div>
     <div id="loginErr" style="color:var(--danger);font-size:.78rem;margin-bottom:10px;display:none">Incorrect password</div>
     <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="doLogin()">Sign In</button>
-    <p style="margin-top:12px;font-size:.72rem;color:var(--muted)">Default: detoxy2024admin</p>
+    
   </div>
 </div>
 
@@ -1919,6 +1919,80 @@ function copyBlogsEmbed() {
     document.getElementById('blogExportResult').innerHTML = '<span style="color:var(--success)">✓ Embed code copied! Paste it into blogs.html before &lt;/body&gt;</span>';
   }).catch(function(){
     document.getElementById('blogExportResult').textContent = code.substring(0,200) + '...';
+  });
+}
+
+// ── Settings ───────────────────────────────────────────────────────────────────
+function saveSheetsUrl() {
+  var url = (document.getElementById('settingsUrl').value || '').trim();
+  if (url && !url.endsWith('/exec')) {
+    toast('URL should end with /exec — check your deployment URL', 'error');
+    return;
+  }
+  localStorage.setItem('detoxy_sheets_url', url);
+  API_URL = url;
+  toast('API URL saved!', 'success');
+  if (url) loadDashboard();
+}
+
+function testApiConnection() {
+  var btn    = document.getElementById('testApiBtn');
+  var result = document.getElementById('apiTestResult');
+  saveSheetsUrl();
+  if (!API_URL) {
+    result.innerHTML = '<span style="color:var(--danger)">✗ Please paste your Apps Script URL first.</span>';
+    return;
+  }
+  btn.textContent = 'Testing…'; btn.disabled = true;
+  result.innerHTML = '<span style="color:var(--muted)">Connecting…</span>';
+  fetch(API_URL + '?action=ping', { redirect: 'follow' })
+    .then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function(d) {
+      result.innerHTML = '<span style="color:var(--success)">✓ Connected! ' + (d.message || 'API is working.') + '</span>';
+      loadDashboard();
+    })
+    .catch(function(e) {
+      var hint = '';
+      if ((e.message||'').includes('Failed to fetch') || (e.message||'').includes('NetworkError')) {
+        hint = '<br><small style="color:var(--muted)">Fix: In Apps Script → Deploy → set <strong>Who has access: Anyone</strong> (not "Anyone with Google account") → re-deploy → copy the new URL.</small>';
+      }
+      result.innerHTML = '<span style="color:var(--danger)">✗ ' + (e.message||'Connection failed') + hint + '</span>';
+    })
+    .finally(function() { btn.textContent = 'Test Connection'; btn.disabled = false; });
+}
+
+function changeAdminPass() {
+  var np = document.getElementById('newAdminPass').value;
+  var cp = document.getElementById('confirmAdminPass').value;
+  if (!np)        { toast('Enter a new password', 'error'); return; }
+  if (np !== cp)  { toast('Passwords do not match', 'error'); return; }
+  if (np.length < 6) { toast('Password must be at least 6 characters', 'error'); return; }
+  localStorage.setItem('dh_admin_pass', np);
+  ADMIN_PASS = np;
+  document.getElementById('newAdminPass').value    = '';
+  document.getElementById('confirmAdminPass').value = '';
+  toast('Admin password changed successfully!', 'success');
+}
+
+function syncProductsToSheets() {
+  if (!API_URL) { toast('Set API URL first in Settings', 'error'); return; }
+  if (typeof PRODUCTS === 'undefined' || !PRODUCTS.length) { toast('PRODUCTS not loaded yet', 'error'); return; }
+  var result = document.getElementById('syncResult');
+  result.innerHTML = '<span style="color:var(--muted)">Syncing ' + PRODUCTS.length + ' products…</span>';
+  var done = 0, errors = 0;
+  var promises = PRODUCTS.map(function(p) {
+    return apiPost({action:'addProduct'}, Object.assign({action:'addProduct'}, p))
+      .then(function(d){ if(d.success||d.id) done++; else errors++; })
+      .catch(function(){ errors++; });
+  });
+  Promise.all(promises).then(function(){
+    result.innerHTML = errors === 0
+      ? '<span style="color:var(--success)">✓ All ' + done + ' products synced to Google Sheets!</span>'
+      : '<span style="color:var(--warn)">✓ ' + done + ' synced, ' + errors + ' skipped (already exist)</span>';
+    if (done > 0) toast('Products synced!', 'success');
   });
 }
 
