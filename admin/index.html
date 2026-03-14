@@ -175,7 +175,7 @@
   </div>
 </div>
 
-<div id="adminApp" style="display:none;width:100%;display:none">
+<div id="adminApp" style="display:none;width:100%">
 
 <!-- SIDEBAR -->
 <nav class="sidebar">
@@ -647,19 +647,25 @@ var _currentSection = 'dashboard';
 function doLogin() {
   var p = document.getElementById('loginPass').value;
   if (p === ADMIN_PASS) {
-    document.getElementById('loginOverlay').style.display = 'none';
-    document.getElementById('adminApp').style.display = 'flex';
+    var overlay = document.getElementById('loginOverlay');
+    var app     = document.getElementById('adminApp');
+    overlay.style.cssText = 'display:none';
+    app.style.cssText      = 'display:flex;width:100%';
+    document.getElementById('loginErr').style.display = 'none';
     API_URL = localStorage.getItem('detoxy_sheets_url') || '';
     document.getElementById('settingsUrl').value = API_URL;
     loadDashboard();
   } else {
     document.getElementById('loginErr').style.display = 'block';
+    document.getElementById('loginPass').select();
   }
 }
 
 function doLogout() {
-  document.getElementById('loginOverlay').style.display = 'flex';
-  document.getElementById('adminApp').style.display = 'none';
+  var overlay = document.getElementById('loginOverlay');
+  var app     = document.getElementById('adminApp');
+  overlay.style.cssText = 'display:flex';
+  app.style.cssText      = 'display:none;width:100%';
   document.getElementById('loginPass').value = '';
 }
 
