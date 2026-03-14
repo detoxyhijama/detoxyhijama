@@ -308,6 +308,52 @@ const PRODUCTS = [
   }
 ];
 
+// ── Live Product Loader ───────────────────────────
+// Fetches fresh product data from Google Sheets API on every page load.
+// Merges live prices, stock, descriptions into the PRODUCTS array in-place.
+// Falls back silently to hardcoded PRODUCTS if API not configured or offline.
+(function() {
+  var apiUrl = '';
+  try { apiUrl = localStorage.getItem('detoxy_sheets_url') || ''; } catch(e){}
+  if (!apiUrl) return;
+
+  fetch(apiUrl + '?action=getProducts', { redirect: 'follow' })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (!d.products || !d.products.length) return;
+      d.products.forEach(function(liveP) {
+        var idx = PRODUCTS.findIndex(function(p) { return p.id === liveP.id; });
+        var merged = {
+          id:            liveP.id,
+          slug:          liveP.slug  || liveP.id,
+          name:          liveP.title || liveP.name || '',
+          title:         liveP.title || liveP.name || '',
+          category:      liveP.category      || '',
+          categoryLabel: liveP.categoryLabel || '',
+          price:         Number(liveP.price)  || 0,
+          mrp:           Number(liveP.mrp)    || 0,
+          stock:         Number(liveP.stock)  || 0,
+          rating:        Number(liveP.rating) || 0,
+          reviews:       Number(liveP.reviews)|| 0,
+          badge:         liveP.badge    || null,
+          badgeType:     liveP.badgeType|| '',
+          shortDesc:     liveP.shortDesc|| '',
+          description:   liveP.description || '',
+          features:      Array.isArray(liveP.features) ? liveP.features : [],
+          specs:         (typeof liveP.specs === 'object' && liveP.specs) ? liveP.specs : {},
+          images:        Array.isArray(liveP.images) && liveP.images.length
+                           ? liveP.images
+                           : (liveP.image ? [liveP.image] : [])
+        };
+        if (idx > -1) { PRODUCTS[idx] = merged; }
+        else if (!liveP.hidden || liveP.hidden === 'false') { PRODUCTS.push(merged); }
+      });
+      // Signal all pages to re-render their product grids with fresh data
+      document.dispatchEvent(new CustomEvent('productsUpdated'));
+    })
+    .catch(function() { /* silent — use hardcoded fallback */ });
+})();
+
 // ── Cart Utils ────────────────────────────────
 const Cart = {
   get() {

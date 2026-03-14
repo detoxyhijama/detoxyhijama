@@ -39,6 +39,9 @@ function SETUP_EVERYTHING() {
   );
 }
 
+// NOTE: Blogs are managed via localStorage on the frontend — no Sheets needed.
+}
+
 // ── Sheet column definitions ───────────────────────────────────────────────────
 var O_HDRS = ['order_id','name','phone','email','address','city','state','pincode',
               'items','subtotal','shipping','total','payment','notes','status','date',
@@ -413,6 +416,10 @@ function getProducts(params) {
     try { p.images   = JSON.parse(p.images  ||'[]'); } catch(e){ p.images=p.image?[p.image]:[]; }
     p.price=Number(p.price)||0; p.mrp=Number(p.mrp)||0;
     p.stock=Number(p.stock)||0; p.rating=Number(p.rating)||0; p.reviews=Number(p.reviews)||0;
+    // Ensure both name and title fields exist for frontend compatibility
+    p.name  = p.title || p.name || '';
+    p.title = p.name;
+    p.slug  = p.slug  || p.id  || '';
     return p;
   });
   if (params && params.category) list = list.filter(function(p){ return p.category===params.category; });
@@ -503,7 +510,7 @@ function getOrders(params) {
 }
 
 function getOrderById(orderId) {
-  var o = getOrders({}).orders.filter(function(x){return String(x.order_id)===String(orderId);})[0];
+  var o = getOrders({}).orders.filter(function(x){return String(x.order_id).toUpperCase()===String(orderId).toUpperCase();})[0];
   return o ? {order:o} : {error:'Order not found'};
 }
 

@@ -99,8 +99,26 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label" for="qProducts">Products Required *</label>
-        <textarea id="qProducts" class="form-control" rows="4" placeholder="e.g. 500x Premium Silicone Cups, 100x Latex Gloves boxes, 50x Lancet Pens..." required></textarea>
+        <label class="form-label">Products Required *</label>
+        <div id="qProductChecklist" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;padding:14px;background:var(--cream);border-radius:10px;border:1.5px solid var(--border)">
+          <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer"><input type="checkbox" value="Detoxy Hijama Premium Silicone Cups" style="accent-color:var(--t);width:15px;height:15px"> Premium Silicone Cups</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer"><input type="checkbox" value="Detoxy Hijama Electric Smart Cupping Device" style="accent-color:var(--t);width:15px;height:15px"> Electric Smart Cup</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer"><input type="checkbox" value="Detoxy Hijama Fire Cupping Glass Set" style="accent-color:var(--t);width:15px;height:15px"> Fire Cupping Glass Set</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer"><input type="checkbox" value="Detoxy Hijama 24-Set Magnetic Vacuum Kit" style="accent-color:var(--t);width:15px;height:15px"> Magnetic Vacuum Kit</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer"><input type="checkbox" value="Detoxy Hijama Curve Cup Set" style="accent-color:var(--t);width:15px;height:15px"> Curve Cup Set</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer"><input type="checkbox" value="Detoxy Hijama Auto Lancet Pen" style="accent-color:var(--t);width:15px;height:15px"> Auto Lancet Pen</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer"><input type="checkbox" value="Detoxy Hijama Premium Latex Gloves (100)" style="accent-color:var(--t);width:15px;height:15px"> Latex Gloves (Pack 100)</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer"><input type="checkbox" value="Detoxy Hijama Bamboo Cupping Set" style="accent-color:var(--t);width:15px;height:15px"> Bamboo Cupping Set</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer"><input type="checkbox" value="Detoxy Hijama Silicone Facial Cup Set of 4" style="accent-color:var(--t);width:15px;height:15px"> Facial Cup Set of 4</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer"><input type="checkbox" value="Detoxy Hijama Silicone Facial Cup Set of 7" style="accent-color:var(--t);width:15px;height:15px"> Facial Cup Set of 7</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer"><input type="checkbox" value="Detoxy Hijama Suction Gun" style="accent-color:var(--t);width:15px;height:15px"> Suction Gun</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer"><input type="checkbox" value="Detoxy Hijama Indian Standard Hijama Cup" style="accent-color:var(--t);width:15px;height:15px"> Indian Standard Cup</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer"><input type="checkbox" value="Detoxy Hijama Silicone Moving Cup Set" style="accent-color:var(--t);width:15px;height:15px"> Silicone Moving Cup</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer"><input type="checkbox" value="Detoxy Hijama Surgical Blade No.11 (100)" style="accent-color:var(--t);width:15px;height:15px"> Surgical Blade (100)</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:.83rem;cursor:pointer"><input type="checkbox" value="Detoxy Hijama Surgical Cotton 400g" style="accent-color:var(--t);width:15px;height:15px"> Surgical Cotton 400g</label>
+        </div>
+        <textarea id="qProducts" class="form-control" rows="2" placeholder="Add custom items or quantities here (e.g. 200x Premium Cups, 50x Lancet Pens)..."></textarea>
+        <small style="font-size:.73rem;color:var(--muted)">Check products above and/or type custom quantities below</small>
       </div>
       <div class="form-row2">
         <div class="form-group">
@@ -186,10 +204,15 @@ function submitQuote() {
   var name     = document.getElementById('qName').value.trim();
   var phone    = document.getElementById('qPhone').value.trim();
   var city     = document.getElementById('qCity').value.trim();
-  var products = document.getElementById('qProducts').value.trim();
+  // Collect checked products + textarea
+  var checked = [];
+  document.querySelectorAll('#qProductChecklist input[type=checkbox]:checked').forEach(function(cb){ checked.push(cb.value); });
+  var extraText = document.getElementById('qProducts').value.trim();
+  if (extraText) checked.push(extraText);
+  var products = checked.join(', ');
   var alertEl  = document.getElementById('quoteAlert');
 
-  if (!name || !phone || !city || !products) {
+  if (!name || !phone || !city || (!products && checked.length === 0)) {
     alertEl.innerHTML = '<div class="alert alert-error">Please fill in all required fields (Name, Phone, City, Products).</div>';
     alertEl.scrollIntoView({behavior:'smooth',block:'nearest'});
     return;

@@ -140,6 +140,32 @@
       if (_bHm) { var _bFrag = document.createRange().createContextualFragment(renderHeader('Blogs')); _bHm.replaceWith(_bFrag); }
       var _bFm = document.getElementById('footer-mount'); if (_bFm) _bFm.outerHTML = renderFooter();
       initSearch(); initMobileNav(); Cart.updateUI();
+      // Load admin-created blogs from localStorage and merge with built-in posts
+      try {
+        var adminBlogs = JSON.parse(localStorage.getItem('detoxy_blogs') || '[]');
+        if (adminBlogs.length) {
+          var adminMapped = adminBlogs
+            .filter(function(b){ return b.status === 'published'; })
+            .map(function(b, i) {
+              return {
+                id: 'admin-' + b.id,
+                cat: (b.category||'benefits').toLowerCase().replace(/[^a-z]/g,'-'),
+                catLabel: b.category || 'Blog',
+                emoji: b.emoji || '📝',
+                color: '#2aab97',
+                title: b.title,
+                excerpt: b.excerpt,
+                date: b.date ? new Date(b.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '',
+                readTime: (b.readTime||5) + ' min read',
+                tags: b.tags || [],
+                body: b.content || b.excerpt,
+                isAdmin: true
+              };
+            });
+          // Prepend admin blogs to front of list
+          adminMapped.forEach(function(ab){ BLOGS.unshift(ab); });
+        }
+      } catch(e){}
       renderBlogGrid('all');
     });
 

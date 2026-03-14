@@ -220,6 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   applyFilters();
+  document.addEventListener('productsUpdated', applyFilters);
 });
 
 function applyFilters() {
