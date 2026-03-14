@@ -433,18 +433,28 @@ function getCategories() {
 
 function addProduct(data) {
   var s = _getSheet('Products');
-  if (s.getLastRow()===0) { s.appendRow(P_COLS); _styleHeader(s,P_COLS.length,'#0d6b5e'); }
+  if (s.getLastRow()===0) { s.appendRow(P_COLS); _styleHeader(s,P_COLS.length,'#0d6b5e'); s.setFrozenRows(1); }
   var h = s.getRange(1,1,1,s.getLastColumn()).getValues()[0];
   if (!data.id) data.id = 'p-' + Date.now();
-  s.appendRow(h.map(function(k){ var v=data[k]; return v===undefined?'':(typeof v==='object'?JSON.stringify(v):v); }));
+  s.appendRow(h.map(function(k){
+    var v = data[k];
+    if (v === undefined || v === null) return '';
+    if (typeof v === 'object') return JSON.stringify(v);
+    return v;
+  }));
   return {success:true, id:data.id};
 }
 
 function editProduct(data) {
   var s=_getSheet('Products'), found=_findRow(s,'id',data.id);
-  if (!found) return {error:'Product not found'};
+  if (!found) return {error:'Product not found: ' + data.id};
   found.headers.forEach(function(k,j){
-    if (data[k]!==undefined) s.getRange(found.row,j+1).setValue(typeof data[k]==='object'?JSON.stringify(data[k]):data[k]);
+    if (data[k] === undefined) return;
+    var v = data[k];
+    // If it is already a JSON string (arrays/objects sent as strings from frontend) keep as-is.
+    // If it is a plain JS object/array, stringify it.
+    if (typeof v === 'object' && v !== null) v = JSON.stringify(v);
+    s.getRange(found.row, j+1).setValue(v);
   });
   return {success:true};
 }

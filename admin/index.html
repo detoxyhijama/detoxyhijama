@@ -973,74 +973,136 @@ function renderProducts() {
 function openProductModal(id) {
   document.getElementById('productModalTitle').textContent = id ? 'Edit Product' : 'Add Product';
   document.getElementById('productSaveBtn').textContent    = id ? 'Save Changes' : 'Add Product';
+  document.getElementById('productSaveBtn').disabled = false;
+
   if (!id) {
-    ['pmId','pmSlug','pmName','pmShortDesc','pmDesc','pmPrice','pmMrp','pmStock','pmBadge','pmImage','pmFeatures','pmSpecs'].forEach(function(f){ document.getElementById(f).value=''; });
+    // Clear all fields for new product
+    ['pmId','pmSlug','pmName','pmShortDesc','pmDesc','pmPrice','pmMrp',
+     'pmStock','pmBadge','pmImage','pmFeatures','pmSpecs'].forEach(function(f){
+      document.getElementById(f).value = '';
+    });
+    document.getElementById('pmCategory').value = 'cups';
   } else {
-    var p = _products.find(function(x){return x.id===id;});
-    if (!p) return;
+    var p = _products.find(function(x){ return x.id === id; });
+    if (!p) { toast('Product not found in local list — try refreshing Products','error'); return; }
+
     document.getElementById('pmId').value        = p.id;
-    document.getElementById('pmSlug').value      = p.slug||p.id;
-    document.getElementById('pmName').value      = p.name||p.title||'';
-    document.getElementById('pmShortDesc').value = p.shortDesc||'';
-    document.getElementById('pmDesc').value      = p.description||'';
-    document.getElementById('pmPrice').value     = p.price||'';
-    document.getElementById('pmMrp').value       = p.mrp||'';
-    document.getElementById('pmStock').value     = p.stock||'';
-    document.getElementById('pmBadge').value     = p.badge||'';
-    document.getElementById('pmImage').value     = (p.images&&p.images[0])||p.image||'';
-    document.getElementById('pmFeatures').value  = Array.isArray(p.features) ? p.features.join('\n') : '';
-    var specsStr = '';
-    if (p.specs && typeof p.specs === 'object') {
-      specsStr = Object.keys(p.specs).map(function(k){return k+': '+p.specs[k];}).join('\n');
+    document.getElementById('pmSlug').value      = p.slug || p.id;
+    document.getElementById('pmName').value      = p.name || p.title || '';
+    document.getElementById('pmShortDesc').value = p.shortDesc || '';
+    document.getElementById('pmDesc').value      = p.description || '';
+    document.getElementById('pmPrice').value     = p.price || '';
+    document.getElementById('pmMrp').value       = p.mrp   || '';
+    document.getElementById('pmStock').value     = p.stock || '';
+    document.getElementById('pmBadge').value     = p.badge || '';
+    document.getElementById('pmCategory').value  = p.category || 'cups';
+
+    // Image: use first image in array, or fallback to image field
+    var imgVal = '';
+    if (p.images && p.images.length) imgVal = p.images[0];
+    else if (p.image) imgVal = p.image;
+    document.getElementById('pmImage').value = imgVal;
+
+    // Features: array → one per line
+    var featsVal = '';
+    if (Array.isArray(p.features) && p.features.length) {
+      featsVal = p.features.join('\n');
+    } else if (typeof p.features === 'string' && p.features) {
+      try { featsVal = JSON.parse(p.features).join('\n'); } catch(e){ featsVal = p.features; }
     }
-    document.getElementById('pmSpecs').value = specsStr;
-    document.getElementById('pmCategory').value = p.category||'cups';
+    document.getElementById('pmFeatures').value = featsVal;
+
+    // Specs: object → "Key: Value" lines
+    var specsVal = '';
+    var specsObj = p.specs;
+    if (typeof specsObj === 'string') {
+      try { specsObj = JSON.parse(specsObj); } catch(e){ specsObj = {}; }
+    }
+    if (specsObj && typeof specsObj === 'object') {
+      specsVal = Object.keys(specsObj).map(function(k){ return k + ': ' + specsObj[k]; }).join('\n');
+    }
+    document.getElementById('pmSpecs').value = specsVal;
   }
   openModal('productModal');
 }
 
 function saveProduct() {
   var isEdit = !!document.getElementById('pmId').value;
-  var img = document.getElementById('pmImage').value;
-  var feats = document.getElementById('pmFeatures').value.split('\n').filter(Boolean);
-  var specsRaw = document.getElementById('pmSpecs').value.split('\n').filter(Boolean);
+  var img    = document.getElementById('pmImage').value.trim();
+
+  // Parse features — one per line → JSON string for Google Sheets
+  var feats = document.getElementById('pmFeatures').value
+    .split('\n').map(function(l){return l.trim();}).filter(Boolean);
+
+  // Parse specs — "Key: Value" lines → JSON string for Google Sheets
+  var specsRaw = document.getElementById('pmSpecs').value
+    .split('\n').map(function(l){return l.trim();}).filter(Boolean);
   var specs = {};
-  specsRaw.forEach(function(line){ var parts=line.split(':'); if(parts.length>=2) specs[parts[0].trim()]=parts.slice(1).join(':').trim(); });
-  var cat = document.getElementById('pmCategory').value;
+  specsRaw.forEach(function(line){
+    var idx = line.indexOf(':');
+    if (idx > -1) specs[line.substring(0,idx).trim()] = line.substring(idx+1).trim();
+  });
+
+  var cat       = document.getElementById('pmCategory').value;
   var catLabels = {cups:'Cupping Sets',electric:'Electric Devices',kits:'Starter Kits',facial:'Facial Cups',consumables:'Consumables'};
+  var productId = (document.getElementById('pmId').value || document.getElementById('pmSlug').value).trim();
+
+  // Preserve existing rating/reviews when editing
+  var existingProduct = isEdit ? _products.find(function(p){return p.id===productId;}) : null;
 
   var data = {
-    id:            document.getElementById('pmId').value || document.getElementById('pmSlug').value,
-    slug:          document.getElementById('pmSlug').value,
-    title:         document.getElementById('pmName').value,
-    name:          document.getElementById('pmName').value,
-    shortDesc:     document.getElementById('pmShortDesc').value,
-    description:   document.getElementById('pmDesc').value,
-    price:         Number(document.getElementById('pmPrice').value)||0,
-    mrp:           Number(document.getElementById('pmMrp').value)||0,
-    stock:         Number(document.getElementById('pmStock').value)||0,
-    badge:         document.getElementById('pmBadge').value,
+    id:            productId,
+    slug:          document.getElementById('pmSlug').value.trim(),
+    title:         document.getElementById('pmName').value.trim(),
+    name:          document.getElementById('pmName').value.trim(),
+    shortDesc:     document.getElementById('pmShortDesc').value.trim(),
+    description:   document.getElementById('pmDesc').value.trim(),
+    price:         Number(document.getElementById('pmPrice').value) || 0,
+    mrp:           Number(document.getElementById('pmMrp').value)   || 0,
+    stock:         Number(document.getElementById('pmStock').value) || 0,
+    badge:         document.getElementById('pmBadge').value.trim(),
     image:         img,
-    images:        [img],
+    // FIX: send as JSON string — raw arrays become "[object Object]" in Sheets
+    images:        JSON.stringify(img ? [img] : []),
+    features:      JSON.stringify(feats),
+    specs:         JSON.stringify(specs),
     category:      cat,
-    categoryLabel: catLabels[cat]||cat,
-    features:      feats,
-    specs:         specs,
-    rating:        4.5,
-    reviews:       0
+    categoryLabel: catLabels[cat] || cat,
+    // FIX: preserve existing rating & reviews — don't overwrite with defaults
+    rating:        existingProduct ? (existingProduct.rating  || 4.5) : 4.5,
+    reviews:       existingProduct ? (existingProduct.reviews || 0)   : 0,
+    hidden:        existingProduct ? (existingProduct.hidden  || 'false') : 'false'
   };
 
-  if (!data.id || !data.title || !data.price) { toast('Please fill all required fields','error'); return; }
-  if (!API_URL) { toast('No API URL configured. Add in Settings.','error'); return; }
+  // Validation
+  if (!data.id)    { toast('Product ID / Slug is required','error'); return; }
+  if (!data.title) { toast('Product Name is required','error'); return; }
+  if (!data.price) { toast('Price must be greater than 0','error'); return; }
+  if (!API_URL)    { toast('No API URL configured — go to Settings first','error'); return; }
+
+  // Disable button while saving
+  var btn = document.getElementById('productSaveBtn');
+  btn.disabled    = true;
+  btn.textContent = isEdit ? 'Saving…' : 'Adding…';
 
   var action = isEdit ? 'editProduct' : 'addProduct';
-  apiPost({action:action}, Object.assign({action:action}, data)).then(function(d){
-    if (d.success) {
-      toast(isEdit?'Product updated!':'Product added!', 'success');
-      closeModal('productModal');
-      loadProducts();
-    } else { toast(d.error||'Error saving product','error'); }
-  });
+  apiPost({action: action}, Object.assign({action: action}, data))
+    .then(function(d) {
+      if (d.success) {
+        toast(isEdit ? 'Product updated successfully!' : 'Product added successfully!', 'success');
+        closeModal('productModal');
+        loadProducts();
+      } else {
+        toast('Error: ' + (d.error || 'Unknown error from server'), 'error');
+      }
+    })
+    .catch(function(e) {
+      toast('Network error: ' + e.message, 'error');
+    })
+    .finally(function() {
+      btn.disabled    = false;
+      btn.textContent = isEdit ? 'Save Changes' : 'Save Product';
+    });
 }
 
 function toggleHide(id, hidden) {
