@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (hm) {
     var frag = document.createRange().createContextualFragment(renderHeader('Bulk Quote'));
     hm.replaceWith(frag);
-    Cart.updateUI(); initSearch(); initMobileNav();
+    Cart.updateUI(); initSearch(); initMobileNav(); updateNavAuthLink();
   }
   var fm = document.getElementById('footer-mount');
   if (fm) fm.outerHTML = renderFooter();

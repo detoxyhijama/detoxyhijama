@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Auto-fill if already logged in
   var user = null;
   try { user = JSON.parse(localStorage.getItem('dh_user') || 'null'); } catch(e) {}
-  if (user) window.location.href = 'index.html';
+  if (user) var redir = new URLSearchParams(window.location.search).get('redirect'); window.location.href = redir || '/account.html';
 });
 
 function switchTab(tab) {
@@ -132,7 +132,7 @@ function doLogin() {
     // Local demo mode
     var demoUser = { id: 'demo', name: 'Guest User', email: email };
     localStorage.setItem('dh_user', JSON.stringify(demoUser));
-    window.location.href = 'index.html';
+    var redir = new URLSearchParams(window.location.search).get('redirect'); window.location.href = redir || '/account.html';
     return;
   }
 
@@ -142,7 +142,7 @@ function doLogin() {
     .then(function(data) {
       if (data.success) {
         localStorage.setItem('dh_user', JSON.stringify(data.user));
-        window.location.href = 'index.html';
+        var redir = new URLSearchParams(window.location.search).get('redirect'); window.location.href = redir || '/account.html';
       } else {
         alertEl.innerHTML = '<div class="alert alert-error">' + (data.error || 'Invalid credentials') + '</div>';
       }
@@ -164,7 +164,7 @@ function doRegister() {
     var newUser = { id: 'U' + Date.now(), name: name, email: email, phone: phone };
     localStorage.setItem('dh_user', JSON.stringify(newUser));
     alertEl.innerHTML = '<div class="alert alert-success">Account created! Redirecting...</div>';
-    setTimeout(function() { window.location.href = 'index.html'; }, 1000);
+    setTimeout(function() { var redir = new URLSearchParams(window.location.search).get('redirect'); window.location.href = redir || '/account.html'; }, 1000);
     return;
   }
 

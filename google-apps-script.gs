@@ -53,7 +53,7 @@ var P_COLS = ['id','title','description','price','mrp','category','categoryLabel
 var Q_HDRS = ['quote_id','name','phone','email','address','org','city',
               'products','message','status','notes','quoted_amount','validity_date','date'];
 
-var U_HDRS = ['id','name','email','password_hash','phone','date'];
+var U_HDRS = ['id','name','email','password_hash','phone','address','city','state','pincode','date'];
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // SHEET SETUP FUNCTIONS
@@ -359,7 +359,8 @@ function doGet(e) {
     else if (a==='updateStatus')  r = updateOrderStatus(p.orderId, p.status);
     else if (a==='getQuotes')     r = getQuotes(p);
     else if (a==='getDashboard')  r = getDashboardStats();
-    else if (a==='ping') r = {status:'ok', message:'Detoxy Hijama API v2.0 is connected ✓', sheets:['Orders','Products','Quotes','Users']};
+    else if (a==='ping')          r = {status:'ok', message:'Detoxy Hijama API v2.0 is connected ✓', sheets:['Orders','Products','Quotes','Users']};
+    else if (a==='getUserOrders') r = getUserOrders(p.email, p.phone);
     else r = {status:'ok', message:'Detoxy Hijama API v2.0 — use ?action=ping to test', sheets:['Orders','Products','Quotes','Users']};
     return _resp(r);
   } catch(err) { return _resp({error: err.message}); }
@@ -388,6 +389,8 @@ function doPost(e) {
     else if (a==='toggleProductHide') r = toggleProductHide(body.id, body.hidden);
     else if (a==='createQuote')       r = createQuote(body);
     else if (a==='updateQuote')       r = updateQuote(body);
+    else if (a==='updateUser')        r = updateUser(body);
+    else if (a==='changePassword')    r = changePassword(body);
     else r = {error:'Unknown action: ' + a};
     return _resp(r);
   } catch(err) { return _resp({error: err.message}); }
@@ -652,8 +655,68 @@ function registerUser(data) {
   var d=s.getDataRange().getValues(), h=d[0], eC=h.indexOf('email');
   for (var i=1;i<d.length;i++){ if(d[i][eC]===data.email) return {error:'Email already registered'}; }
   var hash=Utilities.base64Encode(Utilities.computeHmacSha256Signature(data.password,'detoxy_secret_2024'));
-  s.appendRow(['U'+Date.now(), data.name||'', data.email||'', hash, data.phone||'', new Date().toISOString()]);
+  s.appendRow(['U'+Date.now(), data.name||'', data.email||'', hash, data.phone||'', data.address||'', data.city||'', data.state||'', data.pincode||'', new Date().toISOString()]);
   return {success:true};
+}
+
+function getUserOrders(email, phone) {
+  var orders = getOrders({}).orders;
+  var filtered = orders.filter(function(o) {
+    var em = email && String(o.email||'').toLowerCase() === String(email).toLowerCase();
+    var ph = phone && String(o.phone||'').replace(/\D/g,'').slice(-10) === String(phone).replace(/\D/g,'').slice(-10);
+    return em || ph;
+  });
+  return {orders: filtered, total: filtered.length};
+}
+
+function updateUser(data) {
+  var s = _getSheet('Users');
+  var found = _findRow(s, 'id', data.id);
+  if (!found) return {error:'User not found'};
+  var h = found.headers;
+  // Only allow updating safe fields (never email or password_hash via this endpoint)
+  var allowedFields = ['name','phone','address','city','state','pincode'];
+  allowedFields.forEach(function(field) {
+    if (data[field] !== undefined) {
+      var col = h.indexOf(field);
+      if (col > -1) s.getRange(found.row, col+1).setValue(String(data[field]).substring(0,200));
+    }
+  });
+  return {success:true};
+}
+
+function changePassword(data) {
+  var s = _getSheet('Users');
+  var vals = s.getDataRange().getValues();
+  var h = vals[0];
+  var eC = h.indexOf('email'), hC = h.indexOf('password_hash');
+
+  var oldHash = Utilities.base64Encode(
+    Utilities.computeHmacSha256Signature(data.oldPassword, 'detoxy_secret_2024')
+  );
+  var newHash = Utilities.base64Encode(
+    Utilities.computeHmacSha256Signature(data.newPassword, 'detoxy_secret_2024')
+  );
+
+  // Rate limiting: max 5 attempts per session (tracked by script properties)
+  var props   = PropertiesService.getScriptProperties();
+  var key     = 'pw_attempts_' + (data.email||'').replace(/[^a-z0-9]/gi,'');
+  var attempts = parseInt(props.getProperty(key)||'0');
+  if (attempts >= 5) return {error:'Too many attempts. Please try again later.'};
+
+  for (var i = 1; i < vals.length; i++) {
+    if (String(vals[i][eC]).toLowerCase() === String(data.email||'').toLowerCase()) {
+      if (vals[i][hC] !== oldHash) {
+        props.setProperty(key, String(attempts+1));
+        return {error:'Current password is incorrect.'};
+      }
+      if (data.newPassword.length < 8) return {error:'New password must be at least 8 characters.'};
+      s.getRange(i+1, hC+1).setValue(newHash);
+      props.deleteProperty(key); // Reset on success
+      return {success:true};
+    }
+  }
+  return {error:'User not found.'};
 }
 
 function loginUser(data) {
@@ -663,7 +726,8 @@ function loginUser(data) {
   var hash=Utilities.base64Encode(Utilities.computeHmacSha256Signature(data.password,'detoxy_secret_2024'));
   for (var i=1;i<d.length;i++){
     if(d[i][eC]===data.email&&d[i][hC]===hash)
-      return {success:true, user:{id:d[i][iC], name:d[i][nC], email:data.email}};
+      var u = {id:d[i][iC], name:d[i][nC], email:data.email, phone:d[i][h.indexOf('phone')]||'', address:d[i][h.indexOf('address')]||'', city:d[i][h.indexOf('city')]||'', state:d[i][h.indexOf('state')]||'', pincode:d[i][h.indexOf('pincode')]||'', loginTime:Date.now()};
+      return {success:true, user:u};
   }
   return {error:'Invalid email or password'};
 }

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Account | Detoxy Hijama</title>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/style.css"/>
+  <link rel="icon" type="image/png" href="/assets/images/favicon.png"/>
+  <link rel="apple-touch-icon" href="/assets/images/logo-192.png"/>
+  <style>
+    body{background:var(--cream)}
+    .acc-wrap{max-width:1100px;margin:0 auto;padding:32px 20px 80px;display:grid;grid-template-columns:260px 1fr;gap:28px;align-items:start}
+    /* ── Sidebar ── */
+    .acc-sidebar{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;position:sticky;top:calc(var(--nav-h,64px) + 16px)}
+    .acc-profile-block{padding:24px;text-align:center;background:linear-gradient(135deg,var(--dark),var(--td));color:#fff}
+    .acc-avatar{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:1.5rem;font-weight:700;border:2px solid rgba(255,255,255,.3)}
+    .acc-name{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700}
+    .acc-email{font-size:.75rem;opacity:.7;margin-top:3px}
+    .acc-nav{padding:8px}
+    .acc-nav-link{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;font-size:.84rem;font-weight:500;color:var(--text);cursor:pointer;transition:var(--transition);border:none;background:none;width:100%;text-align:left}
+    .acc-nav-link:hover,.acc-nav-link.active{background:var(--tp);color:var(--td)}
+    .acc-nav-link svg{width:17px;height:17px;flex-shrink:0}
+    .acc-nav-link .badge-dot{margin-left:auto;width:8px;height:8px;border-radius:50%;background:var(--t)}
+    .acc-nav-sep{height:1px;background:var(--border);margin:6px 0}
+    .acc-logout{color:var(--danger)!important}
+    .acc-logout:hover{background:#fee2e2!important;color:var(--danger)!important}
+    /* ── Main panel ── */
+    .acc-panel{background:var(--white);border:1px solid var(--border);border-radius:var(--radius)}
+    .acc-panel-head{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .acc-panel-head h2{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:700;color:var(--dark)}
+    .acc-panel-body{padding:24px}
+    /* ── Stats row ── */
+    .acc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+    .acc-stat{background:var(--cream);border-radius:10px;padding:16px;text-align:center}
+    .acc-stat-val{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;color:var(--dark)}
+    .acc-stat-label{font-size:.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-top:3px}
+    /* ── Orders table ── */
+    .orders-table{width:100%;border-collapse:collapse;font-size:.83rem}
+    .orders-table th{padding:9px 14px;text-align:left;font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;border-bottom:2px solid var(--border);background:var(--cream)}
+    .orders-table td{padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+    .orders-table tr:last-child td{border-bottom:none}
+    .orders-table tr:hover td{background:var(--cream)}
+    /* ── Status badges ── */
+    .status-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:50px;font-size:.68rem;font-weight:700}
+    .status-pending{background:#fef3c7;color:#92400e}
+    .status-confirmed{background:#d1fae5;color:#065f46}
+    .status-dispatched{background:#dbeafe;color:#1e40af}
+    .status-delivered{background:#e0e7ff;color:#3730a3}
+    .status-cancelled{background:#fee2e2;color:#991b1b}
+    /* ── Track steps ── */
+    .track-steps{display:flex;align-items:flex-start;position:relative;margin:20px 0}
+    .track-steps::before{content:'';position:absolute;top:16px;left:16px;right:16px;height:2px;background:var(--border)}
+    .track-step{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;position:relative;z-index:1}
+    .track-dot{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center}
+    .track-dot svg{width:14px;height:14px;color:var(--muted)}
+    .track-step.done .track-dot{background:var(--t);border-color:var(--t)}
+    .track-step.done .track-dot svg{color:#fff}
+    .track-step.active .track-dot{border-color:var(--t);box-shadow:0 0 0 4px var(--tp)}
+    .track-step.active .track-dot svg{color:var(--t)}
+    .track-label{font-size:.68rem;font-weight:600;color:var(--muted);text-align:center}
+    .track-step.done .track-label,.track-step.active .track-label{color:var(--dark)}
+    /* ── Forms ── */
+    .form-row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .section-hidden{display:none}
+    /* ── Empty state ── */
+    .empty-state-acc{padding:48px;text-align:center;color:var(--muted)}
+    .empty-state-acc svg{width:48px;height:48px;opacity:.25;margin-bottom:12px}
+    /* ── Alert ── */
+    .acc-alert{padding:11px 14px;border-radius:8px;font-size:.83rem;margin-bottom:14px}
+    .acc-alert-success{background:#d1fae5;color:#065f46}
+    .acc-alert-error{background:#fee2e2;color:#991b1b}
+    /* ── Tracking detail card ── */
+    .order-detail-card{background:var(--cream);border-radius:10px;padding:16px;margin-bottom:14px}
+    .order-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .od-item label{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);display:block;margin-bottom:2px}
+    .od-item span{font-size:.84rem;color:var(--dark);font-weight:500}
+    @media(max-width:860px){.acc-wrap{grid-template-columns:1fr}.acc-sidebar{position:static}.acc-stats{grid-template-columns:1fr 1fr}.form-row2{grid-template-columns:1fr}}
+    @media(max-width:480px){.acc-stats{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div id="header-mount"></div>
+
+<main class="acc-wrap" id="accWrap" style="display:none">
+
+  <!-- SIDEBAR -->
+  <aside class="acc-sidebar">
+    <div class="acc-profile-block">
+      <div class="acc-avatar" id="accAvatar">?</div>
+      <div class="acc-name" id="accName">Loading…</div>
+      <div class="acc-email" id="accEmailDisplay"></div>
+    </div>
+    <nav class="acc-nav">
+      <button class="acc-nav-link active" onclick="showTab('overview',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Overview
+      </button>
+      <button class="acc-nav-link" onclick="showTab('orders',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        My Orders
+        <span class="badge-dot" id="ordersBadge" style="display:none"></span>
+      </button>
+      <button class="acc-nav-link" onclick="showTab('tracking',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Track Order
+      </button>
+      <div class="acc-nav-sep"></div>
+      <button class="acc-nav-link" onclick="showTab('profile',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        Edit Profile
+      </button>
+      <button class="acc-nav-link" onclick="showTab('password',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        Change Password
+      </button>
+      <div class="acc-nav-sep"></div>
+      <button class="acc-nav-link acc-logout" onclick="doLogout()">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        Sign Out
+      </button>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div>
+
+    <!-- OVERVIEW -->
+    <div id="tab-overview" class="acc-panel">
+      <div class="acc-panel-head"><h2>Account Overview</h2><span id="accJoinDate" style="font-size:.78rem;color:var(--muted)"></span></div>
+      <div class="acc-panel-body">
+        <div class="acc-stats">
+          <div class="acc-stat"><div class="acc-stat-val" id="totalOrdersCount">—</div><div class="acc-stat-label">Total Orders</div></div>
+          <div class="acc-stat"><div class="acc-stat-val" id="pendingOrdersCount">—</div><div class="acc-stat-label">In Progress</div></div>
+          <div class="acc-stat"><div class="acc-stat-val" id="totalSpentAmount">—</div><div class="acc-stat-label">Total Spent</div></div>
+        </div>
+        <h3 style="font-size:.9rem;font-weight:700;color:var(--dark);margin-bottom:14px">Recent Orders</h3>
+        <div id="recentOrdersList"></div>
+        <div style="margin-top:20px">
+          <h3 style="font-size:.9rem;font-weight:700;color:var(--dark);margin-bottom:14px">Quick Links</h3>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <a href="/products.html" class="btn btn-outline btn-sm">Browse Products</a>
+            <a href="/track-order.html" class="btn btn-outline btn-sm">Track Order</a>
+            <a href="/quote.html" class="btn btn-outline btn-sm">Bulk Quote</a>
+            <a href="/contact.html" class="btn btn-outline btn-sm">Contact Support</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDERS -->
+    <div id="tab-orders" class="acc-panel section-hidden">
+      <div class="acc-panel-head"><h2>My Orders</h2><button class="btn btn-outline btn-sm" onclick="loadOrders()">Refresh</button></div>
+      <div class="acc-panel-body" style="padding:0">
+        <div id="ordersContent" style="padding:24px;color:var(--muted);font-size:.85rem">Loading orders…</div>
+      </div>
+    </div>
+
+    <!-- TRACKING -->
+    <div id="tab-tracking" class="acc-panel section-hidden">
+      <div class="acc-panel-head"><h2>Track Your Order</h2></div>
+      <div class="acc-panel-body">
+        <p style="font-size:.84rem;color:var(--muted);margin-bottom:18px">Enter your Order ID and the phone number used at checkout to get live tracking.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
+          <input type="text" id="trackOrderId" class="form-control" placeholder="Order ID (e.g. DH12345678)" style="flex:1;min-width:180px"/>
+          <input type="tel" id="trackPhone" class="form-control" placeholder="Phone number" style="flex:1;min-width:150px"/>
+          <button class="btn btn-primary" onclick="trackOrder()">Track</button>
+        </div>
+        <div id="trackResult"></div>
+      </div>
+    </div>
+
+    <!-- EDIT PROFILE -->
+    <div id="tab-profile" class="acc-panel section-hidden">
+      <div class="acc-panel-head"><h2>Edit Profile</h2></div>
+      <div class="acc-panel-body">
+        <div id="profileAlert"></div>
+        <div class="form-row2">
+          <div class="form-group"><label class="form-label">Full Name</label><input type="text" id="profName" class="form-control" autocomplete="name"/></div>
+          <div class="form-group"><label class="form-label">Mobile Number</label><input type="tel" id="profPhone" class="form-control" autocomplete="tel"/></div>
+        </div>
+        <div class="form-group"><label class="form-label">Email Address</label><input type="email" id="profEmail" class="form-control" autocomplete="email" readonly style="background:var(--cream);cursor:not-allowed"/><small style="font-size:.72rem;color:var(--muted)">Email cannot be changed</small></div>
+        <div class="form-group"><label class="form-label">Delivery Address</label><input type="text" id="profAddress" class="form-control" placeholder="House no., street, area" autocomplete="street-address"/></div>
+        <div class="form-row2">
+          <div class="form-group"><label class="form-label">City</label><input type="text" id="profCity" class="form-control" autocomplete="address-level2"/></div>
+          <div class="form-group"><label class="form-label">State</label>
+            <select id="profState" class="form-control">
+              <option value="">Select state</option>
+              <option>Tamil Nadu</option><option>Maharashtra</option><option>Karnataka</option><option>Kerala</option><option>Telangana</option><option>Andhra Pradesh</option><option>Gujarat</option><option>Rajasthan</option><option>Uttar Pradesh</option><option>West Bengal</option><option>Delhi</option><option>Punjab</option><option>Haryana</option><option>Madhya Pradesh</option><option>Bihar</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">PIN Code</label><input type="text" id="profPin" class="form-control" maxlength="6" autocomplete="postal-code"/></div>
+        <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+      </div>
+    </div>
+
+    <!-- CHANGE PASSWORD -->
+    <div id="tab-password" class="acc-panel section-hidden">
+      <div class="acc-panel-head"><h2>Change Password</h2></div>
+      <div class="acc-panel-body">
+        <div id="passAlert"></div>
+        <div class="form-group" style="max-width:420px">
+          <label class="form-label">Current Password</label>
+          <input type="password" id="passOld" class="form-control" autocomplete="current-password"/>
+        </div>
+        <div class="form-group" style="max-width:420px">
+          <label class="form-label">New Password</label>
+          <input type="password" id="passNew" class="form-control" autocomplete="new-password"/>
+          <small style="font-size:.72rem;color:var(--muted)">Minimum 8 characters</small>
+        </div>
+        <div class="form-group" style="max-width:420px">
+          <label class="form-label">Confirm New Password</label>
+          <input type="password" id="passConfirm" class="form-control" autocomplete="new-password"/>
+        </div>
+        <button class="btn btn-primary" onclick="changePassword()">Update Password</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Auth guard redirect overlay -->
+<div id="authGuard" style="position:fixed;inset:0;background:var(--cream);display:flex;align-items:center;justify-content:center;z-index:999">
+  <div style="text-align:center">
+    <div style="width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--t);border-radius:50%;animation:spin .6s linear infinite;margin:0 auto 16px"></div>
+    <p style="color:var(--muted);font-size:.85rem">Loading your account…</p>
+  </div>
+</div>
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+
+<div id="footer-mount"></div>
+<script src="assets/js/shared.js"></script>
+<script>
+// ── Security: auth guard ───────────────────────────────────────────────────
+var _user = null;
+var _API  = '';
+
+function _getUser() {
+  try {
+    var raw = localStorage.getItem('dh_user');
+    if (!raw) return null;
+    var u = JSON.parse(raw);
+    // Validate session token age (7 days)
+    if (u.loginTime && (Date.now() - u.loginTime) > 7 * 24 * 3600 * 1000) {
+      localStorage.removeItem('dh_user');
+      return null;
+    }
+    return u;
+  } catch(e) { return null; }
+}
+
+function _sanitize(str) {
+  return String(str || '').replace(/[<>&"']/g, function(c) {
+    return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Mount header/footer
+  var hm = document.getElementById('header-mount');
+  if (hm) {
+    var frag = document.createRange().createContextualFragment(renderHeader(''));
+    hm.replaceWith(frag);
+    Cart.updateUI(); initSearch(); initMobileNav(); updateNavAuthLink();
+  }
+  var fm = document.getElementById('footer-mount');
+  if (fm) fm.outerHTML = renderFooter();
+
+  _API  = (function(){ try{return localStorage.getItem('detoxy_sheets_url')||'';}catch(e){return '';} })();
+  _user = _getUser();
+
+  if (!_user) {
+    // Not logged in — redirect to login
+    window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+    return;
+  }
+
+  // Show dashboard
+  document.getElementById('authGuard').style.display = 'none';
+  document.getElementById('accWrap').style.display    = 'grid';
+
+  // Populate sidebar
+  var initials = (_user.name || _user.email || '?').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+  document.getElementById('accAvatar').textContent       = initials;
+  document.getElementById('accName').textContent         = _sanitize(_user.name || 'Customer');
+  document.getElementById('accEmailDisplay').textContent = _sanitize(_user.email || '');
+
+  // Populate profile form
+  document.getElementById('profName').value    = _user.name    || '';
+  document.getElementById('profEmail').value   = _user.email   || '';
+  document.getElementById('profPhone').value   = _user.phone   || '';
+  document.getElementById('profAddress').value = _user.address || '';
+  document.getElementById('profCity').value    = _user.city    || '';
+  document.getElementById('profPin').value     = _user.pincode || '';
+  if (_user.state) document.getElementById('profState').value = _user.state;
+
+  if (_user.loginTime) {
+    document.getElementById('accJoinDate').textContent = 'Session: ' + new Date(_user.loginTime).toLocaleDateString('en-IN');
+  }
+
+  // Pre-fill tracking phone
+  if (_user.phone) document.getElementById('trackPhone').value = _user.phone;
+
+  loadOrders();
+});
+
+// ── Navigation ─────────────────────────────────────────────────────────────
+function showTab(name, btn) {
+  document.querySelectorAll('[id^="tab-"]').forEach(function(el){ el.classList.add('section-hidden'); });
+  document.querySelectorAll('.acc-nav-link').forEach(function(el){ el.classList.remove('active'); });
+  document.getElementById('tab-' + name).classList.remove('section-hidden');
+  if (btn) btn.classList.add('active');
+}
+
+// ── Orders ──────────────────────────────────────────────────────────────────
+var _orders = [];
+
+function loadOrders() {
+  if (!_API || !_user) {
+    renderOrders([]);
+    return;
+  }
+  // Fetch orders filtered by customer phone
+  fetch(_API + '?action=getOrders', { redirect: 'follow' })
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      var all = d.orders || [];
+      // Filter to this user's orders by email or phone
+      _orders = all.filter(function(o) {
+        var emailMatch = _user.email && String(o.email||'').toLowerCase() === _user.email.toLowerCase();
+        var phoneMatch = _user.phone && String(o.phone||'').replace(/\D/g,'').slice(-10) === String(_user.phone||'').replace(/\D/g,'').slice(-10);
+        return emailMatch || phoneMatch;
+      });
+      renderOrders(_orders);
+      updateStats(_orders);
+    })
+    .catch(function(){ renderOrders([]); });
+}
+
+function updateStats(orders) {
+  document.getElementById('totalOrdersCount').textContent   = orders.length;
+  var pending = orders.filter(function(o){ return o.status !== 'delivered' && o.status !== 'cancelled'; }).length;
+  document.getElementById('pendingOrdersCount').textContent  = pending;
+  var spent = orders.filter(function(o){ return o.status !== 'cancelled'; })
+    .reduce(function(s,o){ return s + (Number(o.total)||0); }, 0);
+  document.getElementById('totalSpentAmount').textContent    = spent > 0 ? '₹' + spent.toLocaleString('en-IN') : '₹0';
+  if (pending > 0) document.getElementById('ordersBadge').style.display = 'block';
+
+  // Recent orders in overview
+  var recentHtml = orders.slice(0, 3).map(function(o){ return renderOrderRow(o, true); }).join('');
+  document.getElementById('recentOrdersList').innerHTML = recentHtml ||
+    '<p style="color:var(--muted);font-size:.84rem">No orders yet. <a href="/products.html" style="color:var(--t)">Start shopping →</a></p>';
+}
+
+function renderOrders(orders) {
+  var el = document.getElementById('ordersContent');
+  if (!orders.length) {
+    el.innerHTML = '<div class="empty-state-acc"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/></svg><p>No orders found.</p><a href="/products.html" class="btn btn-primary" style="margin-top:14px">Shop Now</a></div>';
+    return;
+  }
+  el.innerHTML = '<div style="overflow-x:auto"><table class="orders-table"><thead><tr><th>Order ID</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th><th></th></tr></thead><tbody>' +
+    orders.map(function(o){ return renderOrderRow(o, false); }).join('') + '</tbody></table></div>';
+}
+
+function renderOrderRow(o, mini) {
+  var d = o.date ? new Date(o.date).toLocaleDateString('en-IN') : '—';
+  var items = o.items ? (o.items.length > 35 ? o.items.substring(0,35)+'…' : o.items) : '—';
+  var trackBtn = (o.tracking_url)
+    ? '<a href="' + _sanitize(o.tracking_url) + '" target="_blank" rel="noopener" class="btn btn-outline btn-sm">Track</a>'
+    : '<button class="btn btn-outline btn-sm" onclick="quickTrack(\'' + _sanitize(o.order_id) + '\')">Details</button>';
+  if (mini) {
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--border)">' +
+      '<div><div style="font-weight:600;font-size:.84rem">' + _sanitize(String(o.order_id)) + '</div><div style="font-size:.76rem;color:var(--muted)">' + d + '</div></div>' +
+      '<div style="text-align:right"><div style="font-weight:700">₹' + Number(o.total||0).toLocaleString('en-IN') + '</div><span class="status-badge status-' + (o.status||'pending') + '">' + (o.status||'pending') + '</span></div></div>';
+  }
+  return '<tr><td style="font-family:monospace;font-size:.8rem">' + _sanitize(String(o.order_id)) + '</td><td style="max-width:160px;font-size:.78rem">' + _sanitize(items) + '</td><td><strong>₹' + Number(o.total||0).toLocaleString('en-IN') + '</strong></td><td><span class="status-badge status-' + (o.status||'pending') + '">' + (o.status||'pending') + '</span></td><td style="font-size:.76rem">' + d + '</td><td>' + trackBtn + '</td></tr>';
+}
+
+function quickTrack(orderId) {
+  document.getElementById('trackOrderId').value = orderId;
+  showTab('tracking', document.querySelector('.acc-nav-link:nth-child(3)'));
+  trackOrder();
+}
+
+// ── Tracking ────────────────────────────────────────────────────────────────
+function trackOrder() {
+  var orderId = document.getElementById('trackOrderId').value.trim().toUpperCase();
+  var phone   = document.getElementById('trackPhone').value.trim();
+  var resEl   = document.getElementById('trackResult');
+
+  if (!orderId) { resEl.innerHTML = '<div class="acc-alert acc-alert-error">Please enter an Order ID.</div>'; return; }
+
+  resEl.innerHTML = '<div style="color:var(--muted);font-size:.84rem">Looking up order…</div>';
+
+  // First check local orders
+  var localMatch = _orders.find(function(o){ return String(o.order_id).toUpperCase() === orderId; });
+
+  function renderTrackResult(o) {
+    if (!o) { resEl.innerHTML = '<div class="acc-alert acc-alert-error">Order not found. Check the Order ID or phone number.</div>'; return; }
+
+    var statusMap = {pending:0, confirmed:1, dispatched:2, delivered:4};
+    var step = statusMap[o.status] !== undefined ? statusMap[o.status] : 0;
+    var steps = [
+      {label:'Order Placed', icon:'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2'},
+      {label:'Confirmed', icon:'M5 13l4 4L19 7'},
+      {label:'Dispatched', icon:'M8 7h12m0 0l-4-4m4 4l-4 4m0 5H4m0 0l4 4m-4-4l4-4'},
+      {label:'Out for Delivery', icon:'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z'},
+      {label:'Delivered', icon:'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'}
+    ];
+
+    var stepsHtml = '<div class="track-steps">' + steps.map(function(s, i) {
+      var cls = i < step ? 'done' : (i === step ? 'active' : '');
+      return '<div class="track-step ' + cls + '"><div class="track-dot"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="' + s.icon + '"/></svg></div><div class="track-label">' + s.label + '</div></div>';
+    }).join('') + '</div>';
+
+    var trackInfo = (o.courier_name || o.tracking_number)
+      ? '<div style="background:var(--tp);border-radius:8px;padding:12px 14px;font-size:.82rem;margin-top:12px"><strong>Courier:</strong> ' + _sanitize(o.courier_name||'—') + '&nbsp;&nbsp;<strong>AWB:</strong> ' + _sanitize(o.tracking_number||'—') + (o.tracking_url ? ' &nbsp;<a href="' + _sanitize(o.tracking_url) + '" target="_blank" style="color:var(--t)">Track →</a>' : '') + '</div>'
+      : '';
+
+    var addr = [o.address,o.city,o.state,o.pincode].filter(Boolean).join(', ');
+    resEl.innerHTML = '<div class="order-detail-card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><strong>Order ' + _sanitize(String(o.order_id)) + '</strong><span class="status-badge status-' + (o.status||'pending') + '">' + (o.status||'pending') + '</span></div>' + stepsHtml +
+      '<div class="order-detail-grid" style="margin-top:12px">' +
+      '<div class="od-item"><label>Items</label><span>' + _sanitize(o.items||'—') + '</span></div>' +
+      '<div class="od-item"><label>Total</label><span>₹' + Number(o.total||0).toLocaleString('en-IN') + '</span></div>' +
+      '<div class="od-item"><label>Payment</label><span>' + _sanitize((o.payment||'—').toUpperCase()) + '</span></div>' +
+      '<div class="od-item"><label>Date</label><span>' + (o.date ? new Date(o.date).toLocaleDateString('en-IN') : '—') + '</span></div>' +
+      (addr ? '<div class="od-item" style="grid-column:1/-1"><label>Delivery Address</label><span>' + _sanitize(addr) + '</span></div>' : '') +
+      '</div>' + trackInfo + '</div>';
+  }
+
+  if (localMatch) { renderTrackResult(localMatch); return; }
+
+  if (!_API) { renderTrackResult(null); return; }
+
+  fetch(_API + '?action=trackOrder&orderId=' + encodeURIComponent(orderId) + '&phone=' + encodeURIComponent(phone), { redirect: 'follow' })
+    .then(function(r){ return r.json(); })
+    .then(function(d){ renderTrackResult(d.order || null); })
+    .catch(function(){ renderTrackResult(null); });
+}
+
+// ── Profile ─────────────────────────────────────────────────────────────────
+function saveProfile() {
+  var name    = document.getElementById('profName').value.trim();
+  var phone   = document.getElementById('profPhone').value.trim();
+  var address = document.getElementById('profAddress').value.trim();
+  var city    = document.getElementById('profCity').value.trim();
+  var state   = document.getElementById('profState').value;
+  var pincode = document.getElementById('profPin').value.trim();
+  var alertEl = document.getElementById('profileAlert');
+
+  // Input validation
+  if (!name || name.length < 2) { alertEl.innerHTML = '<div class="acc-alert acc-alert-error">Please enter a valid name (at least 2 characters).</div>'; return; }
+  if (phone && !/^[6-9]\d{9}$/.test(phone.replace(/\D/g,''))) { alertEl.innerHTML = '<div class="acc-alert acc-alert-error">Please enter a valid 10-digit Indian mobile number.</div>'; return; }
+  if (pincode && !/^\d{6}$/.test(pincode)) { alertEl.innerHTML = '<div class="acc-alert acc-alert-error">Please enter a valid 6-digit PIN code.</div>'; return; }
+
+  // Update local user object
+  _user = Object.assign(_user, { name:name, phone:phone, address:address, city:city, state:state, pincode:pincode });
+  localStorage.setItem('dh_user', JSON.stringify(_user));
+
+  // Update sidebar
+  document.getElementById('accName').textContent = _sanitize(name);
+  var initials = name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+  document.getElementById('accAvatar').textContent = initials;
+
+  // Update on server if API available
+  if (_API && _user.id) {
+    fetch(_API + '?action=updateUser', {
+      method: 'POST', redirect: 'follow',
+      headers: {'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({ action:'updateUser', id:_user.id, name:name, phone:phone, address:address, city:city, state:state, pincode:pincode })
+    }).catch(function(){});
+  }
+
+  alertEl.innerHTML = '<div class="acc-alert acc-alert-success">✓ Profile updated successfully.</div>';
+  setTimeout(function(){ alertEl.innerHTML = ''; }, 3000);
+}
+
+// ── Password ────────────────────────────────────────────────────────────────
+function changePassword() {
+  var oldPass = document.getElementById('passOld').value;
+  var newPass = document.getElementById('passNew').value;
+  var confirm = document.getElementById('passConfirm').value;
+  var alertEl = document.getElementById('passAlert');
+
+  if (!oldPass) { alertEl.innerHTML = '<div class="acc-alert acc-alert-error">Please enter your current password.</div>'; return; }
+  if (newPass.length < 8) { alertEl.innerHTML = '<div class="acc-alert acc-alert-error">New password must be at least 8 characters.</div>'; return; }
+  if (newPass !== confirm) { alertEl.innerHTML = '<div class="acc-alert acc-alert-error">Passwords do not match.</div>'; return; }
+  if (oldPass === newPass) { alertEl.innerHTML = '<div class="acc-alert acc-alert-error">New password must be different from current password.</div>'; return; }
+
+  if (!_API) {
+    alertEl.innerHTML = '<div class="acc-alert acc-alert-error">API not configured. Password change requires Google Sheets connection.</div>';
+    return;
+  }
+
+  var btn = event.target;
+  btn.disabled = true; btn.textContent = 'Updating…';
+
+  fetch(_API + '?action=changePassword', {
+    method: 'POST', redirect: 'follow',
+    headers: {'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ action:'changePassword', email:_user.email, oldPassword:oldPass, newPassword:newPass })
+  }).then(function(r){ return r.json(); })
+    .then(function(d) {
+      if (d.success) {
+        alertEl.innerHTML = '<div class="acc-alert acc-alert-success">✓ Password changed successfully.</div>';
+        document.getElementById('passOld').value = '';
+        document.getElementById('passNew').value = '';
+        document.getElementById('passConfirm').value = '';
+      } else {
+        alertEl.innerHTML = '<div class="acc-alert acc-alert-error">' + _sanitize(d.error || 'Incorrect current password.') + '</div>';
+      }
+    })
+    .catch(function(){ alertEl.innerHTML = '<div class="acc-alert acc-alert-error">Network error. Please try again.</div>'; })
+    .finally(function(){ btn.disabled = false; btn.textContent = 'Update Password'; });
+}
+
+// ── Logout ───────────────────────────────────────────────────────────────────
+function doLogout() {
+  localStorage.removeItem('dh_user');
+  window.location.href = '/login.html';
+}
+</script>
+</body>
+</html>

@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
        Double-calling initMobileNav would attach duplicate event listeners to navToggle. */
     var frag = document.createRange().createContextualFragment(renderHeader(''));
     hm.replaceWith(frag);
-    Cart.updateUI(); initSearch(); initMobileNav();
+    Cart.updateUI(); initSearch(); initMobileNav(); updateNavAuthLink();
   }
   var fm = document.getElementById('footer-mount');
   if (fm) fm.outerHTML = renderFooter();
