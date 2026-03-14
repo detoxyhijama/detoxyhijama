@@ -40,7 +40,6 @@ function SETUP_EVERYTHING() {
 }
 
 // NOTE: Blogs are managed via localStorage on the frontend — no Sheets needed.
-}
 
 // ── Sheet column definitions ───────────────────────────────────────────────────
 var O_HDRS = ['order_id','name','phone','email','address','city','state','pincode',
@@ -90,12 +89,8 @@ function _setupUsersSheet() {
 }
 
 function _setupProductsSheet() {
-  var s = _getSheet('Products');
-  if (s.getLastRow() === 0) {
-    s.appendRow(P_COLS);
-    _styleHeader(s, P_COLS.length, '#0d6b5e');
-    s.setFrozenRows(1);
-  }
+  // Header-only setup — products are seeded separately by _seedAllProducts()
+  // This function intentionally does nothing now to avoid double-write with _seedAllProducts
 }
 
 function _styleHeader(sheet, numCols, bg) {
@@ -294,26 +289,56 @@ var ALL_PRODUCTS = [
 
 function _seedAllProducts() {
   var s = _getSheet('Products');
+
+  // Write header row if sheet is completely empty
   if (s.getLastRow() === 0) {
     s.appendRow(P_COLS);
     _styleHeader(s, P_COLS.length, '#0d6b5e');
     s.setFrozenRows(1);
   }
-  var rows = ALL_PRODUCTS.map(function(p) {
+
+  // ── DUPLICATE GUARD ──────────────────────────────────────────────────────────
+  // Read all existing product IDs so we never insert the same product twice.
+  // This means SETUP_EVERYTHING is safe to re-run — it will skip products that
+  // already exist and only insert genuinely new ones.
+  var existing = s.getDataRange().getValues();
+  var headers  = existing[0];
+  var idCol    = headers.indexOf('id');
+  var existingIds = {};
+  for (var i = 1; i < existing.length; i++) {
+    var rowId = String(existing[i][idCol] || '').trim();
+    if (rowId) existingIds[rowId] = true;
+  }
+
+  // Filter to only products not already in the sheet
+  var newProducts = ALL_PRODUCTS.filter(function(p) {
+    return !existingIds[String(p.id)];
+  });
+
+  if (newProducts.length === 0) {
+    Logger.log('_seedAllProducts: all ' + ALL_PRODUCTS.length + ' products already exist — nothing to add.');
+    return;
+  }
+
+  var rows = newProducts.map(function(p) {
     return P_COLS.map(function(col) {
-      var v = p[col]; return (v === undefined || v === null) ? '' : v;
+      var v = p[col];
+      return (v === undefined || v === null) ? '' : v;
     });
   });
+
   s.getRange(s.getLastRow() + 1, 1, rows.length, P_COLS.length).setValues(rows);
   s.autoResizeColumns(1, P_COLS.length);
-  Logger.log('Seeded ' + ALL_PRODUCTS.length + ' products.');
+  Logger.log('_seedAllProducts: inserted ' + newProducts.length + ' new products (' + (ALL_PRODUCTS.length - newProducts.length) + ' already existed).');
 }
 
 // ── Optional: reset products only ─────────────────────────────────────────────
 function RESET_PRODUCTS_ONLY() {
-  var s = _getSheet('Products');
-  var lr = s.getLastRow();
+  var s   = _getSheet('Products');
+  var lr  = s.getLastRow();
+  // Clear all data rows (keep header row 1)
   if (lr > 1) s.deleteRows(2, lr - 1);
+  // Sheet is now header-only — safe to seed with no duplicates
   _seedAllProducts();
   SpreadsheetApp.getUi().alert('✅ Products sheet reset with all 15 products.');
 }
@@ -441,8 +466,17 @@ function getCategories() {
 function addProduct(data) {
   var s = _getSheet('Products');
   if (s.getLastRow()===0) { s.appendRow(P_COLS); _styleHeader(s,P_COLS.length,'#0d6b5e'); s.setFrozenRows(1); }
-  var h = s.getRange(1,1,1,s.getLastColumn()).getValues()[0];
+
   if (!data.id) data.id = 'p-' + Date.now();
+
+  // Prevent duplicate: if a product with this ID already exists, edit it instead
+  var existing = _findRow(s, 'id', data.id);
+  if (existing) {
+    Logger.log('addProduct: ID ' + data.id + ' already exists — updating instead of inserting.');
+    return editProduct(data);
+  }
+
+  var h = s.getRange(1,1,1,s.getLastColumn()).getValues()[0];
   s.appendRow(h.map(function(k){
     var v = data[k];
     if (v === undefined || v === null) return '';
