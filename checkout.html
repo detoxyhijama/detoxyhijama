@@ -313,7 +313,7 @@ function placeOrder() {
   if (sheetsUrl) {
     fetch(sheetsUrl + '?action=createOrder', {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
+      redirect: 'follow', headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(orderData)
     }).then(function(){ finalizeOrder(); }).catch(function(){ finalizeOrder(); });
   } else {

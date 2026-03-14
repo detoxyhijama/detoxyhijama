@@ -183,33 +183,64 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function submitQuote() {
-  var name = document.getElementById('qName').value.trim();
-  var phone = document.getElementById('qPhone').value.trim();
-  var city = document.getElementById('qCity').value.trim();
+  var name     = document.getElementById('qName').value.trim();
+  var phone    = document.getElementById('qPhone').value.trim();
+  var city     = document.getElementById('qCity').value.trim();
   var products = document.getElementById('qProducts').value.trim();
-  var alertEl = document.getElementById('quoteAlert');
+  var alertEl  = document.getElementById('quoteAlert');
 
   if (!name || !phone || !city || !products) {
-    alertEl.innerHTML = '<div class="alert alert-error">Please fill in all required fields.</div>';
+    alertEl.innerHTML = '<div class="alert alert-error">Please fill in all required fields (Name, Phone, City, Products).</div>';
+    alertEl.scrollIntoView({behavior:'smooth',block:'nearest'});
     return;
   }
 
-  // Send via WhatsApp
-  var msg = 'Bulk Quote Request\n\n' +
-    'Name: ' + name + '\n' +
-    'Phone: ' + phone + '\n' +
-    'Email: ' + (document.getElementById('qEmail').value || '-') + '\n' +
-    'Org: ' + (document.getElementById('qOrg').value || '-') + '\n' +
-    'City: ' + city + '\n\n' +
-    'Products Needed:\n' + products + '\n\n' +
-    'Budget: ' + (document.getElementById('qBudget').value || '-') + '\n' +
-    'Timeline: ' + (document.getElementById('qTimeline').value || '-') + '\n' +
-    'Notes: ' + (document.getElementById('qNotes').value || '-');
+  var submitBtn = document.querySelector('button[onclick="submitQuote()"]');
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Submitting…'; }
 
-  alertEl.innerHTML = '<div class="alert alert-success">Thank you! Redirecting to WhatsApp to send your request...</div>';
-  setTimeout(function() {
-    window.open('https://wa.me/919566596077?text=' + encodeURIComponent(msg), '_blank');
-  }, 800);
+  var apiUrl = SITE.sheetsUrl;
+  var data = {
+    action:   'createQuote',
+    name:     name,
+    phone:    phone,
+    email:    document.getElementById('qEmail').value.trim(),
+    org:      document.getElementById('qOrg').value.trim(),
+    city:     city,
+    products: products.split('\n').filter(function(l){return l.trim();}),
+    message:  (document.getElementById('qNotes') ? document.getElementById('qNotes').value.trim() : '')
+  };
+
+  function finish(success, quoteId) {
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Submit Quote Request'; }
+    if (success) {
+      alertEl.innerHTML = '<div class="alert alert-success" style="padding:16px 18px"><strong>✓ Quote Request Submitted!</strong><br>Your Quote ID: <strong>' + (quoteId||'') + '</strong><br>We will contact you within 2 hours via WhatsApp or email.</div>';
+      ['qName','qPhone','qEmail','qOrg','qCity','qProducts'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+      // Also send WhatsApp notification
+      var msg = 'Bulk Quote Request\nID: '+(quoteId||'')+'\nName: '+name+'\nPhone: '+phone+'\nCity: '+city+'\n\nProducts:\n'+products;
+      setTimeout(function(){ window.open('https://wa.me/919566596077?text='+encodeURIComponent(msg),'_blank'); }, 1200);
+    } else {
+      alertEl.innerHTML = '<div class="alert alert-error">Submission failed. Please try WhatsApp instead.</div>';
+    }
+    alertEl.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+
+  if (!apiUrl) {
+    // No API configured — fallback to WhatsApp
+    finish(true, 'WA-' + Date.now().toString().slice(-6));
+    return;
+  }
+
+  fetch(apiUrl + '?action=createQuote', {
+    method: 'POST',
+    redirect: 'follow',
+    headers: {'Content-Type':'text/plain'},
+    body: JSON.stringify(data)
+  }).then(function(r){return r.json();})
+    .then(function(d){
+      if (d.success) finish(true, d.quoteId);
+      else { console.error(d.error); finish(false); }
+    })
+    .catch(function(e){ console.error(e); finish(false); });
 }
 </script>
 </body>

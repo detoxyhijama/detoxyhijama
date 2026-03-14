@@ -362,19 +362,47 @@
 
     <!-- ── SETTINGS ── -->
     <div id="sec-settings" class="section">
-      <div class="card" style="max-width:580px;margin-bottom:20px">
-        <div class="card-head"><h3>Google Sheets API</h3></div>
+      <div class="card" style="max-width:640px;margin-bottom:20px">
+        <div class="card-head"><h3>Google Sheets API Connection</h3></div>
         <div class="card-body">
-          <p style="font-size:.82rem;color:var(--muted);margin-bottom:16px">Paste your Google Apps Script Web App URL to sync all data.</p>
+
+          <!-- Step by step guide -->
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:14px 16px;margin-bottom:18px;font-size:.8rem;line-height:1.7">
+            <strong style="display:block;margin-bottom:6px;color:#166534">📋 How to get your Apps Script URL:</strong>
+            <ol style="margin:0;padding-left:18px;color:#374151">
+              <li>Open your Google Sheet → <strong>Extensions → Apps Script</strong></li>
+              <li>Paste the <code style="background:#e5e7eb;padding:1px 5px;border-radius:4px">google-apps-script.gs</code> file contents</li>
+              <li>Run <strong>SETUP_EVERYTHING</strong> once (creates all sheets + seeds products)</li>
+              <li>Click <strong>Deploy → New Deployment</strong></li>
+              <li>Type: <strong>Web App</strong></li>
+              <li>Execute as: <strong>Me</strong></li>
+              <li>Who has access: <strong>Anyone</strong> ← very important</li>
+              <li>Click <strong>Deploy</strong> → Authorize → Copy the URL</li>
+              <li>Paste the URL below and click Save, then Test</li>
+            </ol>
+          </div>
+
           <div class="form-group">
-            <label class="form-label">Apps Script URL</label>
+            <label class="form-label">Apps Script Web App URL</label>
             <div style="display:flex;gap:8px">
-              <input type="url" id="settingsUrl" class="form-control" placeholder="https://script.google.com/macros/s/..."/>
+              <input type="url" id="settingsUrl" class="form-control" placeholder="https://script.google.com/macros/s/AKfy.../exec"/>
               <button class="btn btn-primary" onclick="saveSheetsUrl()">Save</button>
             </div>
+            <small style="color:var(--muted);font-size:.73rem">URL must end with <code>/exec</code></small>
           </div>
-          <button class="btn btn-outline btn-sm" onclick="testApiConnection()" id="testApiBtn">Test Connection</button>
-          <div id="apiTestResult" style="margin-top:10px;font-size:.8rem"></div>
+
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <button class="btn btn-outline btn-sm" onclick="testApiConnection()" id="testApiBtn">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>Test Connection
+            </button>
+          </div>
+          <div id="apiTestResult" style="margin-top:12px;font-size:.8rem;line-height:1.6"></div>
+
+          <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:12px 14px;margin-top:16px;font-size:.78rem;color:#92400e">
+            <strong>⚠️ If you see "Failed to fetch":</strong><br>
+            The most common cause is the deployment setting <em>"Who has access"</em> is not set to <strong>Anyone</strong>.
+            Go back to Apps Script → Deploy → Manage deployments → Edit → change access → re-deploy → copy the new URL.
+          </div>
         </div>
       </div>
       <div class="card" style="max-width:580px;margin-bottom:20px">

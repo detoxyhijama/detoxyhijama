@@ -198,6 +198,7 @@
           <div class="od-block" style="grid-column:1/-1"><label>Delivery Address</label><span id="res-address">—</span></div>
           <div class="od-block"><label>Courier</label><span id="res-courier">—</span></div>
           <div class="od-block"><label>Tracking Number</label><span id="res-tracking">—</span></div>
+          <div class="od-block" style="grid-column:1/-1" id="res-track-btn-wrap"></div>
         </div>
 
         <div class="order-timeline">
@@ -246,58 +247,121 @@
       return orders;
     }
 
+
     // ── CUSTOMER TRACKING ─────────────────────────
     function trackOrder() {
       const id = document.getElementById('trackOrderId').value.trim().toUpperCase();
       const phone = document.getElementById('trackPhone').value.trim();
-      const orders = getOrders();
-      const order = orders.find(o => o.id.toUpperCase() === id && o.phone === phone);
 
       document.getElementById('trackResult').classList.remove('show');
       document.getElementById('trackNotFound').classList.remove('show');
 
-      if (!order) { document.getElementById('trackNotFound').classList.add('show'); return; }
+      if (!id || !phone) {
+        document.getElementById('trackNotFound').classList.add('show');
+        document.getElementById('trackNotFound').innerHTML = '<p>Please enter both Order ID and phone number.</p>';
+        return;
+      }
 
-      // Fill result
-      document.getElementById('res-order-id').textContent = order.id;
-      document.getElementById('res-name').textContent = order.name;
-      document.getElementById('res-phone').textContent = order.phone;
-      document.getElementById('res-items').textContent = order.items;
-      document.getElementById('res-amount').textContent = '₹' + Number(order.amount).toLocaleString('en-IN');
-      document.getElementById('res-date').textContent = order.date;
-      document.getElementById('res-eta').textContent = order.eta || 'TBD';
-      document.getElementById('res-address').textContent = order.address || '—';
-      document.getElementById('res-courier').textContent = order.courier || '—';
-      document.getElementById('res-tracking').textContent = order.tracking || '—';
+      const btn = document.querySelector('.btn-track');
+      if (btn) { btn.disabled = true; btn.textContent = 'Tracking…'; }
 
-      // Status badge
-      const badge = document.getElementById('res-status-badge');
-      const statusMap = { pending:'status-pending', processing:'status-processing', shipped:'status-shipped', 'out-for-delivery':'status-out-for-delivery', delivered:'status-delivered', cancelled:'status-cancelled' };
-      badge.className = 'order-status-badge ' + (statusMap[order.status] || 'status-pending');
-      badge.textContent = order.status.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+      const apiUrl = SITE.sheetsUrl;
 
-      // Stepper
-      const steps = ['placed','confirmed','shipped','out','delivered'];
-      const statusStep = { pending:0, processing:1, shipped:2, 'out-for-delivery':3, delivered:4, cancelled:-1 };
-      const currentStep = statusStep[order.status] ?? 0;
-      steps.forEach((s,i) => {
-        const el = document.getElementById('step-' + s);
-        el.classList.remove('done','active');
-        if (i < currentStep) el.classList.add('done');
-        else if (i === currentStep && order.status !== 'cancelled') el.classList.add('active');
-      });
-      document.getElementById('steps-progress').style.width = (currentStep / (steps.length-1) * 100) + '%';
+      function showResult(order) {
+        if (btn) { btn.disabled = false; btn.textContent = 'Track My Order'; }
+        if (!order) { document.getElementById('trackNotFound').classList.add('show'); return; }
 
-      // Timeline
-      const tl = document.getElementById('res-timeline');
-      tl.innerHTML = (order.timeline || []).map((t,i,arr) => `
-        <div class="timeline-item">
-          <div class="tl-dot ${i < arr.length-1 ? '' : ''}"></div>
-          <div class="tl-content"><span>${t.text}</span><small>${t.date}</small></div>
-        </div>`).reverse().join('');
+        document.getElementById('res-order-id').textContent   = order.order_id || order.id;
+        document.getElementById('res-name').textContent       = order.name;
+        document.getElementById('res-phone').textContent      = order.phone;
+        document.getElementById('res-items').textContent      = order.items;
+        document.getElementById('res-amount').textContent     = '₹' + Number(order.total||order.amount||0).toLocaleString('en-IN');
+        document.getElementById('res-date').textContent       = order.date ? new Date(order.date).toLocaleDateString('en-IN') : '—';
+        document.getElementById('res-address').textContent    = [order.address, order.city, order.state, order.pincode].filter(Boolean).join(', ') || '—';
+        document.getElementById('res-courier').textContent    = order.courier_name || order.courier || '—';
+        document.getElementById('res-tracking').textContent   = order.tracking_number || order.tracking || '—';
+        document.getElementById('res-eta').textContent        = order.eta || '3-5 business days';
 
-      document.getElementById('trackResult').classList.add('show');
-      document.getElementById('trackResult').scrollIntoView({behavior:'smooth',block:'start'});
+        // Tracking URL button
+        const trackingUrl = order.tracking_url || order.trackingUrl;
+        const trackBtnWrap = document.getElementById('res-track-btn-wrap');
+        if (trackBtnWrap) {
+          if (trackingUrl) {
+            trackBtnWrap.innerHTML = '<a href="'+trackingUrl+'" target="_blank" class="btn-track" style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:10px 20px;border-radius:10px;background:var(--t,#2aab97);color:#fff;font-weight:600;text-decoration:none;font-size:.88rem">Track Shipment →</a>';
+          } else {
+            trackBtnWrap.innerHTML = '';
+          }
+        }
+
+        // Status badge
+        const status = (order.status || 'pending').toLowerCase();
+        const badge = document.getElementById('res-status-badge');
+        const statusDisplayMap = {pending:'Pending',confirmed:'Confirmed',dispatched:'Shipped',delivered:'Delivered',cancelled:'Cancelled'};
+        const statusClassMap   = {pending:'status-pending',confirmed:'status-processing',dispatched:'status-shipped',delivered:'status-delivered',cancelled:'status-cancelled'};
+        badge.className = 'order-status-badge ' + (statusClassMap[status] || 'status-pending');
+        badge.textContent = statusDisplayMap[status] || status.charAt(0).toUpperCase()+status.slice(1);
+
+        // Stepper
+        const statusStep = {pending:0,confirmed:1,dispatched:2,delivered:4,cancelled:-1};
+        const currentStep = statusStep[status] !== undefined ? statusStep[status] : 0;
+        const steps = ['placed','confirmed','shipped','out','delivered'];
+        steps.forEach((s,i) => {
+          const el = document.getElementById('step-' + s);
+          if (!el) return;
+          el.classList.remove('done','active');
+          if (i < currentStep) el.classList.add('done');
+          else if (i === currentStep && status !== 'cancelled') el.classList.add('active');
+        });
+        const prog = document.getElementById('steps-progress');
+        if (prog) prog.style.width = (currentStep / 4 * 100) + '%';
+
+        // Timeline (auto-generate from status)
+        const tl = document.getElementById('res-timeline');
+        const statusTimeline = [];
+        const orderDate = order.date ? new Date(order.date) : new Date();
+        const fmt = d => d.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+        statusTimeline.push({text:'Order placed', date: fmt(orderDate)});
+        if (['confirmed','dispatched','delivered'].includes(status)) {
+          const d2 = new Date(orderDate); d2.setDate(d2.getDate()+1);
+          statusTimeline.push({text:'Order confirmed & packed', date: fmt(d2)});
+        }
+        if (['dispatched','delivered'].includes(status)) {
+          const d3 = new Date(orderDate); d3.setDate(d3.getDate()+2);
+          statusTimeline.push({text:'Shipped via '+(order.courier_name||order.courier||'courier'), date: fmt(d3)});
+        }
+        if (status === 'delivered') {
+          const d5 = new Date(orderDate); d5.setDate(d5.getDate()+4);
+          statusTimeline.push({text:'Delivered successfully', date: fmt(d5)});
+        }
+        tl.innerHTML = [...statusTimeline].reverse().map(t =>
+          '<div class="timeline-item"><div class="tl-dot"></div><div class="tl-content"><span>'+t.text+'</span><small>'+t.date+'</small></div></div>'
+        ).join('');
+
+        document.getElementById('trackResult').classList.add('show');
+        document.getElementById('trackResult').scrollIntoView({behavior:'smooth',block:'start'});
+      }
+
+      // Try Google Sheets API first
+      if (apiUrl) {
+        fetch(apiUrl + '?action=trackOrder&orderId=' + encodeURIComponent(id) + '&phone=' + encodeURIComponent(phone))
+          .then(r => r.json())
+          .then(d => {
+            if (d.order) showResult(d.order);
+            else {
+              // Fallback to local localStorage demo data
+              const localOrders = (() => { try { return JSON.parse(localStorage.getItem('dh_orders')||'[]'); } catch { return []; } })();
+              const lo = localOrders.find(o => (o.order_id||o.id||'').toUpperCase() === id && (o.phone||'').replace(/\D/g,'').slice(-10) === phone.replace(/\D/g,'').slice(-10));
+              showResult(lo || null);
+            }
+          })
+          .catch(() => showResult(null));
+      } else {
+        // Fallback: check localStorage
+        const localOrders = (() => { try { return JSON.parse(localStorage.getItem('dh_orders')||'[]'); } catch { return []; } })();
+        const lo = localOrders.find(o => (o.order_id||o.id||'').toUpperCase() === id && (o.phone||'').replace(/\D/g,'').slice(-10) === phone.replace(/\D/g,'').slice(-10));
+        if (btn) { btn.disabled = false; btn.textContent = 'Track My Order'; }
+        showResult(lo || null);
+      }
     }
 
     // Enter key support
