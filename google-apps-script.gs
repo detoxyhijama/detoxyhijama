@@ -464,25 +464,24 @@ function _findRow(sheet, colName, val) {
 function getProducts(params) {
   var rows = _toObjects(_getSheet('Products'));
   var list = rows.map(function(p) {
-    // Parse JSON fields
-    try { if (typeof p.features==='string') p.features=JSON.parse(p.features||'[]'); } catch(e){ p.features=[]; }
-    try { if (typeof p.specs==='string') p.specs=JSON.parse(p.specs||'{}'); } catch(e){ p.specs={}; }
-    try { if (typeof p.images==='string') p.images=JSON.parse(p.images||'[]'); } catch(e){ p.images=[]; }
-    try { if (typeof p.variantStock==='string') p.variantStock=JSON.parse(p.variantStock||'{}'); } catch(e){ p.variantStock={}; }
-    try { if (typeof p.variants==='string') p.variants=JSON.parse(p.variants||'{}'); } catch(e){ p.variants={}; }
-    // Ensure images array is populated
-    if (!Array.isArray(p.images)||!p.images.length) {
-      p.images = [p.image1||p.image,p.image2,p.image3,p.image4,p.image5,p.image6].filter(Boolean);
+    // Parse JSON fields safely
+    try { if (typeof p.features==='string')     p.features=JSON.parse(p.features||'[]');     } catch(e){ p.features=[]; }
+    try { if (typeof p.specs==='string')         p.specs=JSON.parse(p.specs||'{}');           } catch(e){ p.specs={}; }
+    try { if (typeof p.images==='string')        p.images=JSON.parse(p.images||'[]');         } catch(e){ p.images=[]; }
+    try { if (typeof p.variantStock==='string')  p.variantStock=JSON.parse(p.variantStock||'{}'); } catch(e){ p.variantStock={}; }
+    try { if (typeof p.variants==='string')      p.variants=JSON.parse(p.variants||'{}');     } catch(e){ p.variants={}; }
+    // Ensure images array is populated from individual image columns if needed
+    if (!Array.isArray(p.images) || !p.images.length) {
+      p.images = [p.image1||p.image, p.image2, p.image3, p.image4, p.image5, p.image6].filter(Boolean);
     }
     if (!p.images.length && p.image) p.images = [p.image];
-    return p;
-  });
-    try { p.features = JSON.parse(p.features||'[]'); } catch(e){ p.features=[]; }
-    try { p.specs    = JSON.parse(p.specs   ||'{}'); } catch(e){ p.specs={}; }
-    try { p.images   = JSON.parse(p.images  ||'[]'); } catch(e){ p.images=p.image?[p.image]:[]; }
-    p.price=Number(p.price)||0; p.mrp=Number(p.mrp)||0;
-    p.stock=Number(p.stock)||0; p.rating=Number(p.rating)||0; p.reviews=Number(p.reviews)||0;
-    // Ensure both name and title fields exist for frontend compatibility
+    // Numeric coercions
+    p.price   = Number(p.price)   || 0;
+    p.mrp     = Number(p.mrp)     || 0;
+    p.stock   = Number(p.stock)   || 0;
+    p.rating  = Number(p.rating)  || 0;
+    p.reviews = Number(p.reviews) || 0;
+    // Ensure both name and title exist for frontend compatibility
     p.name  = p.title || p.name || '';
     p.title = p.name;
     p.slug  = p.slug  || p.id  || '';
