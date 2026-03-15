@@ -315,6 +315,26 @@
         const prog = document.getElementById('steps-progress');
         if (prog) prog.style.width = (currentStep / 4 * 100) + '%';
 
+        // Delivery info band
+        var delivBand = document.getElementById('delivery-info-band');
+        if (delivBand && status !== 'cancelled' && status !== 'delivered') {
+          delivBand.style.display = 'flex';
+          var headline = document.getElementById('delivery-headline');
+          var sub = document.getElementById('delivery-sub');
+          if (status === 'dispatched' && order.courier_name) {
+            headline.textContent = 'Shipped via ' + order.courier_name + (order.tracking_number ? ' — AWB: ' + order.tracking_number : '');
+            sub.textContent = 'Expected delivery: 2-4 more business days';
+          } else if (status === 'confirmed') {
+            headline.textContent = 'Order confirmed — packing in progress';
+            sub.textContent = 'Will be dispatched within 24 hours';
+          } else {
+            headline.textContent = 'Estimated delivery: 3-5 business days';
+            sub.textContent = 'Pan-India delivery via trusted courier partners';
+          }
+        } else if (delivBand) {
+          delivBand.style.display = 'none';
+        }
+
         // Timeline (auto-generate from status)
         const tl = document.getElementById('res-timeline');
         const statusTimeline = [];
@@ -336,6 +356,9 @@
         tl.innerHTML = [...statusTimeline].reverse().map(t =>
           '<div class="timeline-item"><div class="tl-dot"></div><div class="tl-content"><span>'+t.text+'</span><small>'+t.date+'</small></div></div>'
         ).join('');
+
+        // Check for pending shipping quote
+        checkShippingQuote(order);
 
         document.getElementById('trackResult').classList.add('show');
         document.getElementById('trackResult').scrollIntoView({behavior:'smooth',block:'start'});
@@ -362,6 +385,73 @@
         if (btn) { btn.disabled = false; btn.textContent = 'Track My Order'; }
         showResult(lo || null);
       }
+    }
+
+    // ── Shipping Quote Acceptance System ─────────────────────────────────
+    var _currentOrder = null;
+
+    function checkShippingQuote(order) {
+      var panel = document.getElementById('shipping-quote-panel');
+      if (!panel) return;
+      // Show panel if shipping_status === 'quoted' (admin has quoted shipping)
+      if (order.shipping_status === 'quoted' && order.status === 'pending') {
+        var shippingAmt = Number(order.shipping_quote || order.shipping || 0);
+        var subtotal    = Number(order.subtotal || 0);
+        var newTotal    = subtotal + shippingAmt;
+        document.getElementById('sqp-amount').textContent = '₹' + shippingAmt.toLocaleString('en-IN');
+        document.getElementById('sqp-total').textContent  = '₹' + newTotal.toLocaleString('en-IN');
+        var notesEl = document.getElementById('sqp-notes');
+        if (order.shipping_notes) {
+          notesEl.textContent = '📝 ' + order.shipping_notes;
+          notesEl.style.display = 'block';
+        }
+        panel.style.display = 'block';
+        _currentOrder = order;
+      } else {
+        panel.style.display = 'none';
+      }
+    }
+
+    function acceptShipping() {
+      if (!_currentOrder) return;
+      var apiUrl = SITE.sheetsUrl;
+      if (!apiUrl) { alert('Unable to connect. Please contact us via WhatsApp: +91 95665 96077'); return; }
+      var orderId = _currentOrder.order_id || _currentOrder.id;
+      fetch(apiUrl, {
+        method: 'POST',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        body: 'action=updateOrder&order_id=' + encodeURIComponent(orderId) +
+              '&shipping_status=accepted' +
+              '&status=confirmed' +
+              '&shipping=' + encodeURIComponent(_currentOrder.shipping_quote || _currentOrder.shipping || 0)
+      })
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        document.getElementById('shipping-quote-panel').style.display = 'none';
+        alert('✅ Thank you! Your order has been confirmed with the shipping charges. We will dispatch soon!');
+        trackOrder(); // Refresh
+      })
+      .catch(function(){ alert('Connection error. Please WhatsApp us: +91 95665 96077'); });
+    }
+
+    function rejectShipping() {
+      if (!_currentOrder) return;
+      if (!confirm('Are you sure you want to reject the shipping quote and cancel your order?\n\nYou can contact us on WhatsApp to negotiate: +91 95665 96077')) return;
+      var apiUrl = SITE.sheetsUrl;
+      if (!apiUrl) { alert('Please contact us via WhatsApp: +91 95665 96077'); return; }
+      var orderId = _currentOrder.order_id || _currentOrder.id;
+      fetch(apiUrl, {
+        method: 'POST',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        body: 'action=updateOrder&order_id=' + encodeURIComponent(orderId) + '&shipping_status=rejected&status=cancelled'
+      })
+      .then(function(r){ return r.json(); })
+      .then(function(){
+        document.getElementById('shipping-quote-panel').style.display = 'none';
+        alert('Your order has been cancelled. We are sorry to see you go. Please contact us if you have concerns.');
+        trackOrder();
+      })
+      .catch(function(){ alert('Please WhatsApp us directly: +91 95665 96077'); });
     }
 
     // Enter key support

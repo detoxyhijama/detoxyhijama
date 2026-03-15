@@ -227,6 +227,9 @@ function renderOrderSummary() {
 
   var subtotal = Cart.total();
   var shipping = subtotal >= 999 ? 0 : 60;
+  // Show shipping pending notice for all orders
+  var shipNotice = document.getElementById('shipping-pending-notice');
+  if (shipNotice) shipNotice.style.display = 'block';
   document.getElementById('summarySubtotal').textContent = fmtINR(subtotal);
   document.getElementById('summaryShipping').textContent = shipping === 0 ? 'FREE' : fmtINR(shipping);
   document.getElementById('summaryTotal').textContent = fmtINR(subtotal + shipping);
@@ -274,6 +277,9 @@ function placeOrder() {
 
   var subtotal = Cart.total();
   var shipping = subtotal >= 999 ? 0 : 60;
+  // Show shipping pending notice for all orders
+  var shipNotice = document.getElementById('shipping-pending-notice');
+  if (shipNotice) shipNotice.style.display = 'block';
   var total = subtotal + shipping;
 
   var orderData = {

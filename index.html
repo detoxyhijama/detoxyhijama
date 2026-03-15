@@ -602,10 +602,15 @@ document.addEventListener('DOMContentLoaded', function() {
   var fm = document.getElementById('footer-mount');
   if (fm) fm.outerHTML = renderFooter();
 
-  // Featured products (first 6) — re-render on live API update
+  // Featured products — Indian Standard Cup always first, then best sellers
   function renderFeatured() {
     var grid = document.getElementById('featuredProducts');
-    if (grid) grid.innerHTML = PRODUCTS.slice(0,6).map(function(p,i){ return renderProductCard(p,i); }).join('');
+    if (!grid) return;
+    // Pin Indian Standard Cup as first featured product
+    var pinned = PRODUCTS.filter(function(p){ return p.id === 'indian-standard-cup' || p.slug === 'indian-standard-cup'; });
+    var rest   = PRODUCTS.filter(function(p){ return p.id !== 'indian-standard-cup' && p.slug !== 'indian-standard-cup'; });
+    var featured = pinned.concat(rest).slice(0, 6);
+    grid.innerHTML = featured.map(function(p,i){ return renderProductCard(p,i); }).join('');
   }
   renderFeatured();
   document.addEventListener('productsUpdated', renderFeatured);

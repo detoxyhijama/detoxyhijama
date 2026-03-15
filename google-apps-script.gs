@@ -46,7 +46,8 @@ function SETUP_EVERYTHING() {
 // ── Sheet column definitions ───────────────────────────────────────────────────
 var O_HDRS = ['order_id','name','phone','email','address','city','state','pincode',
               'items','items_detail','subtotal','shipping','total','payment','notes','status','date',
-              'courier_name','tracking_number','tracking_url','invoice_number'];
+              'courier_name','tracking_number','tracking_url','invoice_number',
+              'shipping_quote','shipping_status','shipping_notes'];
 
 var P_COLS = ['id','title','description','price','mrp','category','categoryLabel',
               'image','image1','image2','image3','image4','image5','image6',
@@ -367,6 +368,7 @@ function doGet(e) {
   try {
     var r;
     if      (a==='getProducts')   r = getProducts(p);
+    else if (a==='getProductById') r = getProduct(p.id);
     else if (a==='getProduct')    r = getProduct(p.id);
     else if (a==='getCategories') r = getCategories();
     else if (a==='getOrders')     r = getOrders(p);
@@ -397,6 +399,8 @@ function doPost(e) {
     var a = e.parameter.action || body.action || '';
     var r;
     if      (a==='createOrder')       r = createOrder(body);
+    else if (a==='quoteShipping')      r = quoteShipping(body);
+    else if (a==='respondShipping')    r = respondShipping(body);
     else if (a==='updateOrder')       r = updateOrder(body);
     else if (a==='addTracking')       r = addTracking(body);
     else if (a==='register')          r = registerUser(body);
@@ -460,6 +464,19 @@ function _findRow(sheet, colName, val) {
 function getProducts(params) {
   var rows = _toObjects(_getSheet('Products'));
   var list = rows.map(function(p) {
+    // Parse JSON fields
+    try { if (typeof p.features==='string') p.features=JSON.parse(p.features||'[]'); } catch(e){ p.features=[]; }
+    try { if (typeof p.specs==='string') p.specs=JSON.parse(p.specs||'{}'); } catch(e){ p.specs={}; }
+    try { if (typeof p.images==='string') p.images=JSON.parse(p.images||'[]'); } catch(e){ p.images=[]; }
+    try { if (typeof p.variantStock==='string') p.variantStock=JSON.parse(p.variantStock||'{}'); } catch(e){ p.variantStock={}; }
+    try { if (typeof p.variants==='string') p.variants=JSON.parse(p.variants||'{}'); } catch(e){ p.variants={}; }
+    // Ensure images array is populated
+    if (!Array.isArray(p.images)||!p.images.length) {
+      p.images = [p.image1||p.image,p.image2,p.image3,p.image4,p.image5,p.image6].filter(Boolean);
+    }
+    if (!p.images.length && p.image) p.images = [p.image];
+    return p;
+  });
     try { p.features = JSON.parse(p.features||'[]'); } catch(e){ p.features=[]; }
     try { p.specs    = JSON.parse(p.specs   ||'{}'); } catch(e){ p.specs={}; }
     try { p.images   = JSON.parse(p.images  ||'[]'); } catch(e){ p.images=p.image?[p.image]:[]; }
@@ -628,6 +645,92 @@ function trackOrder(orderId, phone) {
   }
 
   return o ? {order:o} : {error:'Order not found. Please check your AWB or Order ID.'};
+}
+
+// ── Shipping Quote System ────────────────────────────────────────────────────
+function quoteShipping(data) {
+  // Admin quotes shipping for an order
+  // data: {order_id, shipping_quote, shipping_notes}
+  var s = _getSheet('Orders');
+  var found = _findRow(s, 'order_id', data.order_id);
+  if (!found) return {error: 'Order not found'};
+  var h = found.headers;
+  var set = function(col, val) {
+    var i = h.indexOf(col);
+    if (i > -1) s.getRange(found.row, i+1).setValue(val);
+    else {
+      // Add column if missing
+      var lastCol = s.getLastColumn();
+      s.getRange(1, lastCol+1).setValue(col);
+      s.getRange(found.row, lastCol+1).setValue(val);
+    }
+  };
+  set('shipping_quote',  data.shipping_quote || 0);
+  set('shipping_status', 'quoted');
+  set('shipping_notes',  data.shipping_notes || '');
+  
+  // Notify customer
+  var orderObj = _toObjects(s).filter(function(o){ return String(o.order_id)===String(data.order_id); })[0];
+  if (orderObj && orderObj.email) {
+    try {
+      GmailApp.sendEmail(orderObj.email,
+        'Shipping Quote for Your Order #' + data.order_id + ' — Detoxy Hijama',
+        'Dear ' + (orderObj.name||'Customer') + ',
+
+' +
+        'Your order has been reviewed and we have quoted shipping charges:
+
+' +
+        'Order ID    : ' + data.order_id + '
+' +
+        'Shipping    : ₹' + Number(data.shipping_quote||0).toLocaleString('en-IN') + '
+' +
+        (data.shipping_notes ? 'Note        : ' + data.shipping_notes + '
+' : '') + '
+' +
+        'Please visit the Track Order page to accept or reject:
+' +
+        'https://detoxyhijama.github.io/track-order.html
+
+' +
+        'Questions? WhatsApp: +91 95665 96077
+
+Team Detoxy Hijama'
+      );
+    } catch(e) { Logger.log('Shipping quote email failed: '+e); }
+  }
+  return {success: true};
+}
+
+function respondShipping(data) {
+  // Customer accepts or rejects shipping quote
+  // data: {order_id, response: 'accepted'|'rejected'}
+  var s = _getSheet('Orders');
+  var found = _findRow(s, 'order_id', data.order_id);
+  if (!found) return {error: 'Order not found'};
+  var h = found.headers;
+  var set = function(col, val) { var i=h.indexOf(col); if(i>-1) s.getRange(found.row,i+1).setValue(val); };
+  
+  if (data.response === 'accepted' || data.shipping_status === 'accepted') {
+    set('shipping_status', 'accepted');
+    set('status', 'confirmed');
+    // Update actual shipping with the quoted amount
+    var sqIdx = h.indexOf('shipping_quote');
+    if (sqIdx > -1) {
+      var quotedAmt = s.getRange(found.row, sqIdx+1).getValue();
+      set('shipping', quotedAmt);
+      // Recalculate total
+      var subtotalIdx = h.indexOf('subtotal');
+      if (subtotalIdx > -1) {
+        var subtotal = Number(s.getRange(found.row, subtotalIdx+1).getValue()) || 0;
+        set('total', subtotal + Number(quotedAmt));
+      }
+    }
+  } else {
+    set('shipping_status', 'rejected');
+    set('status', 'cancelled');
+  }
+  return {success: true};
 }
 
 function updateOrderStatus(orderId, status) {
