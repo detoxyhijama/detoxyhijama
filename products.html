@@ -79,6 +79,15 @@
     .filter-tag{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:var(--tp);color:var(--td);font-size:.75rem;font-weight:600;border-radius:50px;cursor:pointer;border:1px solid var(--tp2)}
     .filter-tag svg{width:13px;height:13px}
 
+
+    .skeleton{background:linear-gradient(90deg,var(--cream) 25%,var(--cream2) 50%,var(--cream) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:var(--radius)}
+    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+    .skel-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+    .skel-img{height:200px;width:100%}
+    .skel-body{padding:16px;display:flex;flex-direction:column;gap:10px}
+    .skel-title{height:14px;border-radius:4px;width:80%}
+    .skel-price{height:18px;border-radius:4px;width:40%}
+    .skel-btn{height:36px;border-radius:8px;width:100%;margin-top:4px}
     @media(max-width:900px){
       .products-page{grid-template-columns:1fr}
       .filter-sidebar{display:none}
@@ -106,7 +115,7 @@
       <span aria-current="page">All Products</span>
     </nav>
     <h1>Hijama Equipment &amp; Cupping Supplies</h1>
-    <p>Factory-direct pricing on clinical-grade hijama products. Free shipping above &#8377;999.</p>
+    <p>Factory-direct pricing on clinical-grade hijama products. </p>
   </div>
 </section>
 
@@ -261,7 +270,21 @@ function applyFilters() {
   } else {
     grid.style.display = 'grid';
     empty.style.display = 'none';
-    grid.innerHTML = results.map(function(p, i){ return renderProductCard(p, i); }).join('');
+    // Show skeletons immediately, render cards in next frame for speed
+    var skelCount = Math.min(results.length, 15);
+    grid.innerHTML = Array(skelCount).fill('<div class="skel-card"><div class="skeleton skel-img"></div><div class="skel-body"><div class="skeleton skel-title"></div><div class="skeleton skel-price"></div><div class="skeleton skel-btn"></div></div></div>').join('');
+    // Chunked rendering — paint first 8 instantly, rest in idle time to avoid long tasks
+    requestAnimationFrame(function(){
+      var first = results.slice(0,8);
+      var rest  = results.slice(8);
+      grid.innerHTML = first.map(function(p,i){ return renderProductCard(p,i); }).join('');
+      if (rest.length) {
+        var fn = function(){
+          grid.innerHTML += rest.map(function(p,i){ return renderProductCard(p,i+8); }).join('');
+        };
+        'requestIdleCallback' in window ? requestIdleCallback(fn,{timeout:1000}) : setTimeout(fn,80);
+      }
+    });
   }
 
   // Active filters display

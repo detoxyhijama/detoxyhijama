@@ -331,7 +331,7 @@
       <div class="card">
         <div class="tbl-wrap">
           <table>
-            <thead><tr><th>Product</th><th>Category</th><th>Price</th><th>MRP</th><th>Stock</th><th>Badge</th><th>Visibility</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Product</th><th>Category</th><th>Price</th><th>MRP</th><th>Stock</th><th>Sizes</th><th>Badge</th><th>Visibility</th><th>Actions</th></tr></thead>
             <tbody id="productsTableBody"></tbody>
           </table>
         </div>
@@ -1538,7 +1538,14 @@ function toggleVariantStock(checkbox) {
   section.style.display = checkbox.checked ? 'block' : 'none';
   if (checkbox.checked && _variantStockRows.length === 0) {
     // Default sizes for Indian Standard / Premium cups
-    var defaultSizes = ['Size 1','Size 2','Size 3','Size 4','Size 5','Size 6'];
+    // Use product-specific sizes if editing known variant products
+    var pid = (document.getElementById('pmId') || {}).value || '';
+    var defaultSizes;
+    if (pid === 'premium-cups') {
+      defaultSizes = ['Size 1','Size 2','Size 3','Size 4','Size 5','Size 6','Curve Cup 3','Curve Cup 4'];
+    } else {
+      defaultSizes = ['Size 1','Size 2','Size 3','Size 4','Size 5','Size 6'];
+    }
     _variantStockRows = defaultSizes.map(function(s){ return {size:s, qty:0}; });
     renderVariantStockRows();
   }
@@ -1575,8 +1582,10 @@ function _loadVariantStockIntoModal(product) {
   var section = document.getElementById('variantStockSection');
   if (!cb || !section) return;
   
+  // Populate variant label if field exists
+  var vlField = document.getElementById('pmVariantLabel');
+  if(vlField) vlField.value = product.variantLabel || 'Size';
   // Parse variantStock
-  var vs = product.variantStock || product.variants;
   if (vs && typeof vs === 'string') { try { vs = JSON.parse(vs); } catch(e){ vs = null; } }
   
   if (vs && typeof vs === 'object' && Object.keys(vs).length > 0) {
@@ -1642,6 +1651,20 @@ function renderProducts() {
       '<td><strong>₹'+Number(p.price||0).toLocaleString('en-IN')+'</strong></td>' +
       '<td style="color:var(--muted);text-decoration:line-through">₹'+Number(p.mrp||0).toLocaleString('en-IN')+'</td>' +
       '<td>'+stockBadge+'</td>' +
+      '<td>'+(function(){
+        var vs = p.variantStock;
+        if (typeof vs === 'string') { try { vs = JSON.parse(vs); } catch(e){ vs = {}; } }
+        if (!vs || typeof vs !== 'object') return '<span style="color:var(--muted);font-size:.75rem">—</span>';
+        var keys = Object.keys(vs);
+        if (!keys.length) return '<span style="color:var(--muted);font-size:.75rem">—</span>';
+        return '<div style="display:flex;flex-wrap:wrap;gap:3px">' +
+          keys.map(function(k){
+            var qty = Number(vs[k])||0;
+            var col = qty===0?'#f3f4f6':qty<5?'#fef3c7':'var(--tp)';
+            var tc  = qty===0?'var(--muted2)':qty<5?'#92400e':'var(--td)';
+            return '<span style="display:inline-flex;align-items:center;gap:2px;padding:1px 6px;border-radius:50px;font-size:.6rem;font-weight:700;background:'+col+';color:'+tc+'">'+k+' <b>'+qty+'</b></span>';
+          }).join('') + '</div>';
+      })()+'</td>' +
       '<td>'+(p.badge?'<span class="badge badge-teal">'+p.badge+'</span>':'—')+'</td>' +
       '<td>'+vis+'</td>' +
       '<td><div style="display:flex;gap:4px">' +
@@ -1776,7 +1799,13 @@ function saveProduct() {
     categoryLabel: catLabels[cat] || cat,
     rating:        existingProduct ? (existingProduct.rating  || 4.5) : 4.5,
     reviews:       existingProduct ? (existingProduct.reviews || 0)   : 0,
-    hidden:        existingProduct ? (existingProduct.hidden  || 'false') : 'false'
+    hidden:        existingProduct ? (existingProduct.hidden  || 'false') : 'false',
+    variantLabel:  document.getElementById('pmVariantLabel') ? document.getElementById('pmVariantLabel').value.trim() : (existingProduct ? existingProduct.variantLabel || '' : ''),
+    variantStock:  _getVariantStockJSON(),
+    variants:      (function(){
+      var vs = JSON.parse(_getVariantStockJSON()||'{}');
+      return JSON.stringify(Object.keys(vs).map(function(k){ return {size:k}; }));
+    })()
   };
 
   if (!data.id)    { toast('Product ID / Slug is required','error'); return; }

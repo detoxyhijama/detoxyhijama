@@ -97,23 +97,29 @@ function renderCart() {
   var total = subtotal + shipping;
 
   var itemsHtml = items.map(function(item) {
-    var p = PRODUCTS.find(function(x){ return x.id === item.id; });
-    if (!p) return '';
-    return '<div class="cart-item" id="ci-'+p.id+'">' +
-      '<img src="/'+p.images[0]+'" alt="'+p.name+'" class="cart-item-img" onerror="this.src=\'/assets/images/placeholder.svg\'">' +
+    // Support both simple {id,qty} and enriched {id,qty,price,name,image,size} items
+    var p = PRODUCTS.find(function(x){ return x.id === item.id || item.id.startsWith(x.id+'-'); });
+    var name    = item.name  || (p && p.name)  || item.id;
+    var price   = item.price || (p && p.price) || 0;
+    var imgSrc  = item.image || (p && p.images && p.images[0] ? '/'+p.images[0] : '/assets/images/placeholder.svg');
+    var catLabel= p ? p.categoryLabel : '';
+    var sizeTag = item.size ? '<span style="display:inline-block;padding:2px 8px;background:var(--tp);color:var(--td);border:1px solid var(--tp2);border-radius:50px;font-size:.65rem;font-weight:700;margin-bottom:8px">'+item.size+'</span><br>' : '';
+    return '<div class="cart-item" id="ci-'+item.id+'">' +
+      '<img src="'+imgSrc+'" alt="'+name+'" class="cart-item-img" onerror="this.src=\'/assets/images/placeholder.svg\'">' +
       '<div>' +
-        '<div class="cart-item-name">'+p.name+'</div>' +
-        '<div class="cart-item-cat">'+p.categoryLabel+'</div>' +
+        '<div class="cart-item-name">'+name+'</div>' +
+        sizeTag +
+        '<div class="cart-item-cat">'+catLabel+'</div>' +
         '<div class="qty-control">' +
-          '<button class="qty-btn" onclick="updateQty(\''+p.id+'\','+(item.qty-1)+')">-</button>' +
-          '<input type="number" class="qty-input" value="'+item.qty+'" min="1" max="20" onchange="updateQty(\''+p.id+'\',parseInt(this.value))">' +
-          '<button class="qty-btn" onclick="updateQty(\''+p.id+'\','+(item.qty+1)+')">+</button>' +
+          '<button class="qty-btn" onclick="updateQty(\''+item.id+'\','+(item.qty-1)+')">-</button>' +
+          '<input type="number" class="qty-input" value="'+item.qty+'" min="1" max="20" onchange="updateQty(\''+item.id+'\',parseInt(this.value))">' +
+          '<button class="qty-btn" onclick="updateQty(\''+item.id+'\','+(item.qty+1)+')">+</button>' +
         '</div>' +
-        '<button class="cart-item-remove" onclick="removeItem(\''+p.id+'\')"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg> Remove</button>' +
+        '<button class="cart-item-remove" onclick="removeItem(\''+item.id+'\')"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg> Remove</button>' +
       '</div>' +
       '<div class="cart-item-right">' +
-        '<div class="cart-item-subtotal">'+fmtINR(p.price * item.qty)+'</div>' +
-        '<div style="font-size:.76rem;color:var(--muted)">'+fmtINR(p.price)+' each</div>' +
+        '<div class="cart-item-subtotal">'+fmtINR(price * item.qty)+'</div>' +
+        '<div style="font-size:.76rem;color:var(--muted)">'+fmtINR(price)+' each</div>' +
       '</div>' +
     '</div>';
   }).join('');
@@ -125,9 +131,9 @@ function renderCart() {
     '</div>' +
     '<div class="cart-summary">' +
       '<div class="summary-title">Order Summary</div>' +
-      (shipping === 0 ? '<div class="shipping-note"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>You qualify for free shipping!</div>' : '<div class="shipping-note"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Add '+ fmtINR(999 - subtotal) +' more for free shipping</div>') +
+      '<div class="shipping-note"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Shipping charges will be confirmed after order review.</div>' +
       '<div class="summary-row"><span>Subtotal</span><strong>'+fmtINR(subtotal)+'</strong></div>' +
-      '<div class="summary-row"><span>Shipping</span><strong>'+(shipping === 0 ? 'FREE' : fmtINR(shipping))+'</strong></div>' +
+      '<div class="summary-row"><span>Shipping</span><strong>To be quoted</strong></div>' +
       '<hr class="summary-divider">' +
       '<div class="summary-total"><span>Total</span><span>'+fmtINR(total)+'</span></div>' +
       '<div style="margin-top:20px;display:flex;flex-direction:column;gap:10px">' +

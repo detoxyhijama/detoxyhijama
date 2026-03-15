@@ -11,7 +11,6 @@ const SITE = {
   phone: '+91 95665 96077',
   email: 'detoxyhijama@gmail.com',
   address: 'Pollachi, Coimbatore, Tamil Nadu, India',
-  freeShippingAt: 999,
   defaultShipping: 60,
   get sheetsUrl() {
     /* FIX: Lazy getter prevents SecurityError crash in iOS private mode.
@@ -301,6 +300,7 @@ const PRODUCTS = [
   try { apiUrl = localStorage.getItem('detoxy_sheets_url') || ''; } catch(e){}
   if (!apiUrl) return;
 
+  var doFetch = function(){
   fetch(apiUrl + '?action=getProducts', { redirect: 'follow' })
     .then(function(r) { return r.json(); })
     .then(function(d) {
@@ -327,7 +327,13 @@ const PRODUCTS = [
           specs:         (typeof liveP.specs === 'object' && liveP.specs) ? liveP.specs : {},
           images:        Array.isArray(liveP.images) && liveP.images.length
                            ? liveP.images
-                           : (liveP.image ? [liveP.image] : [])
+                           : (liveP.image ? [liveP.image] : []),
+          variants:      Array.isArray(liveP.variants) ? liveP.variants
+                           : (liveP.variantLabel ? [{size: liveP.variantLabel}] : []),
+          variantLabel:  liveP.variantLabel  || '',
+          variantStock:  (typeof liveP.variantStock === 'object' && liveP.variantStock)
+                           ? liveP.variantStock : {},
+          hidden:        liveP.hidden || 'false'
         };
         if (idx > -1) { PRODUCTS[idx] = merged; }
         else if (!liveP.hidden || liveP.hidden === 'false') { PRODUCTS.push(merged); }
@@ -336,6 +342,8 @@ const PRODUCTS = [
       document.dispatchEvent(new CustomEvent('productsUpdated'));
     })
     .catch(function() { /* silent — use hardcoded fallback */ });
+  };
+  if('requestIdleCallback' in window){ requestIdleCallback(doFetch,{timeout:2000}); } else { setTimeout(doFetch,300); }
 })();
 
 // ── Cart Utils ────────────────────────────────
@@ -347,17 +355,28 @@ const Cart = {
     localStorage.setItem('dh_cart', JSON.stringify(items));
     Cart.updateUI();
   },
-  add(productId, qty = 1) {
+  add(productIdOrObj, qty = 1, size = null) {
+    // Support both Cart.add('id') and Cart.add({id, name, size, price, qty, image})
+    var isObj = typeof productIdOrObj === 'object' && productIdOrObj !== null;
+    var productId = isObj ? productIdOrObj.id    : productIdOrObj;
+    var itemSize  = isObj ? (productIdOrObj.size || null) : (size || null);
+    var itemQty   = isObj ? (productIdOrObj.qty  || qty)  : qty;
+    
     const items = Cart.get();
-    const idx = items.findIndex(i => i.id === productId);
+    // Same product + same size = same line item
+    const idx = items.findIndex(i => i.id === productId && (i.size||null) === (itemSize||null));
     if (idx > -1) {
-      items[idx].qty = Math.min(items[idx].qty + qty, 20);
+      items[idx].qty = Math.min(items[idx].qty + itemQty, 20);
     } else {
-      const p = PRODUCTS.find(p => p.id === productId);
-      if (p) items.push({ id: productId, qty });
+      const p = PRODUCTS.find(p => p.id === productId || productId.startsWith(p.id + '-'));
+      var baseId = p ? p.id : productId;
+      var name  = isObj ? productIdOrObj.name  : (p ? p.name  : productId);
+      var price = isObj ? productIdOrObj.price : (p ? p.price : 0);
+      var image = isObj ? productIdOrObj.image : (p && p.images[0] ? '/' + p.images[0] : '');
+      items.push({ id: productId, qty: itemQty, size: itemSize, name, price, image });
     }
     Cart.save(items);
-    showToast('Added to cart', 'success');
+    showToast((itemSize ? itemSize + ' — ' : '') + 'Added to cart', 'success');
   },
   remove(productId) {
     Cart.save(Cart.get().filter(i => i.id !== productId));
@@ -371,10 +390,12 @@ const Cart = {
     }
     Cart.save(items);
   },
-  count() { return Cart.get().reduce((s, i) => s + i.qty, 0); },
+  count() { return Cart.get().reduce((s, i) => s + (Number(i.qty)||1), 0); },
   total() {
     return Cart.get().reduce((s, i) => {
-      const p = PRODUCTS.find(p => p.id === i.id);
+      // Support both simple {id,qty} and enriched {id,qty,price} cart items
+      if (i.price) return s + (i.price * i.qty);
+      const p = PRODUCTS.find(p => p.id === i.id || i.id.startsWith(p.id + '-'));
       return s + (p ? p.price * i.qty : 0);
     }, 0);
   },
@@ -449,11 +470,29 @@ function discountPct(price, mrp) { return mrp > price ? Math.round((mrp - price)
 function renderProductCard(p, cardIndex) {
   const discount = discountPct(p.price, p.mrp);
   const badgeHtml = p.badge ? `<div class="product-card-badge"><span class="badge badge-${p.badgeType || 'teal'}">${p.badge}</span></div>` : '';
+  const eager = (cardIndex !== undefined && cardIndex < 4);
+  const imgSrc = p.images && p.images[0] ? '/' + p.images[0] : '/assets/images/placeholder.svg';
+  // Variant stock — show per-size stock pills if this product has variantStock
+  const vs = (p.variantStock && typeof p.variantStock === 'object') ? p.variantStock : {};
+  const vsKeys = Object.keys(vs);
+  const sizeSelectHtml = vsKeys.length ? `
+    <div class="card-size-row" style="margin:6px 0 2px;display:flex;flex-wrap:wrap;gap:5px;">
+      ${vsKeys.map(function(s){
+        const qty = Number(vs[s]) || 0;
+        const oos = qty === 0;
+        return '<span class="card-size-pill' + (oos ? ' oos' : '') + '" title="' + (oos ? 'Out of stock' : qty + ' in stock') + '">' + s + (oos ? '' : '<small>' + qty + '</small>') + '</span>';
+      }).join('')}
+    </div>` : '';
+  // For variant products the Add-to-cart redirects to product page to pick size
+  const hasVariants = vsKeys.length > 0;
+  const addCartBtn = hasVariants
+    ? `<a href="/products/${p.slug}.html" class="btn btn-outline btn-sm">Select Size</a>`
+    : `<button class="btn btn-outline btn-sm" onclick="Cart.add('${p.id}')">Add to Cart</button>`;
   return `
 <article class="product-card" itemscope itemtype="https://schema.org/Product">
   <div class="product-card-img">
     <a href="/products/${p.slug}.html" aria-label="${p.name}" style="display:block;width:100%;height:100%">
-      <img src="/${p.images[0]}" alt="${p.name}" loading="${(cardIndex !== undefined && cardIndex < 4) ? 'eager' : 'lazy'}" itemprop="image"
+      <img src="${imgSrc}" alt="${p.name}" loading="${eager ? 'eager' : 'lazy'}" decoding="async" itemprop="image"
         onerror="this.src='/assets/images/placeholder.svg'">
     </a>
     ${badgeHtml}
@@ -469,6 +508,7 @@ function renderProductCard(p, cardIndex) {
       <span class="product-card-rating-score">${p.rating}</span>
       <span class="product-card-rating-count">(${p.reviews})</span>
     </div>
+    ${sizeSelectHtml}
     <div class="product-card-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
       <span class="price" itemprop="price" content="${p.price}">${fmtINR(p.price)}</span>
       ${p.mrp > p.price ? `<span class="mrp">${fmtINR(p.mrp)}</span><span class="off">${discount}% off</span>` : ''}
@@ -476,7 +516,7 @@ function renderProductCard(p, cardIndex) {
   </div>
   <div class="product-card-actions">
     <a href="/checkout.html?buy=${p.id}" class="btn btn-primary btn-sm">Buy Now</a>
-    <button class="btn btn-outline btn-sm" onclick="Cart.add('${p.id}')">Add to Cart</button>
+    ${addCartBtn}
   </div>
 </article>`;
 }
@@ -486,6 +526,19 @@ function renderProductCard(p, cardIndex) {
 // Bare paths like "index.html" resolve relative to the CURRENT page directory.
 // From /products/premium-cups.html, "index.html" resolves to /products/index.html
 // which does not exist. Root-relative paths always resolve from the site root.
+function _injectGlobalStyles() {
+  if (document.getElementById('dh-global-styles')) return;
+  var s = document.createElement('style');
+  s.id = 'dh-global-styles';
+  s.textContent = `/* ── Card variant stock pills ── */
+.card-size-row{display:flex;flex-wrap:wrap;gap:4px;margin:5px 0 2px}
+.card-size-pill{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;background:var(--tp);color:var(--td);border:1px solid var(--tp2);border-radius:50px;font-size:.65rem;font-weight:600;cursor:default}
+.card-size-pill small{background:var(--t);color:#fff;border-radius:50px;padding:0 5px;font-size:.58rem;font-weight:700}
+.card-size-pill.oos{background:var(--cream2);color:var(--muted2);border-color:var(--border);text-decoration:line-through;opacity:.6}`;
+  document.head.appendChild(s);
+}
+_injectGlobalStyles();
+
 function renderHeader(activePage = '') {
   const navLinks = [
     { href: '/index.html', label: 'Home' },
