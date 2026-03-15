@@ -1,0 +1,2729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard | Detoxy Hijama</title>
+  <meta name="robots" content="noindex,nofollow"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="icon" type="image/png" href="/assets/images/favicon.png"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#f4f6fa;--sidebar:#1a3d35;--sidebar-hover:rgba(255,255,255,.09);
+      --teal:#2aab97;--teal-d:#0d6b5e;--dark:#1a3d35;
+      --white:#fff;--border:#e8ecf0;--muted:#7b8fa6;--text:#1e2a38;
+      --cream:#f8f5f0;--tp:rgba(42,171,151,.12);
+      --success:#10b981;--warn:#f59e0b;--danger:#ef4444;--info:#3b82f6;
+      --radius:10px;--radius-lg:16px;--shadow:0 2px 12px rgba(0,0,0,.07);
+      --transition:all .18s ease;
+    }
+    body{font-family:'Outfit',sans-serif;font-size:.875rem;color:var(--text);background:var(--bg);min-height:100vh;display:flex}
+
+    /* ── Sidebar ── */
+    .sidebar{width:230px;flex-shrink:0;background:var(--sidebar);color:#fff;display:flex;flex-direction:column;height:100vh;position:sticky;top:0;overflow-y:auto}
+    .sb-logo{padding:22px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.1)}
+    .sb-logo-mark{width:34px;height:34px;border-radius:9px;background:var(--teal);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .sb-logo-mark svg{width:18px;height:18px}
+    .sb-brand{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:700;line-height:1.1}
+    .sb-sub{font-size:.6rem;opacity:.5;letter-spacing:.1em;text-transform:uppercase}
+    .sb-section{font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);padding:16px 18px 5px}
+    .sb-nav{flex:1;padding:8px}
+    .sb-link{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;font-size:.82rem;font-weight:500;color:rgba(255,255,255,.65);transition:var(--transition);text-decoration:none;cursor:pointer;margin-bottom:1px;border:none;background:none;width:100%;text-align:left}
+    .sb-link:hover,.sb-link.active{background:var(--sidebar-hover);color:#fff}
+    .sb-link svg{width:16px;height:16px;flex-shrink:0}
+    .sb-badge{margin-left:auto;background:var(--teal);color:#fff;font-size:.62rem;font-weight:700;padding:1px 7px;border-radius:50px}
+    .sb-footer{padding:14px 18px;border-top:1px solid rgba(255,255,255,.1);font-size:.72rem;opacity:.4}
+
+    /* ── Main Area ── */
+    .main{flex:1;min-width:0;display:flex;flex-direction:column}
+    .topbar{background:var(--white);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+    .topbar-title{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:700;color:var(--dark)}
+    .topbar-actions{display:flex;gap:10px;align-items:center}
+    .content{padding:28px;flex:1}
+
+    /* ── Cards ── */
+    .card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+    .card-head{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .card-head h3{font-size:.9rem;font-weight:700;color:var(--dark)}
+    .card-body{padding:20px}
+
+    /* ── Stat Grid ── */
+    .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+    .stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;position:relative;overflow:hidden}
+    .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+    .stat-teal::before{background:var(--teal)} .stat-warn::before{background:var(--warn)} .stat-success::before{background:var(--success)} .stat-info::before{background:var(--info)}
+    .stat-label{font-size:.7rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+    .stat-value{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--dark);line-height:1}
+    .stat-sub{font-size:.72rem;color:var(--muted);margin-top:4px}
+    .stat-icon{position:absolute;right:16px;top:16px;width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;opacity:.15}
+    .stat-teal .stat-icon{background:var(--teal)} .stat-warn .stat-icon{background:var(--warn)} .stat-success .stat-icon{background:var(--success)} .stat-info .stat-icon{background:var(--info)}
+    .stat-icon svg{width:20px;height:20px}
+
+    /* ── Table ── */
+    .tbl-wrap{overflow-x:auto}
+    table{width:100%;border-collapse:collapse;font-size:.82rem}
+    th{padding:9px 14px;text-align:left;font-size:.67rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;border-bottom:2px solid var(--border);background:var(--bg);white-space:nowrap}
+    td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:#fafbfc}
+
+    /* ── Badges ── */
+    .badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:50px;font-size:.68rem;font-weight:700;white-space:nowrap}
+    .badge-pending{background:#fef3c7;color:#92400e} .badge-confirmed{background:#d1fae5;color:#065f46}
+    .badge-dispatched{background:#dbeafe;color:#1e40af} .badge-delivered{background:#e0e7ff;color:#3730a3}
+    .badge-cancelled{background:#fee2e2;color:#991b1b} .badge-new{background:#fce7f3;color:#9d174d}
+    .badge-quoted{background:#d1fae5;color:#065f46} .badge-closed{background:#f3f4f6;color:#6b7280}
+    .badge-teal{background:var(--tp);color:var(--teal-d)} .badge-in-stock{background:#d1fae5;color:#065f46} .badge-low{background:#fef3c7;color:#92400e} .badge-out{background:#fee2e2;color:#991b1b}
+
+    /* ── Buttons ── */
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;font-size:.8rem;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer;border:none;transition:var(--transition);text-decoration:none;white-space:nowrap}
+    .btn-primary{background:var(--teal);color:#fff} .btn-primary:hover{background:var(--teal-d)}
+    .btn-dark{background:var(--dark);color:#fff} .btn-dark:hover{background:#0f2620}
+    .btn-outline{background:transparent;color:var(--dark);border:1.5px solid var(--border)} .btn-outline:hover{border-color:var(--teal);color:var(--teal)}
+    .btn-danger{background:#fee2e2;color:var(--danger);border:1px solid #fecaca} .btn-danger:hover{background:var(--danger);color:#fff}
+    .btn-sm{padding:5px 10px;font-size:.74rem}
+    .btn-icon{width:30px;height:30px;padding:0;justify-content:center;border-radius:7px}
+    .btn svg{width:15px;height:15px}
+
+    /* ── Forms ── */
+    .form-group{margin-bottom:14px}
+    .form-label{display:block;font-size:.76rem;font-weight:600;color:var(--dark);margin-bottom:5px}
+    .form-control{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.84rem;font-family:'Outfit',sans-serif;color:var(--text);background:var(--white);transition:border-color .2s;outline:none}
+    .form-control:focus{border-color:var(--teal)}
+    select.form-control{cursor:pointer}
+    textarea.form-control{resize:vertical;min-height:80px}
+    .form-row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .form-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+
+    /* ── Modal ── */
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:center;justify-content:center;padding:16px}
+    .modal.open{display:flex}
+    .modal-box{background:var(--white);border-radius:var(--radius-lg);padding:28px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
+    .modal-box.wide{max-width:720px}
+    .modal-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:var(--dark);margin-bottom:20px;display:flex;align-items:center;justify-content:space-between}
+    .modal-close{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px}
+    .modal-close svg{width:18px;height:18px}
+    .modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+
+    /* ── Login ── */
+    .login-overlay{position:fixed;inset:0;background:var(--cream);display:flex;align-items:center;justify-content:center;z-index:999}
+    .login-box{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:40px;width:100%;max-width:360px;text-align:center;box-shadow:var(--shadow)}
+    .login-box h2{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--dark);margin-bottom:4px}
+    .login-box p{font-size:.8rem;color:var(--muted);margin-bottom:22px}
+
+    /* ── Status bar ── */
+    .status-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+    .filter-btn{padding:5px 12px;border-radius:50px;border:1.5px solid var(--border);background:var(--white);font-size:.75rem;font-weight:600;cursor:pointer;transition:var(--transition);color:var(--muted)}
+    .filter-btn.active{border-color:var(--teal);color:var(--teal);background:var(--tp)}
+
+    /* ── Product image thumb ── */
+    .prod-thumb{width:38px;height:38px;border-radius:7px;object-fit:cover;border:1px solid var(--border);flex-shrink:0}
+
+    /* ── Search row ── */
+    .search-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .search-input{padding:7px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;font-family:'Outfit',sans-serif;outline:none;transition:border-color .2s;width:220px}
+    .search-input:focus{border-color:var(--teal)}
+
+    /* ── Section display ── */
+    .section{display:none}
+    .section.active{display:block}
+
+    /* ── Order detail grid ── */
+    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+    .detail-item label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);display:block;margin-bottom:2px}
+    .detail-item span{font-size:.84rem;color:var(--dark);font-weight:500}
+
+    /* ── Toast ── */
+    #toast-wrap{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+    .toast{display:flex;align-items:center;gap:10px;padding:11px 16px;border-radius:10px;background:var(--dark);color:#fff;font-size:.82rem;font-weight:500;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:toastIn .2s ease}
+    .toast.success{background:var(--success)} .toast.error{background:var(--danger)}
+    @keyframes toastIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+    /* ── Responsive ── */
+    @media(max-width:1100px){.stat-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:768px){.sidebar{display:none}.form-row2,.form-row3{grid-template-columns:1fr}}
+
+    /* ── Quote items editor ── */
+    .quote-item-row{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;margin-bottom:8px}
+    .quote-item-row input{width:100%}
+
+    /* ── Loading spinner ── */
+    .spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(42,171,151,.3);border-top-color:var(--teal);border-radius:50%;animation:spin .6s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .empty-state{padding:40px;text-align:center;color:var(--muted)}
+    .empty-state svg{width:40px;height:40px;opacity:.3;margin-bottom:10px}
+  </style>
+</head>
+<body>
+
+<div id="loginOverlay" class="login-overlay">
+  <div class="login-box">
+    <img src="/assets/images/logo.png" alt="Detoxy Hijama" style="width:64px;height:64px;border-radius:14px;object-fit:cover;margin:0 auto 12px;display:block"/>
+    <h2>Admin Panel</h2>
+    <p>Detoxy Hijama Management</p>
+    <div class="form-group" style="text-align:left;margin-bottom:12px">
+      <label class="form-label">Password</label>
+      <input type="password" id="loginPass" class="form-control" placeholder="Admin password" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <div id="loginErr" style="color:var(--danger);font-size:.78rem;margin-bottom:10px;display:none">Incorrect password</div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="doLogin()">Sign In</button>
+    
+  </div>
+</div>
+
+<div id="adminApp" style="display:none;width:100%">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sb-logo">
+    <img src="/assets/images/logo.png" alt="Detoxy Hijama" style="width:38px;height:38px;border-radius:9px;object-fit:cover;flex-shrink:0"/>
+    <div><div class="sb-brand">Detoxy Admin</div><div class="sb-sub">Dashboard</div></div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-section">Main</div>
+    <button class="sb-link active" onclick="showSection('dashboard',this)">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard
+    </button>
+    <button class="sb-link" onclick="showSection('orders',this)">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Orders
+      <span class="sb-badge" id="badgePending" style="display:none">0</span>
+    </button>
+    <button class="sb-link" onclick="showSection('products',this)">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>Products
+    </button>
+    <button class="sb-link" onclick="showSection('quotes',this)">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Quotes
+      <span class="sb-badge" id="badgeQuotes" style="display:none">0</span>
+    </button>
+    <button class="sb-link" onclick="showSection('blogs',this)">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>Blogs
+    </button>
+    <button class="sb-link" onclick="showSection('accounts',this)">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M4 19h16a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+      Accounts &amp; Finance
+    </button>
+    <div class="sb-section">Config</div>
+    <button class="sb-link" onclick="showSection('settings',this)">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>Settings
+    </button>
+    <a class="sb-link" href="../index.html" target="_blank">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>View Site
+    </a>
+    <button class="sb-link" onclick="doLogout()" style="color:rgba(255,120,120,.7);margin-top:4px">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>Logout
+    </button>
+  </div>
+  <div class="sb-footer">Detoxy Hijama © 2024</div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <span class="topbar-title" id="topbarTitle">Dashboard</span>
+    <div class="topbar-actions">
+      <span id="topbarSubtitle" style="font-size:.78rem;color:var(--muted)"></span>
+      <button class="btn btn-primary btn-sm" id="topbarRefreshBtn" onclick="refreshCurrent()">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>Refresh
+      </button>
+    </div>
+  </div>
+  <div class="content">
+
+    <!-- ── DASHBOARD ── -->
+    <div id="sec-dashboard" class="section active">
+      <div class="stat-grid">
+        <div class="stat-card stat-teal">
+          <div class="stat-label">Total Orders</div>
+          <div class="stat-value" id="ds-orders">—</div>
+          <div class="stat-sub" id="ds-recent-orders">Loading...</div>
+          <div class="stat-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/></svg></div>
+        </div>
+        <div class="stat-card stat-warn">
+          <div class="stat-label">Pending</div>
+          <div class="stat-value" id="ds-pending">—</div>
+          <div class="stat-sub">Awaiting action</div>
+          <div class="stat-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+        </div>
+        <div class="stat-card stat-success">
+          <div class="stat-label">Total Revenue</div>
+          <div class="stat-value" id="ds-revenue">—</div>
+          <div class="stat-sub">All confirmed orders</div>
+          <div class="stat-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+        </div>
+        <div class="stat-card stat-info">
+          <div class="stat-label">New Quotes</div>
+          <div class="stat-value" id="ds-quotes">—</div>
+          <div class="stat-sub">Awaiting response</div>
+          <div class="stat-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
+        </div>
+      </div>
+      <!-- Order summary mini chart bars -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px">
+        <div class="card">
+          <div class="card-head"><h3>Order Status Breakdown</h3></div>
+          <div class="card-body" id="ds-status-breakdown" style="min-height:100px"><div class="spinner"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Quick Stats</h3></div>
+          <div class="card-body" id="ds-quick-stats" style="min-height:100px"><div class="spinner"></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Recent Orders</h3><span id="ds-orders-note" style="font-size:.75rem;color:var(--muted)"></span></div>
+        <div class="tbl-wrap"><div id="ds-recent-table"><div style="padding:24px;color:var(--muted);text-align:center">Connect Google Sheets in Settings to view orders.</div></div></div>
+      </div>
+    </div>
+
+    <!-- ── ORDERS ── -->
+    <div id="sec-orders" class="section">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+        <div class="search-row">
+          <input type="search" class="search-input" id="orderSearch" placeholder="Search orders..." oninput="renderOrders()"/>
+          <select class="form-control" id="orderStatusFilter" style="width:auto" onchange="renderOrders()">
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="dispatched">Dispatched</option>
+            <option value="delivered">Delivered</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
+      <div class="card">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th>Order ID</th><th>Customer</th><th>Phone</th><th>Items</th>
+              <th>Total</th><th>Payment</th><th>Status</th><th>Date</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="ordersTableBody"></tbody>
+          </table>
+          <div id="ordersEmpty" class="empty-state" style="display:none">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/></svg>
+            <p>No orders found</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PRODUCTS ── -->
+    <div id="sec-products" class="section">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+        <div class="search-row">
+          <input type="search" class="search-input" id="productSearch" placeholder="Search products..." oninput="renderProducts()"/>
+          <select class="form-control" id="productCatFilter" style="width:auto" onchange="renderProducts()">
+            <option value="">All Categories</option>
+            <option value="cups">Cupping Sets</option>
+            <option value="electric">Electric Devices</option>
+            <option value="kits">Starter Kits</option>
+            <option value="facial">Facial Cups</option>
+            <option value="consumables">Consumables</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="openProductModal()">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>Add Product
+        </button>
+      </div>
+      <div class="card">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Product</th><th>Category</th><th>Price</th><th>MRP</th><th>Stock</th><th>Badge</th><th>Visibility</th><th>Actions</th></tr></thead>
+            <tbody id="productsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── QUOTES ── -->
+    <div id="sec-quotes" class="section">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+        <div class="search-row">
+          <input type="search" class="search-input" id="quoteSearch" placeholder="Search quotes..." oninput="renderQuotes()"/>
+          <select class="form-control" id="quoteStatusFilter" style="width:auto" onchange="renderQuotes()">
+            <option value="">All</option>
+            <option value="new">New</option>
+            <option value="quoted">Quoted</option>
+            <option value="closed">Closed</option>
+          </select>
+        </div>
+      </div>
+      <div class="card">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Quote ID</th><th>Customer</th><th>Org</th><th>City</th><th>Products</th><th>Amount</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+            <tbody id="quotesTableBody"></tbody>
+          </table>
+          <div id="quotesEmpty" class="empty-state" style="display:none">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586"/></svg>
+            <p>No quote requests found</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── BLOGS ── -->
+    <div id="sec-blogs" class="section">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+        <div>
+          <p style="font-size:.8rem;color:var(--muted);margin-top:4px">Blogs are stored in <strong>localStorage</strong> (no database pressure). They render on the frontend blogs.html page automatically.</p>
+        </div>
+        <button class="btn btn-primary" onclick="openBlogModal()">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>New Blog Post
+        </button>
+      </div>
+      <div class="card">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Title</th><th>Category</th><th>Author</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="blogsTableBody"></tbody>
+          </table>
+          <div id="blogsEmpty" class="empty-state" style="display:none">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+            <p>No blog posts yet. Click "New Blog Post" to create one.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px;max-width:500px">
+        <div class="card-head"><h3>Export / Sync</h3></div>
+        <div class="card-body" style="font-size:.83rem;color:var(--muted)">
+          <p style="margin-bottom:10px">Blogs are saved to browser localStorage and injected into <code>blogs.html</code> on page load. No server or database needed.</p>
+          <button class="btn btn-outline btn-sm" onclick="exportBlogsJSON()">Export blogs.json</button>
+          <span style="margin:0 8px;color:var(--border)">|</span>
+          <button class="btn btn-outline btn-sm" onclick="copyBlogsEmbed()">Copy embed code</button>
+          <div id="blogExportResult" style="margin-top:10px;font-size:.78rem"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SETTINGS ── -->
+    <!-- ═══ ACCOUNTS ═══ -->
+    <div id="sec-accounts" class="section">
+      <div class="section-header">
+        <div>
+          <h2>Accounts &amp; Finance</h2>
+          <p>Complete financial overview — revenue, GST, payments, profit &amp; loss (Indian accounting standards)</p>
+        </div>
+        <div style="display:flex;gap:8px">
+          <select id="acPeriodFilter" class="form-control" style="width:160px" onchange="loadAccounts()">
+            <option value="all">All Time</option>
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+            <option value="month" selected>This Month</option>
+            <option value="quarter">This Quarter</option>
+            <option value="year">This Year</option>
+          </select>
+          <button class="btn btn-outline btn-sm" onclick="exportAccountsCSV()">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            Export CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Cards -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px">
+        <div class="stat-card"><div class="stat-label">Gross Revenue</div><div class="stat-value" id="ac-gross">—</div><div class="stat-change" id="ac-gross-sub">Incl. GST</div></div>
+        <div class="stat-card"><div class="stat-label">Net Revenue</div><div class="stat-value" id="ac-net">—</div><div class="stat-change" id="ac-net-sub">Excl. GST</div></div>
+        <div class="stat-card"><div class="stat-label">GST Collected</div><div class="stat-value" id="ac-gst">—</div><div class="stat-change">@18% (CGST 9% + SGST 9%)</div></div>
+        <div class="stat-card"><div class="stat-label">Avg Order Value</div><div class="stat-value" id="ac-aov">—</div><div class="stat-change" id="ac-orders-count">0 orders</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px">
+        <div class="stat-card"><div class="stat-label">COD Orders</div><div class="stat-value" id="ac-cod">—</div><div class="stat-change" id="ac-cod-amt">₹0</div></div>
+        <div class="stat-card"><div class="stat-label">Prepaid (UPI/NEFT)</div><div class="stat-value" id="ac-prepaid">—</div><div class="stat-change" id="ac-prepaid-amt">₹0</div></div>
+        <div class="stat-card"><div class="stat-label">Delivered</div><div class="stat-value" id="ac-delivered">—</div><div class="stat-change" id="ac-delivered-amt">₹0</div></div>
+        <div class="stat-card"><div class="stat-label">Cancelled</div><div class="stat-value" id="ac-cancelled">—</div><div class="stat-change" id="ac-cancelled-amt">₹0 lost</div></div>
+      </div>
+
+      <!-- GST Summary Box -->
+      <div style="background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:22px">
+        <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-weight:700;font-size:.9rem;color:var(--dark)">GST Summary — GSTR-1 View</div>
+            <div style="font-size:.75rem;color:var(--muted)">As per Indian GST Act. For filing reference only — consult your CA.</div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="exportGSTReport()">Export GSTR-1</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);padding:14px 18px;gap:12px" id="ac-gst-breakdown">
+          <div style="text-align:center"><div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Taxable Value</div><div style="font-size:1.1rem;font-weight:700;color:var(--dark);margin-top:4px" id="ac-taxable">—</div></div>
+          <div style="text-align:center"><div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">CGST (9%)</div><div style="font-size:1.1rem;font-weight:700;color:var(--dark);margin-top:4px" id="ac-cgst">—</div></div>
+          <div style="text-align:center"><div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">SGST (9%)</div><div style="font-size:1.1rem;font-weight:700;color:var(--dark);margin-top:4px" id="ac-sgst">—</div></div>
+          <div style="text-align:center"><div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Total GST</div><div style="font-size:1.1rem;font-weight:700;color:var(--t);margin-top:4px" id="ac-total-gst">—</div></div>
+          <div style="text-align:center"><div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Gross Amount</div><div style="font-size:1.1rem;font-weight:700;color:var(--dark);margin-top:4px" id="ac-gross2">—</div></div>
+        </div>
+      </div>
+
+      <!-- Payment-wise breakdown -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px">
+        <div style="background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:18px">
+          <div style="font-weight:700;font-size:.87rem;color:var(--dark);margin-bottom:14px">Payment Method Breakdown</div>
+          <div id="ac-payment-breakdown"></div>
+        </div>
+        <div style="background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:18px">
+          <div style="font-weight:700;font-size:.87rem;color:var(--dark);margin-bottom:14px">Order Status Revenue Split</div>
+          <div id="ac-status-revenue"></div>
+        </div>
+      </div>
+
+      <!-- Transaction ledger -->
+      <div style="background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden">
+        <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+          <div style="font-weight:700;font-size:.87rem;color:var(--dark)">Transaction Ledger</div>
+          <input type="text" id="acLedgerSearch" class="form-control" placeholder="Search orders…" style="width:200px;padding:6px 10px" oninput="renderLedger()"/>
+        </div>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:.81rem">
+            <thead>
+              <tr style="background:var(--cream)">
+                <th style="padding:9px 14px;text-align:left;font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1.5px solid var(--border)">Date</th>
+                <th style="padding:9px 14px;text-align:left;font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1.5px solid var(--border)">Order ID</th>
+                <th style="padding:9px 14px;text-align:left;font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1.5px solid var(--border)">Customer</th>
+                <th style="padding:9px 14px;text-align:left;font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1.5px solid var(--border)">Payment</th>
+                <th style="padding:9px 14px;text-align:right;font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1.5px solid var(--border)">Taxable</th>
+                <th style="padding:9px 14px;text-align:right;font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1.5px solid var(--border)">GST</th>
+                <th style="padding:9px 14px;text-align:right;font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1.5px solid var(--border)">Total</th>
+                <th style="padding:9px 14px;text-align:center;font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1.5px solid var(--border)">Status</th>
+              </tr>
+            </thead>
+            <tbody id="acLedgerBody"></tbody>
+          </table>
+        </div>
+        <div id="acLedgerFooter" style="padding:12px 18px;background:var(--cream);border-top:1.5px solid var(--border);display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;color:var(--dark)"></div>
+      </div>
+    </div>
+
+    <div id="sec-settings" class="section">
+      <div class="card" style="max-width:640px;margin-bottom:20px">
+        <div class="card-head"><h3>Google Sheets API Connection</h3></div>
+        <div class="card-body">
+
+          <!-- Step by step guide -->
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:14px 16px;margin-bottom:18px;font-size:.8rem;line-height:1.7">
+            <strong style="display:block;margin-bottom:6px;color:#166534">📋 How to get your Apps Script URL:</strong>
+            <ol style="margin:0;padding-left:18px;color:#374151">
+              <li>Open your Google Sheet → <strong>Extensions → Apps Script</strong></li>
+              <li>Paste the <code style="background:#e5e7eb;padding:1px 5px;border-radius:4px">google-apps-script.gs</code> file contents</li>
+              <li>Run <strong>SETUP_EVERYTHING</strong> once (creates all sheets + seeds products)</li>
+              <li>Click <strong>Deploy → New Deployment</strong></li>
+              <li>Type: <strong>Web App</strong></li>
+              <li>Execute as: <strong>Me</strong></li>
+              <li>Who has access: <strong>Anyone</strong> ← very important</li>
+              <li>Click <strong>Deploy</strong> → Authorize → Copy the URL</li>
+              <li>Paste the URL below and click Save, then Test</li>
+            </ol>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Apps Script Web App URL</label>
+            <div style="display:flex;gap:8px">
+              <input type="url" id="settingsUrl" class="form-control" placeholder="https://script.google.com/macros/s/AKfy.../exec"/>
+              <button class="btn btn-primary" onclick="saveSheetsUrl()">Save</button>
+            </div>
+            <small style="color:var(--muted);font-size:.73rem">URL must end with <code>/exec</code></small>
+          </div>
+
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <button class="btn btn-outline btn-sm" onclick="testApiConnection()" id="testApiBtn">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>Test Connection
+            </button>
+          </div>
+          <div id="apiTestResult" style="margin-top:12px;font-size:.8rem;line-height:1.6"></div>
+
+          <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:12px 14px;margin-top:16px;font-size:.78rem;color:#92400e">
+            <strong>⚠️ If you see "Failed to fetch":</strong><br>
+            The most common cause is the deployment setting <em>"Who has access"</em> is not set to <strong>Anyone</strong>.
+            Go back to Apps Script → Deploy → Manage deployments → Edit → change access → re-deploy → copy the new URL.
+          </div>
+        </div>
+      </div>
+      <div class="card" style="max-width:580px;margin-bottom:20px">
+        <div class="card-head"><h3>Admin Password</h3></div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="form-label">New Password</label>
+            <input type="password" id="newAdminPass" class="form-control" placeholder="Enter new password"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" id="confirmAdminPass" class="form-control" placeholder="Repeat password"/>
+          </div>
+          <button class="btn btn-dark" onclick="changeAdminPass()">Change Password</button>
+        </div>
+      </div>
+      <div class="card" style="max-width:580px">
+        <div class="card-head"><h3>Sync Products from shared.js</h3></div>
+        <div class="card-body">
+          <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px">Push all 15 products from shared.js into Google Sheets Products tab (first-time setup).</p>
+          <button class="btn btn-outline" onclick="syncProductsToSheets()">Sync Products → Sheets</button>
+          <div id="syncResult" style="margin-top:10px;font-size:.8rem"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div><!-- /adminApp -->
+
+<!-- ── ORDER DETAIL MODAL ── -->
+<div class="modal" id="orderModal">
+  <div class="modal-box wide">
+    <div class="modal-title">
+      <span id="orderModalTitle">Order Details</span>
+      <button class="modal-close" onclick="closeModal('orderModal')"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <div id="orderModalContent"></div>
+    <div class="modal-footer" id="orderModalFooter"></div>
+  </div>
+</div>
+
+<!-- ── BLOG MODAL ── -->
+<div class="modal" id="blogModal">
+  <div class="modal-box wide">
+    <div class="modal-title">
+      <span id="blogModalTitle">New Blog Post</span>
+      <button class="modal-close" onclick="closeModal('blogModal')"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <input type="hidden" id="blogId"/>
+    <div class="form-row2">
+      <div class="form-group"><label class="form-label">Title *</label><input type="text" id="blogTitle" class="form-control" placeholder="e.g. Benefits of Hijama for Back Pain"/></div>
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select id="blogCategory" class="form-control">
+          <option value="Benefits">Benefits</option>
+          <option value="Sunnah">Sunnah &amp; Islamic</option>
+          <option value="Conditions">Conditions &amp; Treatment</option>
+          <option value="How-To">How-To &amp; Technique</option>
+          <option value="Products">Products &amp; Equipment</option>
+          <option value="Aftercare">Aftercare &amp; Safety</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row2">
+      <div class="form-group"><label class="form-label">Author</label><input type="text" id="blogAuthor" class="form-control" placeholder="Detoxy Hijama Team" value="Detoxy Hijama Team"/></div>
+      <div class="form-group"><label class="form-label">Read Time (min)</label><input type="number" id="blogReadTime" class="form-control" placeholder="5" value="5"/></div>
+    </div>
+    <div class="form-group"><label class="form-label">Short Excerpt *</label><textarea id="blogExcerpt" class="form-control" rows="2" placeholder="Brief summary shown on blog card (1-2 sentences)"></textarea></div>
+    <div class="form-group">
+      <label class="form-label">Full Article Content *</label>
+      <div style="font-size:.74rem;color:var(--muted);margin-bottom:5px">Use ### for headings, **bold**, and blank lines for paragraphs</div>
+      <textarea id="blogContent" class="form-control" rows="10" placeholder="### Introduction&#10;Write your full article here...&#10;&#10;### Section 2&#10;More content..."></textarea>
+    </div>
+    <div class="form-row2">
+      <div class="form-group"><label class="form-label">Tags (comma separated)</label><input type="text" id="blogTags" class="form-control" placeholder="hijama, back pain, cupping therapy"/></div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select id="blogStatus" class="form-control">
+          <option value="published">Published</option>
+          <option value="draft">Draft</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Card Emoji / Icon</label>
+      <input type="text" id="blogEmoji" class="form-control" placeholder="🩺" style="width:80px;font-size:1.4rem"/>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('blogModal')">Cancel</button>
+      <button class="btn btn-primary" id="blogSaveBtn" onclick="saveBlog()">Save Post</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TRACKING MODAL ── -->
+<div class="modal" id="trackingModal">
+  <div class="modal-box">
+    <div class="modal-title">
+      <span>Add Tracking Info</span>
+      <button class="modal-close" onclick="closeModal('trackingModal')"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <input type="hidden" id="trackOrderId"/>
+    <div class="form-group">
+      <label class="form-label">Courier Name</label>
+      <input type="text" id="trackCourier" class="form-control" placeholder="e.g. Delhivery, DTDC, BlueDart"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tracking Number</label>
+      <input type="text" id="trackNumber" class="form-control" placeholder="Tracking / AWB number"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tracking URL</label>
+      <input type="url" id="trackUrl" class="form-control" placeholder="https://..."/>
+    </div>
+    <div class="form-group" style="display:flex;align-items:center;gap:8px">
+      <input type="checkbox" id="trackUpdateStatus" checked style="width:16px;height:16px;accent-color:var(--teal)"/>
+      <label for="trackUpdateStatus" style="font-size:.83rem">Also mark order as <strong>Dispatched</strong></label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('trackingModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTracking()">Save Tracking</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── PRODUCT MODAL ── -->
+<div class="modal" id="productModal">
+  <div class="modal-box wide">
+    <div class="modal-title">
+      <span id="productModalTitle">Add Product</span>
+      <button class="modal-close" onclick="closeModal('productModal')"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <input type="hidden" id="pmId"/>
+    <div class="form-row2">
+      <div class="form-group"><label class="form-label">Product ID / Slug *</label><input type="text" id="pmSlug" class="form-control" placeholder="electric-smart-cup"/></div>
+      <div class="form-group"><label class="form-label">Product Name *</label><input type="text" id="pmName" class="form-control" placeholder="Full product name"/></div>
+    </div>
+    <div class="form-group"><label class="form-label">Short Description</label><input type="text" id="pmShortDesc" class="form-control" placeholder="Brief tagline for product card"/></div>
+    <div class="form-group"><label class="form-label">Full Description</label><textarea id="pmDesc" class="form-control" rows="3"></textarea></div>
+    <div class="form-row3">
+      <div class="form-group"><label class="form-label">Price (₹) *</label><input type="number" id="pmPrice" class="form-control" placeholder="649"/></div>
+      <div class="form-group"><label class="form-label">MRP (₹)</label><input type="number" id="pmMrp" class="form-control" placeholder="999"/></div>
+      <div class="form-group"><label class="form-label">Stock</label><input type="number" id="pmStock" class="form-control" placeholder="50"/></div>
+    </div>
+    <div class="form-row2">
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select id="pmCategory" class="form-control">
+          <option value="cups">Cupping Sets</option>
+          <option value="electric">Electric Devices</option>
+          <option value="kits">Starter Kits</option>
+          <option value="facial">Facial Cups</option>
+          <option value="consumables">Consumables</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Badge Label</label><input type="text" id="pmBadge" class="form-control" placeholder="Best Seller / New Arrival"/></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Product Images <span style="font-size:.7rem;color:var(--muted);font-weight:400">(up to 6 images)</span></label>
+      <div id="pmImageSlots" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px"></div>
+      <input type="hidden" id="pmImage"/>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <label class="btn btn-outline btn-sm" style="cursor:pointer">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+          Upload Image
+          <input type="file" id="pmFileInput" accept="image/*" multiple style="display:none" onchange="handleImageUpload(this.files)"/>
+        </label>
+        <span style="font-size:.72rem;color:var(--muted)">or paste URL:</span>
+        <input type="text" id="pmImageUrl" class="form-control" placeholder="https://i.imgur.com/..." style="flex:1;min-width:180px" onkeydown="if(event.key==='Enter'){event.preventDefault();addImageFromUrl();}" />
+        <button type="button" class="btn btn-outline btn-sm" onclick="addImageFromUrl()">Add</button>
+      </div>
+      <small style="font-size:.71rem;color:var(--muted);margin-top:4px;display:block">Images are compressed to &lt;200KB and stored as base64. Max 6 images. For external hosting: <a href="https://imgur.com/upload" target="_blank" style="color:var(--teal)">Imgur</a> · <a href="https://postimages.org" target="_blank" style="color:var(--teal)">PostImages</a></small>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Product Videos <span style="font-size:.7rem;color:var(--muted);font-weight:400">(up to 2 — YouTube/Vimeo links only)</span></label>
+      <div id="pmVideoSlots" style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px"></div>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="pmVideoUrl" class="form-control" placeholder="https://youtube.com/watch?v=... or https://youtu.be/..." style="flex:1"/>
+        <button type="button" class="btn btn-outline btn-sm" onclick="addVideoLink()">Add Video</button>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Features (one per line)</label><textarea id="pmFeatures" class="form-control" rows="3" placeholder="Medical-grade silicone&#10;BPA-free material&#10;Sterilizable"></textarea></div>
+    <div class="form-group"><label class="form-label">Specs (Key: Value, one per line)</label><textarea id="pmSpecs" class="form-control" rows="3" placeholder="Material: Silicone&#10;Quantity: 12 cups&#10;Sizes: S/M/L/XL"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('productModal')">Cancel</button>
+      <button class="btn btn-primary" id="productSaveBtn" onclick="saveProduct()">Save Product</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── QUOTE MODAL ── -->
+<div class="modal" id="quoteModal">
+  <div class="modal-box wide">
+    <div class="modal-title">
+      <span id="quoteModalTitle">Quote Details</span>
+      <button class="modal-close" onclick="closeModal('quoteModal')"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <div id="quoteModalContent"></div>
+    <div class="modal-footer" id="quoteModalFooter"></div>
+  </div>
+</div>
+
+<div id="toast-wrap"></div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────────
+var ADMIN_PASS = localStorage.getItem('dh_admin_pass') || 'detoxy2024admin';
+var API_URL    = '';
+var _orders    = [];
+var _products  = [];
+var _quotes    = [];
+var _currentSection = 'dashboard';
+
+// ── Auth ───────────────────────────────────────────────────────────────────────
+function doLogin() {
+  var p = document.getElementById('loginPass').value;
+  if (p === ADMIN_PASS) {
+    var overlay = document.getElementById('loginOverlay');
+    var app     = document.getElementById('adminApp');
+    overlay.style.cssText = 'display:none';
+    app.style.cssText      = 'display:flex;width:100%';
+    document.getElementById('loginErr').style.display = 'none';
+    API_URL = localStorage.getItem('detoxy_sheets_url') || '';
+    document.getElementById('settingsUrl').value = API_URL;
+    loadDashboard();
+  } else {
+    document.getElementById('loginErr').style.display = 'block';
+    document.getElementById('loginPass').select();
+  }
+}
+
+function doLogout() {
+  var overlay = document.getElementById('loginOverlay');
+  var app     = document.getElementById('adminApp');
+  overlay.style.cssText = 'display:flex';
+  app.style.cssText      = 'display:none;width:100%';
+  document.getElementById('loginPass').value = '';
+}
+
+// ── Navigation ─────────────────────────────────────────────────────────────────
+function showSection(name, btn) {
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.sb-link').forEach(function(l){l.classList.remove('active');});
+  document.getElementById('sec-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  _currentSection = name;
+  var titles = {dashboard:'Dashboard',orders:'Orders',products:'Products',quotes:'Quote Requests',blogs:'Blog Posts',accounts:'Accounts & Finance',settings:'Settings'};
+  document.getElementById('topbarTitle').textContent = titles[name] || name;
+  if (name === 'orders')   loadOrders();
+  if (name === 'products') loadProducts();
+  if (name === 'quotes')   loadQuotes();
+  if (name === 'blogs')    loadBlogs();
+  if (name === 'accounts') loadAccounts();
+}
+
+function refreshCurrent() { showSection(_currentSection, null); }
+
+// ── API Helpers ────────────────────────────────────────────────────────────────
+function apiGet(params) {
+  if (!API_URL) return Promise.reject(new Error('No API URL set'));
+  var url = API_URL + '?' + Object.keys(params).map(function(k){
+    return encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+  }).join('&');
+  return fetch(url, { redirect: 'follow' })
+    .then(function(r) { return r.json(); });
+}
+
+function apiPost(params, body) {
+  if (!API_URL) return Promise.reject(new Error('No API URL set'));
+  // ── WHY text/plain ──────────────────────────────────────────────────────────
+  // Google Apps Script Web Apps do NOT handle CORS preflight (OPTIONS).
+  // application/json triggers a preflight → GAS can't respond → "Failed to fetch".
+  // text/plain is a "simple request" — no preflight — GAS responds directly.
+  // The body is still valid JSON, GAS parses it fine with JSON.parse().
+  // ───────────────────────────────────────────────────────────────────────────
+  var url = API_URL + '?' + Object.keys(params).map(function(k){
+    return encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+  }).join('&');
+  return fetch(url, {
+    method:   'POST',
+    redirect: 'follow',
+    headers:  { 'Content-Type': 'text/plain;charset=utf-8' },
+    body:     JSON.stringify(body)
+  }).then(function(r) { return r.json(); });
+}
+
+// ── Toast ──────────────────────────────────────────────────────────────────────
+function toast(msg, type) {
+  var w = document.getElementById('toast-wrap');
+  var t = document.createElement('div');
+  t.className = 'toast ' + (type||'');
+  t.textContent = msg;
+  w.appendChild(t);
+  setTimeout(function(){t.style.opacity='0';t.style.transform='translateY(12px)';t.style.transition='.2s';setTimeout(function(){t.remove();},220);}, 2800);
+}
+
+// ── Modals ─────────────────────────────────────────────────────────────────────
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ── Dashboard ─────────────────────────────────────────────────────────────────
+function loadDashboard() {
+  if (!API_URL) {
+    document.getElementById('ds-orders').textContent = _products.length || '—';
+    return;
+  }
+  apiGet({action:'getDashboard'}).then(function(d) {
+    document.getElementById('ds-orders').textContent   = d.totalOrders    || 0;
+    var dpEl = document.getElementById('ds-products');
+    if (dpEl) dpEl.textContent = d.totalProducts || _products.length || 0;
+    document.getElementById('ds-pending').textContent = d.pending || 0;
+    document.getElementById('ds-revenue').textContent = '₹' + ((d.totalRevenue||0)/1000).toFixed(1) + 'k';
+    document.getElementById('ds-quotes').textContent = d.newQuotes || 0;
+    document.getElementById('ds-recent-orders').textContent = (d.recentOrders||0) + ' this week';
+
+    var bp = document.getElementById('badgePending');
+    if (d.pending > 0) { bp.textContent = d.pending; bp.style.display = 'inline-flex'; }
+
+    var bq = document.getElementById('badgeQuotes');
+    if (d.newQuotes > 0) { bq.textContent = d.newQuotes; bq.style.display = 'inline-flex'; }
+
+    // Status breakdown bars
+    var total = d.totalOrders || 1;
+    var statuses = [
+      {label:'Pending',val:d.pending||0,color:'var(--warn)'},
+      {label:'Confirmed',val:d.confirmed||0,color:'var(--teal)'},
+      {label:'Dispatched',val:d.dispatched||0,color:'var(--info)'},
+      {label:'Delivered',val:d.delivered||0,color:'var(--success)'}
+    ];
+    document.getElementById('ds-status-breakdown').innerHTML = statuses.map(function(s){
+      var pct = Math.round(s.val/total*100);
+      return '<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:4px"><span>'+s.label+'</span><span style="font-weight:700">'+s.val+'</span></div><div style="background:var(--border);border-radius:50px;height:6px"><div style="background:'+s.color+';width:'+pct+'%;height:6px;border-radius:50px;transition:width .4s ease"></div></div></div>';
+    }).join('');
+
+    document.getElementById('ds-quick-stats').innerHTML =
+      '<div style="display:flex;flex-direction:column;gap:8px;font-size:.83rem">' +
+      '<div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Total Products</span><strong>'+d.totalProducts+'</strong></div>' +
+      '<div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Total Quotes</span><strong>'+d.totalQuotes+'</strong></div>' +
+      '<div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Dispatched</span><strong>'+d.dispatched+'</strong></div>' +
+      '<div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Delivered</span><strong>'+d.delivered+'</strong></div>' +
+      '</div>';
+
+    // Recent orders mini table
+    if (d.recentOrdersList && d.recentOrdersList.length) {
+      _orders = d.recentOrdersList;
+      document.getElementById('ds-recent-table').innerHTML = buildOrderTable(d.recentOrdersList.slice(0,5), true);
+      document.getElementById('ds-orders-note').textContent = 'Showing last 5 orders';
+    }
+  }).catch(function(e){ console.error(e); });
+}
+
+// ── Orders ─────────────────────────────────────────────────────────────────────
+function loadOrders() {
+  document.getElementById('ordersTableBody').innerHTML = '<tr><td colspan="9" style="padding:20px;text-align:center"><div class="spinner"></div></td></tr>';
+  if (!API_URL) {
+    document.getElementById('ordersTableBody').innerHTML = '<tr><td colspan="9" class="empty-state">Configure Google Sheets URL in Settings.</td></tr>';
+    return;
+  }
+  apiGet({action:'getOrders'}).then(function(d){
+    _orders = d.orders || [];
+    renderOrders();
+  }).catch(function(e){ toast('Failed to load orders: ' + e.message, 'error'); });
+}
+
+function renderOrders() {
+  var q = (document.getElementById('orderSearch').value||'').toLowerCase();
+  var sf = document.getElementById('orderStatusFilter').value;
+  var filtered = _orders.filter(function(o){
+    var match = !q || (o.order_id+''+o.name+''+o.phone+''+o.items).toLowerCase().includes(q);
+    var statusMatch = !sf || o.status === sf;
+    return match && statusMatch;
+  });
+  var tbody = document.getElementById('ordersTableBody');
+  if (!filtered.length) {
+    tbody.innerHTML = '';
+    document.getElementById('ordersEmpty').style.display = 'block';
+    return;
+  }
+  document.getElementById('ordersEmpty').style.display = 'none';
+  tbody.innerHTML = buildOrderTable(filtered, false);
+}
+
+function buildOrderTable(orders, mini) {
+  return '<table class="admin-table"><thead><tr><th>Order ID</th><th>Customer</th><th>Phone</th>' +
+    (mini?'':'<th>Items</th>') + '<th>Total</th><th>Payment</th><th>Status</th><th>Date</th><th></th></tr></thead><tbody>' +
+    orders.map(function(o){
+      var d = o.date ? new Date(o.date).toLocaleDateString('en-IN') : '';
+      var items = o.items ? (o.items.length>40?o.items.substring(0,40)+'…':o.items) : '—';
+      return '<tr>' +
+        '<td><strong style="font-family:monospace">'+o.order_id+'</strong></td>' +
+        '<td>'+o.name+'</td>' +
+        '<td>'+o.phone+'</td>' +
+        (mini?'':'<td style="max-width:140px;font-size:.76rem">'+items+'</td>') +
+        '<td><strong>₹'+Number(o.total).toLocaleString('en-IN')+'</strong></td>' +
+        '<td style="text-transform:uppercase;font-size:.75rem">'+o.payment+'</td>' +
+        '<td><span class="badge badge-'+o.status+'">'+o.status+'</span></td>' +
+        '<td style="font-size:.76rem;white-space:nowrap">'+d+'</td>' +
+        '<td><div style="display:flex;gap:4px">' +
+          '<button class="btn btn-outline btn-sm btn-icon" onclick="viewOrder(\''+o.order_id+'\')" title="View"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>' +
+          '<button class="btn btn-outline btn-sm btn-icon" onclick="generateInvoicePDF(\''+o.order_id+'\')" title="Invoice PDF"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></button>' +
+        '</div></td>' +
+      '</tr>';
+    }).join('') + '</tbody></table>';
+}
+
+function viewOrder(orderId) {
+  var o = _orders.find(function(x){return String(x.order_id)===String(orderId);});
+  if (!o) return;
+  document.getElementById('orderModalTitle').textContent = 'Order ' + o.order_id;
+  var hasTracking = o.courier_name || o.tracking_number;
+  document.getElementById('orderModalContent').innerHTML =
+    '<div class="detail-grid">' +
+    '<div class="detail-item"><label>Order ID</label><span style="font-family:monospace">'+o.order_id+'</span></div>' +
+    '<div class="detail-item"><label>Invoice</label><span>'+o.invoice_number+'</span></div>' +
+    '<div class="detail-item"><label>Customer</label><span>'+o.name+'</span></div>' +
+    '<div class="detail-item"><label>Phone</label><span>'+o.phone+'</span></div>' +
+    '<div class="detail-item"><label>Email</label><span>'+(o.email||'—')+'</span></div>' +
+    '<div class="detail-item"><label>Payment</label><span style="text-transform:uppercase">'+o.payment+'</span></div>' +
+    '<div class="detail-item" style="grid-column:1/-1"><label>Address</label><span>'+[o.address,o.city,o.state,o.pincode].filter(Boolean).join(', ')+'</span></div>' +
+    '<div class="detail-item" style="grid-column:1/-1"><label>Items</label><span>'+o.items+'</span></div>' +
+    '<div class="detail-item"><label>Subtotal</label><span>₹'+Number(o.subtotal).toLocaleString('en-IN')+'</span></div>' +
+    '<div class="detail-item"><label>Shipping</label><span>₹'+Number(o.shipping).toLocaleString('en-IN')+'</span></div>' +
+    '<div class="detail-item"><label>Total</label><span style="font-weight:700;font-size:1rem">₹'+Number(o.total).toLocaleString('en-IN')+'</span></div>' +
+    '<div class="detail-item"><label>Date</label><span>'+(o.date?new Date(o.date).toLocaleString('en-IN'):'—')+'</span></div>' +
+    '</div>' +
+    (hasTracking?
+    '<div style="background:var(--tp);border-radius:8px;padding:12px 14px;margin-top:12px;font-size:.82rem">' +
+    '<strong>Tracking:</strong> '+o.courier_name+' · '+o.tracking_number+
+    (o.tracking_url?(' · <a href="'+o.tracking_url+'" target="_blank" style="color:var(--teal)">Track →</a>'):'')+'</div>':'') +
+    '<div style="margin-top:14px"><label class="form-label">Update Status</label>' +
+    '<select class="form-control" id="modalStatusSel" style="width:auto">'+
+    ['pending','confirmed','dispatched','delivered','cancelled'].map(function(s){return '<option value="'+s+'"'+(o.status===s?' selected':'')+'>'+s.charAt(0).toUpperCase()+s.slice(1)+'</option>';}).join('')+
+    '</select></div>' +
+    (o.notes?'<div style="margin-top:10px;font-size:.8rem;color:var(--muted)"><strong>Notes:</strong> '+o.notes+'</div>':'');
+
+  document.getElementById('orderModalFooter').innerHTML =
+    '<button class="btn btn-outline" onclick="closeModal(\'orderModal\')">Close</button>' +
+    '<button class="btn btn-outline btn-sm" onclick="generateShippingLabel(\''+o.order_id+'\')" title="Shipping Label" style="display:flex;align-items:center;gap:5px"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-5 5a2 2 0 01-2.828 0l-7-7A2 2 0 013 8V5a2 2 0 012-2h2z"/></svg>Label</button>' +
+        '<button class="btn btn-outline" onclick="openTracking(\''+o.order_id+'\')"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>Tracking</button>' +
+    '<button class="btn btn-outline" onclick="generateInvoicePDF(\''+o.order_id+'\')"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>Invoice PDF</button>' +
+    '<button class="btn btn-primary" onclick="updateStatus(\''+o.order_id+'\')">Save Status</button>';
+
+  openModal('orderModal');
+}
+
+function updateStatus(orderId) {
+  var status = document.getElementById('modalStatusSel').value;
+  apiPost({action:'updateStatus'}, {action:'updateStatus', orderId:orderId, status:status}).then(function(d){
+    if (d.success) {
+      toast('Status updated to ' + status, 'success');
+      var o = _orders.find(function(x){return String(x.order_id)===String(orderId);});
+      if (o) o.status = status;
+      closeModal('orderModal');
+      renderOrders();
+    } else { toast('Error: ' + d.error, 'error'); }
+  }).catch(function(e){ toast(e.message,'error'); });
+}
+
+function openTracking(orderId) {
+  closeModal('orderModal');
+  document.getElementById('trackOrderId').value = orderId;
+  var o = _orders.find(function(x){return String(x.order_id)===String(orderId);});
+  if (o) {
+    document.getElementById('trackCourier').value  = o.courier_name||'';
+    document.getElementById('trackNumber').value   = o.tracking_number||'';
+    document.getElementById('trackUrl').value      = o.tracking_url||'';
+  }
+  openModal('trackingModal');
+}
+
+function saveTracking() {
+  var orderId = document.getElementById('trackOrderId').value;
+  apiPost({action:'addTracking'}, {
+    action:'addTracking',
+    orderId: orderId,
+    courierName:    document.getElementById('trackCourier').value,
+    trackingNumber: document.getElementById('trackNumber').value,
+    trackingUrl:    document.getElementById('trackUrl').value,
+    updateStatus:   document.getElementById('trackUpdateStatus').checked
+  }).then(function(d){
+    if (d.success) {
+      toast('Tracking info saved!', 'success');
+      closeModal('trackingModal');
+      loadOrders();
+    } else { toast(d.error||'Error saving tracking','error'); }
+  }).catch(function(e){ toast('Network error: '+e.message,'error'); });
+}
+
+// ── Invoice PDF ────────────────────────────────────────────────────────────────
+var LOGO_DATA = 'data:image/png;base64,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';
+
+function generateInvoicePDF(orderId) {
+  var o = _orders.find(function(x){return String(x.order_id)===String(orderId);});
+  if (!o) { toast('Order not found','error'); return; }
+
+  var doc   = new jspdf.jsPDF({unit:'mm',format:'a4'});
+  var W     = 210, H = 297, M = 15, cW = W - M*2;
+  var teal  = [26,61,53], tealAccent = [42,171,151], white = [255,255,255];
+  var ink   = [26,42,58], muted = [100,115,130], light = [245,248,247], border = [220,228,225];
+
+  // ── HEADER ────────────────────────────────────────────────────────────────
+  doc.setFillColor(teal[0],teal[1],teal[2]);
+  doc.rect(0,0,W,44,'F');
+
+  // Logo
+  try { doc.addImage(LOGO_DATA,'PNG',M,7,26,26); } catch(e){}
+
+  // Company info (right of logo)
+  doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(white[0],white[1],white[2]);
+  doc.text('DETOXY HIJAMA', M+30, 16);
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(180,220,210);
+  doc.text('Pollachi, Coimbatore, Tamil Nadu — 642 002', M+30, 22);
+  doc.text('+91 95665 96077   |   detoxyhijama@gmail.com', M+30, 27);
+  doc.text('GSTIN: Applied For   |   detoxyhijama.github.io', M+30, 32);
+
+  // INVOICE label (far right)
+  doc.setFont('helvetica','bold'); doc.setFontSize(24); doc.setTextColor(tealAccent[0],tealAccent[1],tealAccent[2]);
+  doc.text('INVOICE', W-M, 18, {align:'right'});
+  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(200,230,220);
+  doc.text(String(o.invoice_number||'INV-'+o.order_id), W-M, 26, {align:'right'});
+  doc.text('Date: '+(o.date?new Date(o.date).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—'), W-M, 32, {align:'right'});
+  doc.text('Status: '+(o.status||'pending').toUpperCase(), W-M, 38, {align:'right'});
+
+  var y = 52;
+
+  // ── DIVIDER LINE ─────────────────────────────────────────────────────────
+  doc.setDrawColor(tealAccent[0],tealAccent[1],tealAccent[2]);
+  doc.setLineWidth(0.5);
+  doc.line(M,y-2,W-M,y-2);
+
+  // ── TWO-COLUMN: BILL TO + ORDER INFO ─────────────────────────────────────
+  var halfW = (cW-6)/2;
+
+  // Bill To box
+  doc.setFillColor(light[0],light[1],light[2]);
+  doc.roundedRect(M, y, halfW, 50, 2, 2, 'F');
+  doc.setDrawColor(border[0],border[1],border[2]); doc.setLineWidth(0.3);
+  doc.roundedRect(M, y, halfW, 50, 2, 2, 'S');
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(tealAccent[0],tealAccent[1],tealAccent[2]);
+  doc.text('BILL TO', M+4, y+7);
+  doc.setDrawColor(tealAccent[0],tealAccent[1],tealAccent[2]);
+  doc.line(M+4, y+9, M+halfW-4, y+9);
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(ink[0],ink[1],ink[2]);
+  doc.text(String(o.name||''), M+4, y+16);
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(muted[0],muted[1],muted[2]);
+
+  var addr = [o.address,o.city,o.state,o.pincode].filter(Boolean).join(', ');
+  var addrLines = doc.splitTextToSize(addr, halfW-8);
+  doc.text(addrLines, M+4, y+22);
+  var afterAddr = y + 22 + addrLines.length*4.5;
+  if (o.phone) doc.text('Phone: '+o.phone, M+4, afterAddr+2);
+  if (o.email) doc.text('Email: '+o.email, M+4, afterAddr+7);
+
+  // Order Info box
+  var ox = M + halfW + 6;
+  doc.setFillColor(teal[0],teal[1],teal[2]);
+  doc.roundedRect(ox, y, halfW, 50, 2, 2, 'F');
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(tealAccent[0],tealAccent[1],tealAccent[2]);
+  doc.text('ORDER DETAILS', ox+4, y+7);
+  doc.setDrawColor(tealAccent[0],tealAccent[1],tealAccent[2]); doc.line(ox+4, y+9, ox+halfW-4, y+9);
+
+  var infoRows = [
+    {k:'ORDER ID',   v:String(o.order_id||'')},
+    {k:'DATE',       v:o.date?new Date(o.date).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—'},
+    {k:'PAYMENT',    v:(o.payment||'cod').toUpperCase()},
+    {k:'SHIPPING',   v:'Rs.'+Number(o.shipping||0).toLocaleString('en-IN')},
+  ];
+  var ry = y+16;
+  infoRows.forEach(function(r){
+    doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(160,210,195);
+    doc.text(r.k, ox+4, ry);
+    doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(white[0],white[1],white[2]);
+    doc.text(String(r.v), ox+halfW-4, ry, {align:'right'});
+    ry += 8;
+  });
+
+  y += 58;
+
+  // ── ITEMS TABLE ───────────────────────────────────────────────────────────
+  var colNo   = M,     colNoW  = 10;
+  var colItem = M+10,  colItemW= cW-10-20-22-20;
+  var colQty  = M+10+colItemW, colQtyW = 20;
+  var colUnit = colQty+colQtyW, colUnitW= 22;
+  var colAmt  = colUnit+colUnitW;
+
+  // Table header
+  doc.setFillColor(teal[0],teal[1],teal[2]);
+  doc.rect(M, y, cW, 8, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(white[0],white[1],white[2]);
+  doc.text('#',          colNo+2,   y+5.5);
+  doc.text('ITEM DESCRIPTION', colItem,  y+5.5);
+  doc.text('QTY',        colQty+colQtyW/2, y+5.5, {align:'center'});
+  doc.text('UNIT PRICE', colUnit+colUnitW-1, y+5.5, {align:'right'});
+  doc.text('AMOUNT',     W-M-1,    y+5.5, {align:'right'});
+  y += 8;
+
+  // Table rows
+  var rawItems = o.items ? String(o.items).split(',') : [];
+  var parsedItems = rawItems.map(function(item){
+    item = item.trim();
+    var m = item.match(/^(.*)\s+x(\d+)$/i);
+    return m ? {name:m[1].trim(), qty:parseInt(m[2])} : {name:item, qty:1};
+  }).filter(function(i){ return i.name; });
+
+  parsedItems.forEach(function(item,idx){
+    var rowH = 9;
+    var bg = idx%2===0 ? white : [248,251,250];
+    doc.setFillColor(bg[0],bg[1],bg[2]);
+    doc.rect(M, y, cW, rowH, 'F');
+
+    var prod = (_products||[]).find(function(p){
+      return (p.name||p.title||'').toLowerCase().indexOf(item.name.toLowerCase().substring(0,12).trim()) > -1;
+    });
+    var unit  = prod ? Number(prod.price) : 0;
+    var total = unit * item.qty;
+
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(muted[0],muted[1],muted[2]);
+    doc.text(String(idx+1), colNo+2, y+6);
+    doc.setTextColor(ink[0],ink[1],ink[2]);
+    var nm = item.name.length>50 ? item.name.substring(0,50)+'...' : item.name;
+    doc.text(nm, colItem, y+6);
+    doc.text(String(item.qty), colQty+colQtyW/2, y+6, {align:'center'});
+    doc.setTextColor(muted[0],muted[1],muted[2]);
+    doc.text(unit ? 'Rs.'+unit.toLocaleString('en-IN') : '—', colUnit+colUnitW-1, y+6, {align:'right'});
+    doc.setFont('helvetica','bold'); doc.setTextColor(ink[0],ink[1],ink[2]);
+    doc.text(total ? 'Rs.'+total.toLocaleString('en-IN') : '—', W-M-1, y+6, {align:'right'});
+    y += rowH;
+  });
+
+  // Table bottom border
+  doc.setDrawColor(border[0],border[1],border[2]); doc.setLineWidth(0.3);
+  doc.line(M, y, W-M, y);
+  y += 6;
+
+  // ── TOTALS ────────────────────────────────────────────────────────────────
+  var totX = W - M - 72;
+  function totRow(k, v, bold, highlight) {
+    if (highlight) {
+      doc.setFillColor(teal[0],teal[1],teal[2]);
+      doc.rect(totX-2, y-1, 72+2, 10, 'F');
+      doc.setTextColor(white[0],white[1],white[2]);
+    } else {
+      doc.setTextColor(muted[0],muted[1],muted[2]);
+    }
+    doc.setFont('helvetica', bold?'bold':'normal'); doc.setFontSize(bold?9:8.5);
+    doc.text(k, totX+2, y+6);
+    if (highlight) doc.setTextColor(white[0],white[1],white[2]);
+    else doc.setTextColor(ink[0],ink[1],ink[2]);
+    doc.setFont('helvetica','bold');
+    doc.text(v, W-M-1, y+6, {align:'right'});
+    y += bold?11:8;
+  }
+  doc.setDrawColor(border[0],border[1],border[2]); doc.line(totX, y, W-M, y); y+=2;
+  totRow('Subtotal',   'Rs.'+Number(o.subtotal||0).toLocaleString('en-IN'), false, false);
+  totRow('Shipping',   'Rs.'+Number(o.shipping||0).toLocaleString('en-IN'), false, false);
+  doc.setDrawColor(teal[0],teal[1],teal[2]); doc.line(totX, y, W-M, y); y+=2;
+  totRow('GRAND TOTAL','Rs.'+Number(o.total||0).toLocaleString('en-IN'), true, true);
+  y += 6;
+
+  // ── TRACKING INFO ─────────────────────────────────────────────────────────
+  if (o.courier_name || o.tracking_number) {
+    doc.setFillColor(236,252,248);
+    doc.roundedRect(M, y, cW, 16, 2, 2, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(tealAccent[0],tealAccent[1],tealAccent[2]);
+    doc.text('SHIPPING & TRACKING', M+4, y+6);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(ink[0],ink[1],ink[2]);
+    doc.text('Courier: '+(o.courier_name||'—')+'   AWB: '+(o.tracking_number||'—'), M+4, y+12);
+    if (o.tracking_url) doc.text('Track at: '+o.tracking_url, M+4, y+17);
+    y += 22;
+  }
+
+  // ── NOTES ─────────────────────────────────────────────────────────────────
+  if (o.notes) {
+    doc.setFont('helvetica','italic'); doc.setFontSize(8); doc.setTextColor(muted[0],muted[1],muted[2]);
+    doc.text('Note: '+String(o.notes).substring(0,120), M, y); y+=8;
+  }
+
+  // ── TERMS ─────────────────────────────────────────────────────────────────
+  doc.setFillColor(light[0],light[1],light[2]);
+  doc.rect(M, y, cW, 18, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(ink[0],ink[1],ink[2]);
+  doc.text('Terms & Conditions', M+4, y+6);
+  doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(muted[0],muted[1],muted[2]);
+  doc.text('• All sales are final. Returns accepted within 7 days for manufacturing defects only.', M+4, y+11);
+  doc.text('• COD orders: payment due at delivery. UPI/NEFT: payment before dispatch.', M+4, y+15);
+  y += 24;
+
+  // ── FOOTER BAND ───────────────────────────────────────────────────────────
+  var footY = H - 20;
+  doc.setFillColor(teal[0],teal[1],teal[2]);
+  doc.rect(0, footY, W, 20, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(white[0],white[1],white[2]);
+  doc.text('Thank you for choosing Detoxy Hijama!', W/2, footY+7, {align:'center'});
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(160,210,200);
+  doc.text('+91 95665 96077   |   detoxyhijama@gmail.com   |   detoxyhijama.github.io', W/2, footY+14, {align:'center'});
+
+  doc.save('Invoice-'+o.order_id+'.pdf');
+  toast('Invoice PDF downloaded!','success');
+}
+
+function generateQuotePDF(qid) {
+  var q = _quotes.find(function(x){return x.quote_id===qid;});
+  if (!q) { toast('Quote not found','error'); return; }
+
+  var doc   = new jspdf.jsPDF({unit:'mm',format:'a4'});
+  var W     = 210, H = 297, M = 15, cW = W - M*2;
+  var teal  = [26,61,53], tealAccent = [42,171,151], white = [255,255,255];
+  var ink   = [26,42,58], muted = [100,115,130], light = [245,248,247], border = [220,228,225];
+
+  // ── HEADER ────────────────────────────────────────────────────────────────
+  doc.setFillColor(teal[0],teal[1],teal[2]);
+  doc.rect(0,0,W,44,'F');
+
+  try { doc.addImage(LOGO_DATA,'PNG',M,7,26,26); } catch(e){}
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(white[0],white[1],white[2]);
+  doc.text('DETOXY HIJAMA', M+30, 16);
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(180,220,210);
+  doc.text('Pollachi, Coimbatore, Tamil Nadu — 642 002', M+30, 22);
+  doc.text('+91 95665 96077   |   detoxyhijama@gmail.com', M+30, 27);
+  doc.text('India\'s Leading Hijama Equipment Manufacturer', M+30, 32);
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(24); doc.setTextColor(tealAccent[0],tealAccent[1],tealAccent[2]);
+  doc.text('QUOTATION', W-M, 18, {align:'right'});
+  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(200,230,220);
+  doc.text(String(q.quote_id||''), W-M, 26, {align:'right'});
+  doc.text('Date: '+(q.date?new Date(q.date).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—'), W-M, 32, {align:'right'});
+  if (q.validity_date) doc.text('Valid Until: '+new Date(q.validity_date).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}), W-M, 38, {align:'right'});
+
+  var y = 52;
+  doc.setDrawColor(tealAccent[0],tealAccent[1],tealAccent[2]); doc.setLineWidth(0.5);
+  doc.line(M,y-2,W-M,y-2);
+
+  // ── PREPARED FOR ──────────────────────────────────────────────────────────
+  var halfW = (cW-6)/2;
+
+  doc.setFillColor(light[0],light[1],light[2]);
+  doc.roundedRect(M, y, halfW, 42, 2, 2, 'F');
+  doc.setDrawColor(border[0],border[1],border[2]); doc.setLineWidth(0.3);
+  doc.roundedRect(M, y, halfW, 42, 2, 2, 'S');
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(tealAccent[0],tealAccent[1],tealAccent[2]);
+  doc.text('PREPARED FOR', M+4, y+7);
+  doc.setDrawColor(tealAccent[0],tealAccent[1],tealAccent[2]); doc.line(M+4, y+9, M+halfW-4, y+9);
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(ink[0],ink[1],ink[2]);
+  doc.text(String(q.name||''), M+4, y+16);
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(muted[0],muted[1],muted[2]);
+  if (q.org) { doc.text(String(q.org), M+4, y+22); }
+  if (q.city) doc.text(String(q.city), M+4, y+28);
+  if (q.phone) doc.text('Phone: '+q.phone, M+4, y+34);
+  if (q.email) doc.text('Email: '+q.email, M+4, y+40);
+
+  // Quote reference box
+  var ox = M + halfW + 6;
+  doc.setFillColor(teal[0],teal[1],teal[2]);
+  doc.roundedRect(ox, y, halfW, 42, 2, 2, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(tealAccent[0],tealAccent[1],tealAccent[2]);
+  doc.text('REFERENCE', ox+4, y+7);
+  doc.setDrawColor(tealAccent[0],tealAccent[1],tealAccent[2]); doc.line(ox+4, y+9, ox+halfW-4, y+9);
+
+  var refRows = [
+    {k:'QUOTE ID',  v:String(q.quote_id||'')},
+    {k:'DATE',      v:q.date?new Date(q.date).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—'},
+    {k:'STATUS',    v:(q.status||'new').toUpperCase()},
+  ];
+  var ry = y+16;
+  refRows.forEach(function(r){
+    doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(160,210,195);
+    doc.text(r.k, ox+4, ry);
+    doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(white[0],white[1],white[2]);
+    doc.text(String(r.v), ox+halfW-4, ry, {align:'right'});
+    ry += 8;
+  });
+  y += 50;
+
+  // ── PRODUCTS TABLE ────────────────────────────────────────────────────────
+  doc.setFillColor(teal[0],teal[1],teal[2]);
+  doc.rect(M, y, cW, 8, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(white[0],white[1],white[2]);
+  doc.text('#',          M+3,    y+5.5);
+  doc.text('PRODUCT / SERVICE DESCRIPTION', M+12, y+5.5);
+  doc.text('UNIT PRICE', W-M-35, y+5.5, {align:'right'});
+  doc.text('AMOUNT',     W-M-1,  y+5.5, {align:'right'});
+  y += 8;
+
+  var prods = Array.isArray(q.products) ? q.products : [q.products||'As per discussion'];
+  prods.forEach(function(item,idx){
+    var rowH = 9;
+    var bg = idx%2===0 ? white : [248,251,250];
+    doc.setFillColor(bg[0],bg[1],bg[2]);
+    doc.rect(M, y, cW, rowH, 'F');
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(muted[0],muted[1],muted[2]);
+    doc.text(String(idx+1), M+3, y+6);
+    doc.setTextColor(ink[0],ink[1],ink[2]);
+    var nm = String(item).length>70 ? String(item).substring(0,70)+'...' : String(item);
+    doc.text(nm, M+12, y+6);
+    doc.setTextColor(muted[0],muted[1],muted[2]);
+    doc.text('As quoted', W-M-35, y+6, {align:'right'});
+    doc.setFont('helvetica','bold'); doc.setTextColor(ink[0],ink[1],ink[2]);
+    doc.text('—', W-M-1, y+6, {align:'right'});
+    y += rowH;
+  });
+
+  doc.setDrawColor(border[0],border[1],border[2]); doc.setLineWidth(0.3);
+  doc.line(M, y, W-M, y);
+  y += 6;
+
+  // ── QUOTED TOTAL ──────────────────────────────────────────────────────────
+  if (q.quoted_amount) {
+    var totX = W - M - 72;
+    doc.setDrawColor(border[0],border[1],border[2]); doc.line(totX, y, W-M, y); y+=2;
+    doc.setFillColor(teal[0],teal[1],teal[2]);
+    doc.rect(totX-2, y-1, 72+2, 11, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(white[0],white[1],white[2]);
+    doc.text('QUOTED TOTAL', totX+2, y+7);
+    doc.text('Rs.'+Number(q.quoted_amount).toLocaleString('en-IN'), W-M-1, y+7, {align:'right'});
+    y += 16;
+  } else {
+    y += 6;
+  }
+
+  // ── NOTES ─────────────────────────────────────────────────────────────────
+  if (q.notes) {
+    doc.setFillColor(light[0],light[1],light[2]);
+    doc.roundedRect(M, y, cW, 22, 2, 2, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(tealAccent[0],tealAccent[1],tealAccent[2]);
+    doc.text('NOTES FOR CUSTOMER', M+4, y+7);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(ink[0],ink[1],ink[2]);
+    var noteLines = doc.splitTextToSize(String(q.notes), cW-8);
+    doc.text(noteLines.slice(0,3), M+4, y+13);
+    y += 28;
+  }
+
+  // ── TERMS ─────────────────────────────────────────────────────────────────
+  doc.setFillColor(light[0],light[1],light[2]);
+  doc.rect(M, y, cW, 22, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(ink[0],ink[1],ink[2]);
+  doc.text('Terms & Conditions', M+4, y+7);
+  doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(muted[0],muted[1],muted[2]);
+  doc.text('• This quotation is valid for the period specified above. Prices subject to change after validity.', M+4, y+13);
+  doc.text('• Payment: 50% advance to confirm order, balance before dispatch.', M+4, y+17);
+  doc.text('• Delivery: 3-7 working days pan-India. GST applicable as per government norms.', M+4, y+21);
+  y += 28;
+
+  // ── FOOTER ────────────────────────────────────────────────────────────────
+  doc.setFillColor(teal[0],teal[1],teal[2]);
+  doc.rect(0, H-20, W, 20, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(white[0],white[1],white[2]);
+  doc.text('Detoxy Hijama — India\'s Trusted Hijama Equipment Manufacturer', W/2, H-13, {align:'center'});
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(160,210,200);
+  doc.text('+91 95665 96077   |   detoxyhijama@gmail.com   |   detoxyhijama.github.io', W/2, H-6, {align:'center'});
+
+  doc.save('Quotation-'+q.quote_id+'.pdf');
+  toast('Quotation PDF downloaded!','success');
+}
+
+// ── Shipping Label PDF Generator ─────────────────────────────────────────────
+function generateShippingLabel(orderId) {
+  var o = _orders.find(function(x){return String(x.order_id)===String(orderId);});
+  if (!o) { toast('Order not found','error'); return; }
+  if (!o.tracking_number) { toast('Please add AWB/Tracking Number first','error'); return; }
+
+  // 4" × 6" label = 101.6mm × 152.4mm
+  var doc = new jspdf.jsPDF({unit:'mm', format:[101.6, 152.4]});
+  var W = 101.6, H = 152.4, M = 5;
+  var teal      = [26,61,53];
+  var tealLight = [42,171,151];
+  var white     = [255,255,255];
+  var ink       = [20,30,40];
+  var muted     = [85,100,110];
+
+  // ── HEADER BAND (compact) ─────────────────────────────────────────────────
+  doc.setFillColor(teal[0],teal[1],teal[2]);
+  doc.rect(0, 0, W, 22, 'F');
+  try { doc.addImage(LOGO_DATA,'PNG', M, 3, 16, 16); } catch(e){}
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(white[0],white[1],white[2]);
+  doc.text('DETOXY HIJAMA', M+20, 10);
+  doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(160,215,200);
+  doc.text('detoxyhijama@gmail.com | +91 95665 96077', M+20, 16);
+
+  // SHIPPING LABEL strip
+  doc.setFillColor(tealLight[0],tealLight[1],tealLight[2]);
+  doc.rect(0, 22, W, 7, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(white[0],white[1],white[2]);
+  doc.text('SHIPPING LABEL', W/2, 27, {align:'center'});
+
+  var y = 32;
+
+  // ── BARCODE ───────────────────────────────────────────────────────────────
+  var barcodeStr = String(o.tracking_number||o.order_id||'');
+  var barY = y, barH = 18, barW = W - M*2;
+  // Draw bars based on char codes
+  var bars = [];
+  // Start/stop bars
+  bars.push(3,1,2,1,1,1,3,1); // simplified Code128 start
+  for (var ci=0; ci<barcodeStr.length; ci++) {
+    var code = barcodeStr.charCodeAt(ci) % 11;
+    bars.push(code<3?3:code<6?2:1, 1, code<5?2:1, code<8?2:1);
+  }
+  bars.push(2,3,3,1,1); // stop
+  var totalUnits = bars.reduce(function(s,b){return s+b;},0);
+  var unitW = barW / totalUnits;
+  var bx = M;
+  bars.forEach(function(w, i) {
+    if (i%2===0) { // odd indexes are bars, even are spaces
+      doc.setFillColor(ink[0],ink[1],ink[2]);
+      doc.rect(bx, barY, w*unitW - 0.15, barH, 'F');
+    }
+    bx += w*unitW;
+  });
+  // Tracking number under barcode
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(ink[0],ink[1],ink[2]);
+  doc.text(barcodeStr, W/2, barY+barH+5, {align:'center', charSpace:1.5});
+  y = barY + barH + 10;
+
+  // ── ORDER / COURIER STRIP ─────────────────────────────────────────────────
+  doc.setFillColor(245,248,247);
+  doc.rect(M, y, W-M*2, 8, 'F');
+  doc.setDrawColor(220,228,225); doc.setLineWidth(0.3);
+  doc.rect(M, y, W-M*2, 8, 'S');
+  doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(ink[0],ink[1],ink[2]);
+  doc.text('ORDER: '+String(o.order_id||''), M+3, y+5.5);
+  if (o.courier_name) {
+    doc.setFont('helvetica','normal'); doc.setFontSize(7);
+    doc.text(o.courier_name.toUpperCase(), W-M-3, y+5.5, {align:'right'});
+  }
+  y += 12;
+
+  // ── SEPARATOR ─────────────────────────────────────────────────────────────
+  doc.setFont('helvetica','bold'); doc.setFontSize(6); doc.setTextColor(tealLight[0],tealLight[1],tealLight[2]);
+  doc.text('DELIVER TO', M, y+3);
+  doc.setDrawColor(tealLight[0],tealLight[1],tealLight[2]); doc.setLineWidth(0.5);
+  doc.line(M+22, y+1, W-M, y+1);
+  y += 6;
+
+  // ── TO ADDRESS — fill most of the label space ─────────────────────────────
+  var toBoxH = H - y - 22; // leave space for payment/items footer
+  doc.setFillColor(teal[0],teal[1],teal[2]);
+  doc.roundedRect(M, y, W-M*2, toBoxH, 3, 3, 'F');
+
+  // Name (large)
+  doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(white[0],white[1],white[2]);
+  var nameStr = String(o.name||'').substring(0,22);
+  doc.text(nameStr, M+4, y+12);
+
+  // Phone
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(160,220,210);
+  doc.text(String(o.phone||''), M+4, y+22);
+
+  // Address lines
+  var addrFull = [o.address, o.city, o.state].filter(Boolean).join(', ');
+  var addrLines = doc.splitTextToSize(addrFull, W-M*2-8);
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(210,235,230);
+  doc.text(addrLines.slice(0,3), M+4, y+32);
+
+  // PIN code (large)
+  if (o.pincode) {
+    doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(255,255,255);
+    doc.text('PIN: '+String(o.pincode), M+4, y+toBoxH-10);
+  }
+  y += toBoxH + 4;
+
+  // ── FOOTER: Payment + Invoice Value ──────────────────────────────────────
+  doc.setFillColor(245,248,247);
+  doc.roundedRect(M, y, W-M*2, 16, 2, 2, 'F');
+  doc.setDrawColor(220,228,225); doc.setLineWidth(0.3);
+  doc.roundedRect(M, y, W-M*2, 16, 2, 2, 'S');
+
+  // Payment
+  var payLabel = (o.payment||'cod').toUpperCase() === 'COD' ? 'CASH ON DELIVERY' : 'PREPAID';
+  var payColor = (o.payment||'cod') === 'cod' ? [220,80,40] : [5,120,80];
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(payColor[0],payColor[1],payColor[2]);
+  doc.text(payLabel, M+3, y+7);
+  doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(muted[0],muted[1],muted[2]);
+  doc.text('Payment Method', M+3, y+12);
+
+  // Invoice value
+  var total = Number(o.total||0);
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(teal[0],teal[1],teal[2]);
+  doc.text('₹'+total.toLocaleString('en-IN'), W-M-3, y+8, {align:'right'});
+  doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(muted[0],muted[1],muted[2]);
+  doc.text('Invoice Value', W-M-3, y+13, {align:'right'});
+
+  doc.save('ShippingLabel-'+o.order_id+'.pdf');
+  toast('Shipping label (4"x6") downloaded!','success');
+}
+
+
+
+// ── Variant Stock Management ─────────────────────────────────────────────────
+var _variantStockRows = [];
+
+function toggleVariantStock(checkbox) {
+  var section = document.getElementById('variantStockSection');
+  if (!section) return;
+  section.style.display = checkbox.checked ? 'block' : 'none';
+  if (checkbox.checked && _variantStockRows.length === 0) {
+    // Default sizes for Indian Standard / Premium cups
+    var defaultSizes = ['Size 1','Size 2','Size 3','Size 4','Size 5','Size 6'];
+    _variantStockRows = defaultSizes.map(function(s){ return {size:s, qty:0}; });
+    renderVariantStockRows();
+  }
+}
+
+function renderVariantStockRows() {
+  var container = document.getElementById('variantStockRows');
+  if (!container) return;
+  container.innerHTML = _variantStockRows.map(function(row, i) {
+    return '<div style="display:grid;grid-template-columns:1fr 80px 30px;gap:8px;align-items:center">' +
+      '<input type="text" value="'+row.size+'" placeholder="Size label (e.g. Size 1)" ' +
+        'class="form-control" style="padding:7px 10px;font-size:.82rem" ' +
+        'onchange="_variantStockRows['+i+'].size=this.value"/>' +
+      '<input type="number" value="'+row.qty+'" min="0" placeholder="Qty" ' +
+        'class="form-control" style="padding:7px 10px;font-size:.82rem;text-align:center" ' +
+        'onchange="_variantStockRows['+i+'].qty=parseInt(this.value)||0"/>' +
+      '<button type="button" onclick="removeVariantStockRow('+i+')" style="background:none;border:none;color:var(--error);cursor:pointer;font-size:1.1rem;padding:4px">×</button>' +
+    '</div>';
+  }).join('');
+}
+
+function addVariantStockRow() {
+  _variantStockRows.push({size:'', qty:0});
+  renderVariantStockRows();
+}
+
+function removeVariantStockRow(i) {
+  _variantStockRows.splice(i, 1);
+  renderVariantStockRows();
+}
+
+function _loadVariantStockIntoModal(product) {
+  var cb = document.getElementById('pmHasVariants');
+  var section = document.getElementById('variantStockSection');
+  if (!cb || !section) return;
+  
+  // Parse variantStock
+  var vs = product.variantStock || product.variants;
+  if (vs && typeof vs === 'string') { try { vs = JSON.parse(vs); } catch(e){ vs = null; } }
+  
+  if (vs && typeof vs === 'object' && Object.keys(vs).length > 0) {
+    cb.checked = true;
+    section.style.display = 'block';
+    _variantStockRows = Object.keys(vs).map(function(k){ return {size:k, qty:parseInt(vs[k])||0}; });
+    renderVariantStockRows();
+  } else {
+    cb.checked = false;
+    section.style.display = 'none';
+    _variantStockRows = [];
+  }
+}
+
+function _getVariantStockJSON() {
+  if (!document.getElementById('pmHasVariants').checked) return '{}';
+  var obj = {};
+  _variantStockRows.forEach(function(r){
+    if (r.size.trim()) obj[r.size.trim()] = r.qty || 0;
+  });
+  return JSON.stringify(obj);
+}
+
+// ── Products ─────────────────────────────────────────────────────────────────
+function loadProducts() {
+  if (!API_URL) {
+    _products = (typeof PRODUCTS !== 'undefined') ? PRODUCTS : [];
+    renderProducts();
+    return;
+  }
+  apiGet({action:'getProducts', showHidden:true}).then(function(d){
+    _products = d.products || [];
+    if (!_products.length && typeof PRODUCTS !== 'undefined') _products = PRODUCTS;
+    renderProducts();
+  }).catch(function(){
+    _products = (typeof PRODUCTS !== 'undefined') ? PRODUCTS : [];
+    renderProducts();
+  });
+}
+
+function renderProducts() {
+  var q  = (document.getElementById('productSearch').value||'').toLowerCase();
+  var cf = document.getElementById('productCatFilter').value;
+  var filtered = _products.filter(function(p){
+    var match = !q || (p.name||p.title||'').toLowerCase().includes(q);
+    var catMatch = !cf || (p.category===cf);
+    return match && catMatch;
+  });
+  var tbody = document.getElementById('productsTableBody');
+  if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No products found</td></tr>'; return; }
+  var cats = {cups:'Cupping Sets',electric:'Electric Devices',kits:'Starter Kits',facial:'Facial Cups',consumables:'Consumables'};
+  tbody.innerHTML = filtered.map(function(p){
+    var name  = p.name || p.title || '';
+    var imgSrc = '';
+    if (p.images && p.images.length) imgSrc = p.images[0];
+    else if (p.image) imgSrc = p.image;
+    var stock = Number(p.stock)||0;
+    var stockBadge = stock>20?'<span class="badge badge-in-stock">In Stock</span>':stock>0?'<span class="badge badge-low">Low ('+stock+')</span>':'<span class="badge badge-out">Out</span>';
+    var vis = (p.hidden==='true'||p.hidden===true)?'<span class="badge" style="background:#f3f4f6;color:#6b7280">Hidden</span>':'<span class="badge badge-confirmed">Visible</span>';
+    return '<tr>' +
+      '<td><div style="display:flex;align-items:center;gap:10px"><img src="/'+(imgSrc.startsWith('http')?imgSrc.substring(1):imgSrc)+'" class="prod-thumb" onerror="this.src=\'/assets/images/placeholder.svg\'"><span style="font-weight:600;font-size:.84rem">'+name+'</span></div></td>' +
+      '<td>'+((cats[p.category])||p.category||'—')+'</td>' +
+      '<td><strong>₹'+Number(p.price||0).toLocaleString('en-IN')+'</strong></td>' +
+      '<td style="color:var(--muted);text-decoration:line-through">₹'+Number(p.mrp||0).toLocaleString('en-IN')+'</td>' +
+      '<td>'+stockBadge+'</td>' +
+      '<td>'+(p.badge?'<span class="badge badge-teal">'+p.badge+'</span>':'—')+'</td>' +
+      '<td>'+vis+'</td>' +
+      '<td><div style="display:flex;gap:4px">' +
+        '<button class="btn btn-outline btn-sm btn-icon" onclick="openProductModal(\''+p.id+'\')" title="Edit"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>' +
+        (function(){
+          var _isHidden = (p.hidden === 'true' || p.hidden === true);
+          return '<button class="btn btn-outline btn-sm btn-icon"' +
+            ' data-pid="' + p.id + '"' +
+            ' data-currently-hidden="' + (_isHidden ? '1' : '0') + '"' +
+            ' onclick="toggleHideBtn(this)"' +
+            ' title="' + (_isHidden ? 'Show Product' : 'Hide Product') + '"' +
+            ' style="color:' + (_isHidden ? 'var(--success)' : 'var(--muted)') + '">' +
+            '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">' +
+            '<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>' +
+            '<path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>' +
+            '</svg></button>';
+        })() +
+        '<button class="btn btn-danger btn-sm btn-icon" onclick="deleteProductConfirm(\''+p.id+'\')" title="Delete"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>' +
+      '</div></td></tr>';
+  }).join('');
+}
+
+function openProductModal(id) {
+  document.getElementById('productModalTitle').textContent = id ? 'Edit Product' : 'Add Product';
+  document.getElementById('productSaveBtn').textContent    = id ? 'Save Changes' : 'Add Product';
+  document.getElementById('productSaveBtn').disabled = false;
+
+  if (!id) {
+    ['pmId','pmSlug','pmName','pmShortDesc','pmDesc','pmPrice','pmMrp',
+     'pmStock','pmBadge','pmImageUrl'].forEach(function(f){
+      var el=document.getElementById(f); if(el) el.value = '';
+    });
+    document.getElementById('pmImage').value = '';
+    document.getElementById('pmCategory').value = 'cups';
+    _pmImages = []; _pmVideos = [];
+    renderImageSlots(); renderVideoSlots();
+  } else {
+    var p = _products.find(function(x){ return x.id === id; });
+    if (!p) { toast('Product not found — try refreshing Products','error'); return; }
+
+    document.getElementById('pmId').value        = p.id;
+    document.getElementById('pmSlug').value      = p.slug || p.id;
+    document.getElementById('pmName').value      = p.name || p.title || '';
+    document.getElementById('pmShortDesc').value = p.shortDesc || '';
+    document.getElementById('pmDesc').value      = p.description || '';
+    document.getElementById('pmPrice').value     = p.price || '';
+    document.getElementById('pmMrp').value       = p.mrp   || '';
+    document.getElementById('pmStock').value     = p.stock || '';
+    document.getElementById('pmBadge').value     = p.badge || '';
+    document.getElementById('pmCategory').value  = p.category || 'cups';
+
+    // Populate image slots
+    _pmImages = [];
+    var imgArr = Array.isArray(p.images) && p.images.length ? p.images : (p.image ? [p.image] : []);
+    imgArr.forEach(function(src){ if(src) _pmImages.push({src:src, name:'existing'}); });
+    renderImageSlots();
+    document.getElementById('pmImage').value = imgArr[0] || '';
+
+    // Videos
+    _pmVideos = Array.isArray(p.videos) ? p.videos : [];
+    renderVideoSlots();
+
+    // Variant stock
+    _variantStockRows = [];
+    _loadVariantStockIntoModal(p);
+
+    // Features
+    var featsVal = '';
+    if (Array.isArray(p.features) && p.features.length) featsVal = p.features.join('\n');
+    else if (typeof p.features === 'string' && p.features) {
+      try { featsVal = JSON.parse(p.features).join('\n'); } catch(e){ featsVal = p.features; }
+    }
+    document.getElementById('pmFeatures').value = featsVal;
+
+    // Specs
+    var specsObj = p.specs;
+    if (typeof specsObj === 'string') { try { specsObj = JSON.parse(specsObj); } catch(e){ specsObj = {}; } }
+    var specsVal = '';
+    if (specsObj && typeof specsObj === 'object') {
+      specsVal = Object.keys(specsObj).map(function(k){ return k+': '+specsObj[k]; }).join('\n');
+    }
+    document.getElementById('pmSpecs').value = specsVal;
+  }
+  openModal('productModal');
+}
+
+function saveProduct() {
+  var isEdit = !!document.getElementById('pmId').value;
+  var imgArr = _pmImages.map(function(i){ return i.src; });
+  var img    = imgArr[0] || document.getElementById('pmImage').value.trim();
+
+  var feats = document.getElementById('pmFeatures').value
+    .split('\n').map(function(l){return l.trim();}).filter(Boolean);
+
+  var specsRaw = document.getElementById('pmSpecs').value
+    .split('\n').map(function(l){return l.trim();}).filter(Boolean);
+  var specs = {};
+  specsRaw.forEach(function(line){
+    var idx = line.indexOf(':');
+    if (idx > -1) specs[line.substring(0,idx).trim()] = line.substring(idx+1).trim();
+  });
+
+  var cat       = document.getElementById('pmCategory').value;
+  var catLabels = {cups:'Cupping Sets',electric:'Electric Devices',kits:'Starter Kits',facial:'Facial Cups',consumables:'Consumables'};
+  var productId = (document.getElementById('pmId').value || document.getElementById('pmSlug').value).trim();
+  var existingProduct = isEdit ? _products.find(function(p){return p.id===productId;}) : null;
+
+  var data = {
+    id:            productId,
+    slug:          document.getElementById('pmSlug').value.trim(),
+    title:         document.getElementById('pmName').value.trim(),
+    name:          document.getElementById('pmName').value.trim(),
+    shortDesc:     document.getElementById('pmShortDesc').value.trim(),
+    description:   document.getElementById('pmDesc').value.trim(),
+    price:         Number(document.getElementById('pmPrice').value) || 0,
+    mrp:           Number(document.getElementById('pmMrp').value)   || 0,
+    stock:         Number(document.getElementById('pmStock').value) || 0,
+    badge:         document.getElementById('pmBadge').value.trim(),
+    image:         img,
+    images:        JSON.stringify(imgArr.length ? imgArr : (img ? [img] : [])),
+    image1:        imgArr[0] || img || '',
+    image2:        imgArr[1] || '',
+    image3:        imgArr[2] || '',
+    image4:        imgArr[3] || '',
+    image5:        imgArr[4] || '',
+    image6:        imgArr[5] || '',
+    youtube:       (_pmVideos && _pmVideos.length) ? _pmVideos[0] : '',
+    videos:        JSON.stringify(_pmVideos),
+    features:      JSON.stringify(feats),
+    specs:         JSON.stringify(specs),
+    category:      cat,
+    categoryLabel: catLabels[cat] || cat,
+    rating:        existingProduct ? (existingProduct.rating  || 4.5) : 4.5,
+    reviews:       existingProduct ? (existingProduct.reviews || 0)   : 0,
+    hidden:        existingProduct ? (existingProduct.hidden  || 'false') : 'false'
+  };
+
+  if (!data.id)    { toast('Product ID / Slug is required','error'); return; }
+  if (!data.title) { toast('Product Name is required','error'); return; }
+  if (!data.price) { toast('Price must be greater than 0','error'); return; }
+  if (!API_URL)    { toast('No API URL configured — go to Settings first','error'); return; }
+
+  var btn = document.getElementById('productSaveBtn');
+  btn.disabled = true; btn.textContent = isEdit ? 'Saving…' : 'Adding…';
+
+  var action = isEdit ? 'editProduct' : 'addProduct';
+  apiPost({action:action}, Object.assign({action:action}, data))
+    .then(function(d){
+      if (d.success) {
+        toast(isEdit ? 'Product updated!' : 'Product added!','success');
+        closeModal('productModal');
+        loadProducts();
+      } else { toast('Error: '+(d.error||'Unknown error'),'error'); }
+    })
+    .catch(function(e){ toast('Network error: '+e.message,'error'); })
+    .finally(function(){ btn.disabled=false; btn.textContent=isEdit?'Save Changes':'Save Product'; });
+}
+
+function toggleHideBtn(btn) {
+  var id       = btn.getAttribute('data-pid');
+  var isHidden = btn.getAttribute('data-currently-hidden') === '1';
+  // Toggle: if currently hidden → make visible; if visible → hide
+  var newHidden = !isHidden;
+  toggleHide(id, newHidden);
+}
+
+function toggleHide(id, hidden) {
+  if (!API_URL) { toast('API URL not configured — set it in Settings first','error'); return; }
+  // hidden = true means we want to HIDE the product
+  apiPost({action:'toggleProductHide'},{action:'toggleProductHide', id:id, hidden:hidden})
+    .then(function(d){
+      if (d.success) {
+        toast(hidden ? 'Product hidden from storefront' : 'Product is now visible','success');
+        loadProducts();
+      } else {
+        toast('Error: '+(d.error||'Failed to update'),'error');
+      }
+    }).catch(function(e){ toast('Network error: '+e.message,'error'); });
+}
+
+function deleteProductConfirm(id) {
+  var p = _products.find(function(x){return x.id===id;});
+  if (!confirm('Delete "' + (p?p.name||p.title:id) + '"?\n\nThis cannot be undone.')) return;
+  if (!API_URL) { toast('API URL not configured','error'); return; }
+  apiPost({action:'deleteProduct'},{action:'deleteProduct',id:id})
+    .then(function(d){
+      if(d.success){toast('Product deleted','success');loadProducts();}
+      else toast(d.error||'Error','error');
+    }).catch(function(e){ toast('Network error: '+e.message,'error'); });
+}
+
+// ── Quotes ────────────────────────────────────────────────────────────────────
+function loadQuotes() {
+  document.getElementById('quotesTableBody').innerHTML = '<tr><td colspan="9" style="padding:20px;text-align:center"><div class="spinner"></div></td></tr>';
+  if (!API_URL) {
+    document.getElementById('quotesTableBody').innerHTML = '<tr><td colspan="9" class="empty-state">Configure Google Sheets URL in Settings.</td></tr>';
+    return;
+  }
+  apiGet({action:'getQuotes'}).then(function(d){
+    _quotes = d.quotes || [];
+    renderQuotes();
+  }).catch(function(e){ toast('Failed to load quotes: '+e.message,'error'); });
+}
+
+function renderQuotes() {
+  var q  = (document.getElementById('quoteSearch').value||'').toLowerCase();
+  var sf = document.getElementById('quoteStatusFilter').value;
+  var filtered = _quotes.filter(function(x){
+    var match = !q || (x.quote_id+x.name+x.phone+x.org+x.city).toLowerCase().includes(q);
+    var sm = !sf || x.status === sf;
+    return match && sm;
+  });
+  var tbody = document.getElementById('quotesTableBody');
+  document.getElementById('quotesEmpty').style.display = filtered.length?'none':'block';
+  if (!filtered.length) { tbody.innerHTML=''; return; }
+  tbody.innerHTML = filtered.map(function(q){
+    var prods = Array.isArray(q.products) ? q.products.join(', ') : (q.products||'—');
+    var d = q.date ? new Date(q.date).toLocaleDateString('en-IN') : '';
+    return '<tr>' +
+      '<td><strong style="font-family:monospace;font-size:.78rem">'+q.quote_id+'</strong></td>' +
+      '<td><div style="font-weight:600">'+q.name+'</div><div style="font-size:.73rem;color:var(--muted)">'+q.phone+'</div></td>' +
+      '<td>'+(q.org||'—')+'</td><td>'+(q.city||'—')+'</td>' +
+      '<td style="max-width:120px;font-size:.76rem">'+prods.substring(0,60)+'</td>' +
+      '<td>'+(q.quoted_amount?'<strong>₹'+Number(q.quoted_amount).toLocaleString('en-IN')+'</strong>':'—')+'</td>' +
+      '<td><span class="badge badge-'+q.status+'">'+q.status+'</span></td>' +
+      '<td style="font-size:.76rem">'+d+'</td>' +
+      '<td><div style="display:flex;gap:4px">' +
+        '<button class="btn btn-outline btn-sm btn-icon" onclick="viewQuote(\''+q.quote_id+'\')" title="View"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>' +
+        '<button class="btn btn-outline btn-sm btn-icon" onclick="generateQuotePDF(\''+q.quote_id+'\')" title="Quote PDF"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg></button>' +
+      '</div></td></tr>';
+  }).join('');
+}
+
+function viewQuote(qid) {
+  var q = _quotes.find(function(x){return x.quote_id===qid;});
+  if (!q) return;
+  document.getElementById('quoteModalTitle').textContent = 'Quotation — ' + q.quote_id;
+
+  var prods = Array.isArray(q.products) ? q.products : (typeof q.products==='string' ? q.products.split(',').map(function(s){return s.trim();}) : []);
+
+  // Parse products to show as professional table rows with per-item amounts
+  var prodRows = prods.map(function(p, i) {
+    var qty = '—', name = '', unitPrice = '', lineTotal = '';
+    
+    if (typeof p === 'object' && p !== null) {
+      // Structured product object {name, qty, price, unit_price}
+      name      = p.name || p.product || p.title || String(p);
+      qty       = p.qty || p.quantity || '—';
+      unitPrice = p.price || p.unit_price || p.unitPrice || '';
+      if (unitPrice && qty && !isNaN(qty)) {
+        lineTotal = '₹' + (Number(unitPrice) * Number(qty)).toLocaleString('en-IN');
+        unitPrice = '₹' + Number(unitPrice).toLocaleString('en-IN');
+      } else if (unitPrice) {
+        unitPrice = '₹' + Number(unitPrice).toLocaleString('en-IN');
+        lineTotal = 'TBD';
+      } else {
+        lineTotal = 'TBD';
+      }
+    } else {
+      // Try to extract qty from strings like "50x ProductName" or "ProductName x50"
+      var m1 = String(p).match(/^(\d+)[x×]\s*(.*)/i);
+      var m2 = String(p).match(/^(.*)\s+[x×](\d+)$/i);
+      if (m1) { qty = m1[1]; name = m1[2]; }
+      else if (m2) { qty = m2[2]; name = m2[1]; }
+      else { name = String(p); }
+      lineTotal = q.quoted_amount && prods.length === 1 ? '₹' + Number(q.quoted_amount).toLocaleString('en-IN') : 'TBD';
+    }
+    
+    return '<tr style="'+(i%2===0?'background:#fff':'background:var(--cream)')+'">'+
+      '<td style="padding:10px 14px;font-size:.8rem;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border)">'+(i+1)+'.</td>'+
+      '<td style="padding:10px 14px;font-size:.85rem;font-weight:600;color:var(--dark);border-bottom:1px solid var(--border)">'+name+'</td>'+
+      '<td style="padding:10px 14px;font-size:.83rem;text-align:center;border-bottom:1px solid var(--border)">'+qty+'</td>'+
+      '<td style="padding:10px 14px;font-size:.8rem;text-align:right;color:var(--muted);border-bottom:1px solid var(--border)">'+unitPrice+'</td>'+
+      '<td style="padding:10px 14px;font-size:.85rem;text-align:right;font-weight:700;color:var(--dark);border-bottom:1px solid var(--border)">'+lineTotal+'</td>'+
+      '</tr>';
+  }).join('');
+  
+  // Calculate totals if structured products
+  var calculatedTotal = 0;
+  var hasStructuredPrices = prods.some(function(p){ return typeof p === 'object' && (p.price||p.unit_price); });
+  if (hasStructuredPrices) {
+    prods.forEach(function(p){
+      if (typeof p === 'object') {
+        var up = Number(p.price||p.unit_price||0);
+        var qty = Number(p.qty||p.quantity||0);
+        calculatedTotal += up * qty;
+      }
+    });
+  }
+
+  document.getElementById('quoteModalContent').innerHTML =
+    // Header info band
+    '<div style="background:linear-gradient(135deg,var(--dark),var(--td));border-radius:8px;padding:16px 18px;margin-bottom:16px;color:#fff">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start">' +
+        '<div>' +
+          '<div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;opacity:.7;margin-bottom:4px">Quotation Reference</div>' +
+          '<div style="font-family:monospace;font-size:1.1rem;font-weight:700">'+q.quote_id+'</div>' +
+        '</div>' +
+        '<div style="text-align:right">' +
+          '<div style="font-size:.68rem;opacity:.7">Date</div>' +
+          '<div style="font-size:.87rem;font-weight:600">'+(q.date?new Date(q.date).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—')+'</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    // Customer + company info
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">' +
+      '<div style="background:var(--cream);border-radius:8px;padding:13px 15px">' +
+        '<div style="font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:8px">Customer Details</div>' +
+        '<div style="font-size:.88rem;font-weight:700;color:var(--dark)">'+q.name+'</div>' +
+        (q.org?'<div style="font-size:.78rem;color:var(--muted)">'+q.org+'</div>':'')+
+        '<div style="font-size:.78rem;color:var(--muted);margin-top:4px">'+q.phone+'</div>' +
+        (q.email?'<div style="font-size:.78rem;color:var(--muted)">'+q.email+'</div>':'')+
+        (q.city?'<div style="font-size:.78rem;color:var(--muted)">'+q.city+'</div>':'')+
+      '</div>' +
+      '<div style="background:var(--cream);border-radius:8px;padding:13px 15px">' +
+        '<div style="font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:8px">Quote Status</div>' +
+        '<div style="margin-bottom:8px"><select id="qStatusInput" class="form-control" style="width:100%">' +
+          ['new','quoted','closed'].map(function(s){return '<option value="'+s+'"'+(q.status===s?' selected':'')+'>'+s.charAt(0).toUpperCase()+s.slice(1)+'</option>';}).join('') +
+        '</select></div>' +
+        (q.quoted_amount?'<div style="font-size:.78rem;color:var(--muted)">Quoted: <strong style="color:var(--dark)">₹'+Number(q.quoted_amount).toLocaleString('en-IN')+'</strong></div>':'')+
+        (calculatedTotal>0?'<div style="font-size:.78rem;color:var(--muted)">Items Sub-total: <strong style="color:var(--dark)">₹'+calculatedTotal.toLocaleString('en-IN')+'</strong></div>':'')+
+        (q.validity_date?'<div style="font-size:.78rem;color:var(--muted)">Valid until: '+new Date(q.validity_date).toLocaleDateString('en-IN')+'</div>':'')+
+      '</div>' +
+    '</div>' +
+    // Products table
+    '<div style="border:1.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:14px">' +
+      '<div style="background:var(--dark);padding:10px 14px;display:grid;grid-template-columns:32px 1fr 60px 80px 90px;gap:8px">' +
+        '<span style="font-size:.66rem;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.05em">#</span>' +
+        '<span style="font-size:.66rem;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.05em">Product / Description</span>' +
+        '<span style="font-size:.66rem;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;text-align:center;letter-spacing:.05em">Qty</span>' +
+        '<span style="font-size:.66rem;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;text-align:right;letter-spacing:.05em">Unit Price</span>' +
+        '<span style="font-size:.66rem;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;text-align:right;letter-spacing:.05em">Total</span>' +
+      '</div>' +
+      '<table style="width:100%;border-collapse:collapse"><tbody>'+prodRows+'</tbody></table>' +
+      (q.message?'<div style="padding:10px 12px;border-top:1px solid var(--border);background:var(--cream);font-size:.78rem;color:var(--muted)"><strong>Note:</strong> '+q.message+'</div>':'')+
+    '</div>' +
+    // Quote form
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">' +
+      '<div class="form-group"><label class="form-label">Quoted Amount (₹) <span style="color:var(--danger)">*</span></label><input type="number" id="qAmountInput" class="form-control" value="'+(q.quoted_amount||'')+'" placeholder="Total quoted amount"/></div>' +
+      '<div class="form-group"><label class="form-label">Valid Until</label><input type="date" id="qValidityInput" class="form-control" value="'+(q.validity_date||'')+'"/></div>' +
+    '</div>' +
+    '<div class="form-group"><label class="form-label">Notes for Customer</label><textarea id="qNotesInput" class="form-control" rows="2" placeholder="Delivery timeline, special conditions, payment terms…">'+(q.notes||'')+'</textarea></div>';
+
+  document.getElementById('quoteModalFooter').innerHTML =
+    '<button class="btn btn-outline" onclick="closeModal(&apos;quoteModal&apos;)">Close</button>' +
+    '<button class="btn btn-outline" onclick="generateQuotePDF(&apos;'+q.quote_id+'&apos;)"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> PDF</button>' +
+    '<button class="btn btn-primary" onclick="saveQuote(&apos;'+q.quote_id+'&apos;)">Save &amp; Update</button>';
+  openModal('quoteModal');
+}
+
+function saveQuote(qid) {
+  apiPost({action:'updateQuote'},{action:'updateQuote', quote_id:qid,
+    quoted_amount: document.getElementById('qAmountInput').value,
+    validity_date: document.getElementById('qValidityInput').value,
+    notes:         document.getElementById('qNotesInput').value,
+    status:        document.getElementById('qStatusInput').value
+  }).then(function(d){
+    if (d.success){ toast('Quote updated!','success'); closeModal('quoteModal'); loadQuotes(); }
+    else toast(d.error||'Error saving quote','error');
+  }).catch(function(e){ toast('Network error: '+e.message,'error'); });
+}
+
+
+
+
+
+// ── BLOGS ──────────────────────────────────────────────────────────────────────
+// ── Blog storage: Sheets API primary, localStorage cache secondary ─────────────
+var BLOGS_KEY   = 'detoxy_blogs_cache';
+var BLOGS_DIRTY = false;
+
+function _getLocalBlogs() {
+  try { return JSON.parse(localStorage.getItem(BLOGS_KEY) || '[]'); } catch(e){ return []; }
+}
+function _setLocalBlogs(list) {
+  try { localStorage.setItem(BLOGS_KEY, JSON.stringify(list)); } catch(e){}
+}
+// _getBlogs: merges local cache + any API-loaded blogs (normalize id/blog_id)
+function _getBlogs() {
+  var list = _getLocalBlogs();
+  return list.map(function(b){
+    // Normalize: ensure both .id and .blog_id are set
+    if (!b.id && b.blog_id) b.id = b.blog_id;
+    if (!b.blog_id && b.id) b.blog_id = b.id;
+    return b;
+  });
+}
+
+// ── Media Upload System ──────────────────────────────────────────────────────
+var _pmImages = [];  // [{src:'data:image/...', name:'main'}]
+var _pmVideos = [];  // ['https://youtube.com/...']
+
+function renderImageSlots() {
+  var slots = document.getElementById('pmImageSlots');
+  if (!slots) return;
+  var html = _pmImages.map(function(img, i) {
+    return '<div style="position:relative;border-radius:8px;overflow:hidden;border:1.5px solid var(--border);aspect-ratio:1">' +
+      '<img src="' + img.src + '" style="width:100%;height:100%;object-fit:cover" onerror="this.src=&apos;/assets/images/placeholder.svg&apos;">' +
+      '<button onclick="removeImage(' + i + ')" style="position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.6);border:none;cursor:pointer;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center">✕</button>' +
+      (i===0?'<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(42,171,151,.85);color:#fff;font-size:.6rem;font-weight:700;text-align:center;padding:2px">MAIN</div>':'') +
+    '</div>';
+  }).join('');
+  if (_pmImages.length < 6) {
+    html += '<label style="border:1.5px dashed var(--border);border-radius:8px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:.75rem;flex-direction:column;gap:4px">' +
+      '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:22px;height:22px"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>Add' +
+      '<input type="file" accept="image/*" style="display:none" onchange="handleImageUpload(this.files)"/></label>';
+  }
+  slots.innerHTML = html;
+  // Keep hidden field in sync with first image
+  var mainImg = document.getElementById('pmImage');
+  if (mainImg) mainImg.value = _pmImages.length ? _pmImages[0].src : '';
+}
+
+function removeImage(idx) {
+  _pmImages.splice(idx, 1);
+  renderImageSlots();
+}
+
+function handleImageUpload(files) {
+  if (!files || !files.length) return;
+  var remaining = 6 - _pmImages.length;
+  var toProcess = Math.min(files.length, remaining);
+  for (var i = 0; i < toProcess; i++) {
+    (function(file) {
+      if (!file.type.startsWith('image/')) return;
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        // Compress via canvas
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement('canvas');
+          var maxDim = 800;
+          var scale  = Math.min(1, maxDim/Math.max(img.width,img.height));
+          canvas.width  = Math.round(img.width*scale);
+          canvas.height = Math.round(img.height*scale);
+          canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+          var compressed = canvas.toDataURL('image/jpeg',0.75);
+          _pmImages.push({src:compressed, name:file.name});
+          renderImageSlots();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    })(files[i]);
+  }
+}
+
+function addImageFromUrl() {
+  var url = (document.getElementById('pmImageUrl').value||'').trim();
+  if (!url || _pmImages.length >= 6) return;
+  if (!/^https?:\/\//.test(url)) { toast('Please enter a valid https:// URL','error'); return; }
+  _pmImages.push({src:url, name:'url-image'});
+  document.getElementById('pmImageUrl').value = '';
+  renderImageSlots();
+}
+
+function renderVideoSlots() {
+  var slots = document.getElementById('pmVideoSlots');
+  if (!slots) return;
+  if (!_pmVideos.length) { slots.innerHTML = ''; return; }
+  slots.innerHTML = _pmVideos.map(function(v,i){
+    return '<div style="display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:8px;padding:7px 10px">' +
+      '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;flex-shrink:0;color:var(--muted)"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>' +
+      '<span style="font-size:.78rem;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + v + '</span>' +
+      '<button onclick="removeVideo(' + i + ')" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px">✕</button></div>';
+  }).join('');
+}
+
+function addVideoLink() {
+  var url = (document.getElementById('pmVideoUrl').value||'').trim();
+  if (!url || _pmVideos.length >= 2) { if(_pmVideos.length>=2) toast('Maximum 2 videos allowed','error'); return; }
+  var isYT = /youtube\.com|youtu\.be/.test(url);
+  var isVM = /vimeo\.com/.test(url);
+  if (!isYT && !isVM) { toast('Only YouTube or Vimeo links are accepted','error'); return; }
+  _pmVideos.push(url);
+  document.getElementById('pmVideoUrl').value = '';
+  renderVideoSlots();
+}
+
+function removeVideo(idx) {
+  _pmVideos.splice(idx, 1);
+  renderVideoSlots();
+}
+
+function previewProductImage(src) {
+  var prev = document.getElementById('pmImagePreview');
+  if (!prev) return;
+  if (!src) {
+    prev.innerHTML = '<svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="var(--muted)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 15l-5-5L5 21"/></svg>';
+    return;
+  }
+  var url = src.startsWith('http') ? src : ('/' + src);
+  prev.innerHTML = '<img src="'+url+'" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML=\'<span style=font-size:.65rem;color:var(--muted);text-align:center;padding:4px>No preview</span>\'">';
+}
+
+function loadBlogs() {
+  renderBlogs(_getLocalBlogs()); // show cached data immediately
+  if (!API_URL) {
+    // No API — seed built-in blogs into local cache if empty
+    if (!_getLocalBlogs().length) { _seedBuiltinBlogs(); renderBlogs(_getLocalBlogs()); }
+    return;
+  }
+  // Fetch live from Google Sheets
+  apiGet({action:'getBlogs'}).then(function(d){
+    if (d.blogs && d.blogs.length) {
+      _setLocalBlogs(d.blogs);
+      renderBlogs(d.blogs);
+    } else if (!_getLocalBlogs().length) {
+      _seedBuiltinBlogs();
+      renderBlogs(_getLocalBlogs());
+    }
+  }).catch(function(){
+    if (!_getLocalBlogs().length) { _seedBuiltinBlogs(); renderBlogs(_getLocalBlogs()); }
+  });
+}
+
+function _seedBuiltinBlogs() {
+  var existing = _getBlogs();
+  // Only seed if admin storage is empty
+  if (existing.length > 0) return;
+
+  // Built-in 20 blogs mirrored from blogs.html
+  var builtin = [
+    {id:'builtin-1',  title:'What is Hijama? A Complete Beginner\'s Guide',        category:'Benefits',    emoji:'🩸', author:'Detoxy Hijama Team', readTime:8,  status:'published', date:'2024-12-02T00:00:00.000Z', excerpt:'Hijama (Al-Hijamah) is the ancient practice of therapeutic cupping. Discover the history, types, and how it works on your body.',          tags:['Hijama Basics','Wet Cupping','Dry Cupping'],  content:'Full article available on the frontend blogs page.', isBuiltin:true},
+    {id:'builtin-2',  title:'Hijama in Islam: Sunnah Days & Prophetic Guidance',    category:'Sunnah',      emoji:'🌙', author:'Detoxy Hijama Team', readTime:7,  status:'published', date:'2024-11-28T00:00:00.000Z', excerpt:'Understand the deep Islamic roots of hijama, the recommended lunar calendar days, and why Sunnah cupping is considered one of the best prophetic medicines.', tags:['Sunnah','Prophetic Medicine','Tibb Nabawi'], content:'Full article available on the frontend blogs page.', isBuiltin:true},
+    {id:'builtin-3',  title:'Hijama for Back Pain: Clinical Evidence',               category:'Conditions',  emoji:'🦴', author:'Detoxy Hijama Team', readTime:9,  status:'published', date:'2024-11-25T00:00:00.000Z', excerpt:'Back pain is among the top 5 global health burdens. Discover the clinical evidence behind hijama for back pain.',                                          tags:['Back Pain','Pain Relief','Evidence'],         content:'Full article available on the frontend blogs page.', isBuiltin:true},
+    {id:'builtin-4',  title:'Hijama for Migraines & Chronic Headaches',              category:'Conditions',  emoji:'🧠', author:'Detoxy Hijama Team', readTime:8,  status:'published', date:'2024-11-22T00:00:00.000Z', excerpt:'Millions suffer from migraines globally. Explore how hijama provides long-term relief for chronic headaches.',                                            tags:['Migraines','Headaches','Chronic Pain'],       content:'Full article available on the frontend blogs page.', isBuiltin:true},
+    {id:'builtin-5',  title:'How to Perform Wet Hijama: A Step-by-Step Guide',      category:'How-To',      emoji:'💉', author:'Detoxy Hijama Team', readTime:12, status:'published', date:'2024-11-18T00:00:00.000Z', excerpt:'A professional practitioner\'s guide to performing wet hijama safely, from preparation to aftercare.',                                                     tags:['Wet Hijama','Technique','Practitioners'],     content:'Full article available on the frontend blogs page.', isBuiltin:true},
+    {id:'builtin-6',  title:'Hijama for PCOS & Hormonal Imbalances',                category:'Conditions',  emoji:'⚕️', author:'Detoxy Hijama Team', readTime:9,  status:'published', date:'2024-11-15T00:00:00.000Z', excerpt:'PCOS affects millions of women. Discover how hijama helps regulate hormones and improve reproductive health.',                                            tags:['PCOS','Hormones','Women\'s Health'],           content:'Full article available on the frontend blogs page.', isBuiltin:true},
+    {id:'builtin-7',  title:'Dry Cupping vs Wet Hijama: Which is Right for You?',   category:'How-To',      emoji:'⚖️', author:'Detoxy Hijama Team', readTime:7,  status:'published', date:'2024-11-12T00:00:00.000Z', excerpt:'Compare dry cupping and wet hijama to decide which form is best for your condition and goals.',                                                            tags:['Dry Cupping','Wet Hijama','Comparison'],      content:'Full article available on the frontend blogs page.', isBuiltin:true},
+    {id:'builtin-8',  title:'The Complete Guide to Hijama Equipment',                category:'Products',    emoji:'🔬', author:'Detoxy Hijama Team', readTime:10, status:'published', date:'2024-11-08T00:00:00.000Z', excerpt:'A practitioner\'s handbook on cups, lancets, suction devices, and consumables for safe professional hijama.',                                             tags:['Equipment','Cups','Practitioner Guide'],      content:'Full article available on the frontend blogs page.', isBuiltin:true},
+    {id:'builtin-9',  title:'Hijama Aftercare: What to Do After Your Session',       category:'Aftercare',   emoji:'🌿', author:'Detoxy Hijama Team', readTime:6,  status:'published', date:'2024-11-05T00:00:00.000Z', excerpt:'Proper aftercare is critical for maximizing hijama benefits. Follow these guidelines for safe recovery.',                                                  tags:['Aftercare','Recovery','Safety'],              content:'Full article available on the frontend blogs page.', isBuiltin:true},
+    {id:'builtin-10', title:'Top 10 Benefits of Hijama Cupping Therapy',             category:'Benefits',    emoji:'✨', author:'Detoxy Hijama Team', readTime:8,  status:'published', date:'2024-11-02T00:00:00.000Z', excerpt:'From pain relief to improved immunity, explore the top 10 evidence-based benefits of regular hijama cupping therapy.',                                     tags:['Benefits','Immunity','Wellness'],             content:'Full article available on the frontend blogs page.', isBuiltin:true},
+    {id:'builtin-11', title:'Hijama for Athletes & Sports Recovery',                 category:'Benefits',    emoji:'🏃', author:'Detoxy Hijama Team', readTime:7,  status:'published', date:'2024-10-28T00:00:00.000Z', excerpt:'Elite athletes use cupping therapy for faster recovery. Discover how hijama enhances sports performance.',                                                 tags:['Sports','Recovery','Athletes'],               content:'Full article available on the frontend blogs page.', isBuiltin:true},
+    {id:'builtin-12', title:'Facial Cupping: The Natural Anti-Aging Treatment',      category:'How-To',      emoji:'💆', author:'Detoxy Hijama Team', readTime:8,  status:'published', date:'2024-10-24T00:00:00.000Z', excerpt:'Facial cupping is revolutionizing natural skincare. Learn the technique for glowing, youthful skin.',                                                      tags:['Facial','Anti-Aging','Skincare'],             content:'Full article available on the frontend blogs page.', isBuiltin:true},
+    {id:'builtin-13', title:'Hijama for Diabetes Management',                        category:'Conditions',  emoji:'🩺', author:'Detoxy Hijama Team', readTime:9,  status:'published', date:'2024-10-20T00:00:00.000Z', excerpt:'Type 2 diabetes is a growing epidemic. Explore how hijama helps regulate blood sugar and reduce diabetic complications.',                                   tags:['Diabetes','Blood Sugar','Management'],        content:'Full article available on the frontend blogs page.', isBuiltin:true},
+    {id:'builtin-14', title:'Hijama for Hair Loss & Alopecia',                       category:'Conditions',  emoji:'💇', author:'Detoxy Hijama Team', readTime:7,  status:'published', date:'2024-10-16T00:00:00.000Z', excerpt:'Hair loss affects millions. Discover how scalp hijama stimulates follicles and promotes regrowth.',                                                         tags:['Hair Loss','Alopecia','Scalp Health'],        content:'Full article available on the frontend blogs page.', isBuiltin:true},
+    {id:'builtin-15', title:'How to Set Up a Professional Hijama Clinic',            category:'How-To',      emoji:'🏥', author:'Detoxy Hijama Team', readTime:11, status:'published', date:'2024-10-12T00:00:00.000Z', excerpt:'A complete business guide to setting up a hygienic, professional, and profitable hijama clinic in India.',                                                  tags:['Clinic Setup','Business','Practitioners'],    content:'Full article available on the frontend blogs page.', isBuiltin:true},
+    {id:'builtin-16', title:'Hijama Points Map: A Full Body Guide',                  category:'Aftercare',   emoji:'🗺️', author:'Detoxy Hijama Team', readTime:10, status:'published', date:'2024-10-08T00:00:00.000Z', excerpt:'A comprehensive guide to traditional and modern hijama cupping points on the human body.',                                                              tags:['Points','Map','Practitioners'],               content:'Full article available on the frontend blogs page.', isBuiltin:true},
+    {id:'builtin-17', title:'Hijama for Fertility & Reproductive Health',            category:'Benefits',    emoji:'🌸', author:'Detoxy Hijama Team', readTime:9,  status:'published', date:'2024-10-04T00:00:00.000Z', excerpt:'Fertility challenges affect many couples. Explore how hijama supports reproductive health for both men and women.',                                          tags:['Fertility','Reproductive Health','IVF'],      content:'Full article available on the frontend blogs page.', isBuiltin:true},
+    {id:'builtin-18', title:'Silicone vs Glass vs Bamboo Cups: Which to Choose?',   category:'Products',    emoji:'🏆', author:'Detoxy Hijama Team', readTime:8,  status:'published', date:'2024-09-30T00:00:00.000Z', excerpt:'Not all hijama cups are equal. Compare silicone, glass, and bamboo cups to find the best for your practice.',                                              tags:['Cups','Equipment','Comparison'],              content:'Full article available on the frontend blogs page.', isBuiltin:true},
+    {id:'builtin-19', title:'Hijama for Mental Health: Anxiety & Depression',        category:'Benefits',    emoji:'🧘', author:'Detoxy Hijama Team', readTime:8,  status:'published', date:'2024-09-26T00:00:00.000Z', excerpt:'Mental health is a growing crisis. Discover how hijama supports the nervous system to reduce anxiety and depression.',                                      tags:['Mental Health','Anxiety','Depression'],       content:'Full article available on the frontend blogs page.', isBuiltin:true},
+    {id:'builtin-20', title:'Hijama Safety: Contraindications & Precautions',        category:'Aftercare',   emoji:'⚠️', author:'Detoxy Hijama Team', readTime:7,  status:'published', date:'2024-09-22T00:00:00.000Z', excerpt:'Hijama is safe when performed correctly — but there are important contraindications every practitioner must know.',                                         tags:['Safety','Contraindications','Precautions'],   content:'Full article available on the frontend blogs page.', isBuiltin:true}
+  ];
+
+  _saveBlogs(builtin);
+  Logger.log && Logger.log('Seeded 20 built-in blogs');
+}
+
+function renderBlogs(blogs) {
+  var tbody = document.getElementById('blogsTableBody');
+  var empty = document.getElementById('blogsEmpty');
+  if (!blogs.length) { tbody.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+  tbody.innerHTML = blogs.map(function(b){
+    var blogKey = b.blog_id || b.id || '';
+    var d = b.date ? new Date(b.date).toLocaleDateString('en-IN') : '';
+    var statusBadge = b.status==='published'
+      ? '<span class="badge badge-confirmed">Published</span>'
+      : '<span class="badge badge-pending">Draft</span>';
+    return '<tr>' +
+      '<td><div style="display:flex;align-items:center;gap:8px"><span style="font-size:1.3rem">'+(b.emoji||'📝')+'</span><span style="font-weight:600;font-size:.84rem">'+b.title+'</span></div></td>' +
+      '<td><span class="badge badge-teal">'+b.category+'</span></td>' +
+      '<td>'+b.author+'</td>' +
+      '<td style="font-size:.76rem">'+d+'</td>' +
+      '<td>'+statusBadge+'</td>' +
+      '<td><div style="display:flex;gap:4px">' +
+        '<button class="btn btn-outline btn-sm btn-icon" onclick="openBlogModal(\''+blogKey+'\')" title="Edit"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>' +
+        '<button class="btn btn-danger btn-sm btn-icon" onclick="deleteBlog(\''+blogKey+'\')" title="Delete"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>' +
+      '</div></td></tr>';
+  }).join('');
+}
+
+function openBlogModal(id) {
+  document.getElementById('blogModalTitle').textContent = id ? 'Edit Blog Post' : 'New Blog Post';
+  document.getElementById('blogSaveBtn').disabled = false;
+  if (!id) {
+    ['blogId','blogTitle','blogExcerpt','blogContent','blogTags'].forEach(function(f){ document.getElementById(f).value=''; });
+    document.getElementById('blogAuthor').value   = 'Detoxy Hijama Team';
+    document.getElementById('blogReadTime').value = '5';
+    document.getElementById('blogEmoji').value    = '🩺';
+    document.getElementById('blogCategory').value = 'Benefits';
+    document.getElementById('blogStatus').value   = 'published';
+  } else {
+    var b = _getBlogs().find(function(x){ return (x.id||x.blog_id)===id || (x.blog_id||x.id)===id; });
+    if (!b) return;
+    document.getElementById('blogId').value       = b.id;
+    document.getElementById('blogTitle').value    = b.title||'';
+    document.getElementById('blogCategory').value = b.category||'Benefits';
+    document.getElementById('blogAuthor').value   = b.author||'Detoxy Hijama Team';
+    document.getElementById('blogReadTime').value = b.readTime||5;
+    document.getElementById('blogExcerpt').value  = b.excerpt||'';
+    document.getElementById('blogContent').value  = b.content||'';
+    document.getElementById('blogTags').value     = (b.tags||[]).join(', ');
+    document.getElementById('blogStatus').value   = b.status||'published';
+    document.getElementById('blogEmoji').value    = b.emoji||'📝';
+  }
+  openModal('blogModal');
+}
+
+function saveBlog() {
+  var title   = document.getElementById('blogTitle').value.trim();
+  var excerpt = document.getElementById('blogExcerpt').value.trim();
+  var content = document.getElementById('blogContent').value.trim();
+  if (!title)   { toast('Blog title is required','error'); return; }
+  if (!excerpt) { toast('Short excerpt is required','error'); return; }
+  if (!content) { toast('Blog content is required','error'); return; }
+
+  var existingId = document.getElementById('blogId').value;
+  var blogs = _getBlogs();
+  var tagsRaw = document.getElementById('blogTags').value;
+
+  var post = {
+    id:       existingId || 'blog-' + Date.now(),
+    title:    title,
+    category: document.getElementById('blogCategory').value,
+    author:   document.getElementById('blogAuthor').value.trim() || 'Detoxy Hijama Team',
+    readTime: parseInt(document.getElementById('blogReadTime').value) || 5,
+    excerpt:  excerpt,
+    content:  content,
+    tags:     tagsRaw.split(',').map(function(t){return t.trim();}).filter(Boolean),
+    status:   document.getElementById('blogStatus').value,
+    emoji:    document.getElementById('blogEmoji').value || '📝',
+    date:     existingId
+      ? (blogs.find(function(b){return b.id===existingId;})||{}).date || new Date().toISOString()
+      : new Date().toISOString()
+  };
+
+  if (existingId) {
+    var idx = blogs.findIndex(function(b){ return b.id===existingId; });
+    if (idx > -1) blogs[idx] = post; else blogs.unshift(post);
+  } else {
+    blogs.unshift(post);
+  }
+
+  // Save to Sheets if API available, otherwise cache locally
+  if (API_URL) {
+    var apiAction = existingId ? 'updateBlog' : 'createBlog';
+    var apiPayload = Object.assign({action: apiAction, blog_id: post.id}, post);
+    var btn = document.getElementById('blogSaveBtn');
+    btn.disabled    = true;
+    btn.textContent = existingId ? 'Saving…' : 'Publishing…';
+
+    apiPost({action: apiAction}, apiPayload)
+      .then(function(d) {
+        if (d.success || d.blogId) {
+          if (d.blogId) post.id = d.blogId;
+          toast(existingId ? 'Blog updated!' : 'Blog post published!', 'success');
+          closeModal('blogModal');
+          loadBlogs(); // reload from Sheets
+        } else {
+          toast('Error: ' + (d.error || 'Unknown error'), 'error');
+        }
+      })
+      .catch(function(e){ toast('Network error: ' + e.message, 'error'); })
+      .finally(function(){ btn.disabled=false; btn.textContent=existingId?'Save Changes':'Save Post'; });
+  } else {
+    // No API — save to localStorage cache only
+    var blogs = _getLocalBlogs();
+    if (existingId) {
+      var idx = blogs.findIndex(function(b){ return b.id===existingId; });
+      if (idx > -1) blogs[idx] = post; else blogs.unshift(post);
+    } else { blogs.unshift(post); }
+    _setLocalBlogs(blogs);
+    toast(existingId ? 'Blog updated (local)!' : 'Blog published (local)!', 'success');
+    closeModal('blogModal');
+    renderBlogs(blogs);
+  }
+}
+
+function deleteBlog(id) {
+  var blogs = _getLocalBlogs();
+  var b = blogs.find(function(x){ return (x.id||x.blog_id)===id; });
+  if (!confirm('Delete "' + (b?b.title:'this post') + '"?\n\nThis cannot be undone.')) return;
+
+  if (API_URL) {
+    apiPost({action:'deleteBlog'}, {action:'deleteBlog', blogId: id})
+      .then(function(d){
+        if (d.success) {
+          toast('Blog post deleted','success');
+          loadBlogs();
+        } else { toast(d.error||'Error deleting blog','error'); }
+      })
+      .catch(function(e){ toast('Network error: '+e.message,'error'); });
+  } else {
+    _setLocalBlogs(blogs.filter(function(x){ return (x.id||x.blog_id)!==id; }));
+    toast('Blog post deleted','success');
+    renderBlogs(_getLocalBlogs());
+  }
+}
+
+function exportBlogsJSON() {
+  var blogs = _getLocalBlogs();
+  var json  = JSON.stringify(blogs, null, 2);
+  var blob  = new Blob([json], {type:'application/json'});
+  var url   = URL.createObjectURL(blob);
+  var a     = document.createElement('a');
+  a.href=url; a.download='detoxy-blogs.json'; a.click();
+  URL.revokeObjectURL(url);
+  toast('blogs.json downloaded!','success');
+}
+
+function copyBlogsEmbed() {
+  var blogs = _getLocalBlogs();
+  var code  = '<scr'+'ipt>window.DETOXY_BLOGS = ' + JSON.stringify(blogs) + ';<\/scr'+'ipt>';
+  navigator.clipboard.writeText(code).then(function(){
+    document.getElementById('blogExportResult').innerHTML = '<span style="color:var(--success)">✓ Embed code copied! Paste it into blogs.html before &lt;/body&gt;</span>';
+  }).catch(function(){
+    document.getElementById('blogExportResult').textContent = code.substring(0,200) + '...';
+  });
+}
+
+// ── Settings ───────────────────────────────────────────────────────────────────
+function saveSheetsUrl() {
+  var url = (document.getElementById('settingsUrl').value || '').trim();
+  if (url && !url.endsWith('/exec')) {
+    toast('URL should end with /exec — check your deployment URL', 'error');
+    return;
+  }
+  localStorage.setItem('detoxy_sheets_url', url);
+  API_URL = url;
+  toast('API URL saved!', 'success');
+  if (url) loadDashboard();
+}
+
+function testApiConnection() {
+  var btn    = document.getElementById('testApiBtn');
+  var result = document.getElementById('apiTestResult');
+  saveSheetsUrl();
+  if (!API_URL) {
+    result.innerHTML = '<span style="color:var(--danger)">✗ Please paste your Apps Script URL first.</span>';
+    return;
+  }
+  btn.textContent = 'Testing…'; btn.disabled = true;
+  result.innerHTML = '<span style="color:var(--muted)">Connecting…</span>';
+  fetch(API_URL + '?action=ping', { redirect: 'follow' })
+    .then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function(d) {
+      result.innerHTML = '<span style="color:var(--success)">✓ Connected! ' + (d.message || 'API is working.') + '</span>';
+      loadDashboard();
+    })
+    .catch(function(e) {
+      var hint = '';
+      if ((e.message||'').includes('Failed to fetch') || (e.message||'').includes('NetworkError')) {
+        hint = '<br><small style="color:var(--muted)">Fix: In Apps Script → Deploy → set <strong>Who has access: Anyone</strong> (not "Anyone with Google account") → re-deploy → copy the new URL.</small>';
+      }
+      result.innerHTML = '<span style="color:var(--danger)">✗ ' + (e.message||'Connection failed') + hint + '</span>';
+    })
+    .finally(function() { btn.textContent = 'Test Connection'; btn.disabled = false; });
+}
+
+function changeAdminPass() {
+  var np = document.getElementById('newAdminPass').value;
+  var cp = document.getElementById('confirmAdminPass').value;
+  if (!np)        { toast('Enter a new password', 'error'); return; }
+  if (np !== cp)  { toast('Passwords do not match', 'error'); return; }
+  if (np.length < 6) { toast('Password must be at least 6 characters', 'error'); return; }
+  localStorage.setItem('dh_admin_pass', np);
+  ADMIN_PASS = np;
+  document.getElementById('newAdminPass').value    = '';
+  document.getElementById('confirmAdminPass').value = '';
+  toast('Admin password changed successfully!', 'success');
+}
+
+function syncProductsToSheets() {
+  if (!API_URL) { toast('Set API URL first in Settings', 'error'); return; }
+  if (typeof PRODUCTS === 'undefined' || !PRODUCTS.length) { toast('PRODUCTS not loaded yet', 'error'); return; }
+  var result = document.getElementById('syncResult');
+  result.innerHTML = '<span style="color:var(--muted)">Syncing ' + PRODUCTS.length + ' products…</span>';
+  var done = 0, errors = 0;
+  var promises = PRODUCTS.map(function(p) {
+    return apiPost({action:'addProduct'}, Object.assign({action:'addProduct'}, p))
+      .then(function(d){ if(d.success||d.id) done++; else errors++; })
+      .catch(function(){ errors++; });
+  });
+  Promise.all(promises).then(function(){
+    result.innerHTML = errors === 0
+      ? '<span style="color:var(--success)">✓ All ' + done + ' products synced to Google Sheets!</span>'
+      : '<span style="color:var(--warn)">✓ ' + done + ' synced, ' + errors + ' skipped (already exist)</span>';
+    if (done > 0) toast('Products synced!', 'success');
+  });
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ACCOUNTS & FINANCE
+// ═══════════════════════════════════════════════════════════════════════════════
+var _allOrdersForAccounts = [];
+
+function loadAccounts() {
+  if (!API_URL) {
+    _allOrdersForAccounts = _orders || [];
+    renderAccounts();
+    return;
+  }
+  apiGet({action:'getOrders'}).then(function(d){
+    _allOrdersForAccounts = d.orders || [];
+    renderAccounts();
+  }).catch(function(){ _allOrdersForAccounts = _orders||[]; renderAccounts(); });
+}
+
+function _filterByPeriod(orders) {
+  var period = (document.getElementById('acPeriodFilter')||{}).value || 'month';
+  if (period === 'all') return orders;
+  var now = new Date();
+  return orders.filter(function(o) {
+    var d = new Date(o.date||0);
+    if (period === 'today')   return d.toDateString() === now.toDateString();
+    if (period === 'week')    { var w=new Date(now); w.setDate(now.getDate()-7); return d>=w; }
+    if (period === 'month')   return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
+    if (period === 'quarter') { var q=Math.floor(now.getMonth()/3); return Math.floor(d.getMonth()/3)===q && d.getFullYear()===now.getFullYear(); }
+    if (period === 'year')    return d.getFullYear()===now.getFullYear();
+    return true;
+  });
+}
+
+function renderAccounts() {
+  var orders  = _filterByPeriod(_allOrdersForAccounts);
+  var active  = orders.filter(function(o){ return o.status !== 'cancelled'; });
+  var GST_RATE = 0.18; // 18% GST (9% CGST + 9% SGST)
+
+  var gross    = active.reduce(function(s,o){ return s+Number(o.total||0); }, 0);
+  var taxable  = Math.round(gross / (1+GST_RATE));
+  var totalGST = gross - taxable;
+  var cgst     = Math.round(totalGST/2);
+  var sgst     = Math.round(totalGST/2);
+  var aov      = active.length ? Math.round(gross/active.length) : 0;
+
+  var cod     = active.filter(function(o){ return (o.payment||'cod')==='cod'; });
+  var prepaid = active.filter(function(o){ return (o.payment||'')==='upi'||(o.payment||'')==='neft'; });
+  var delivered  = active.filter(function(o){ return o.status==='delivered'; });
+  var cancelled  = orders.filter(function(o){ return o.status==='cancelled'; });
+
+  var fmt = function(n){ return '₹'+Math.round(n).toLocaleString('en-IN'); };
+
+  // KPI
+  _setEl('ac-gross',   fmt(gross));
+  _setEl('ac-net',     fmt(taxable));
+  _setEl('ac-gst',     fmt(totalGST));
+  _setEl('ac-aov',     fmt(aov));
+  _setEl('ac-orders-count', active.length + ' orders');
+  _setEl('ac-cod',     cod.length + '');
+  _setEl('ac-cod-amt', fmt(cod.reduce(function(s,o){return s+Number(o.total||0);},0)));
+  _setEl('ac-prepaid', prepaid.length + '');
+  _setEl('ac-prepaid-amt', fmt(prepaid.reduce(function(s,o){return s+Number(o.total||0);},0)));
+  _setEl('ac-delivered', delivered.length + '');
+  _setEl('ac-delivered-amt', fmt(delivered.reduce(function(s,o){return s+Number(o.total||0);},0)));
+  _setEl('ac-cancelled', cancelled.length + '');
+  _setEl('ac-cancelled-amt', fmt(cancelled.reduce(function(s,o){return s+Number(o.total||0);},0)));
+
+  // GST breakdown
+  _setEl('ac-taxable',   fmt(taxable));
+  _setEl('ac-cgst',      fmt(cgst));
+  _setEl('ac-sgst',      fmt(sgst));
+  _setEl('ac-total-gst', fmt(totalGST));
+  _setEl('ac-gross2',    fmt(gross));
+
+  // Payment breakdown bars
+  var pmData = [
+    {label:'COD',        count:cod.length,     amt:cod.reduce(function(s,o){return s+Number(o.total||0);},0),     color:'var(--warn)'},
+    {label:'UPI/NEFT',   count:prepaid.length,  amt:prepaid.reduce(function(s,o){return s+Number(o.total||0);},0), color:'var(--t)'},
+  ];
+  var pmEl = document.getElementById('ac-payment-breakdown');
+  if (pmEl) pmEl.innerHTML = pmData.map(function(p){
+    var pct = gross > 0 ? Math.round(p.amt/gross*100) : 0;
+    return '<div style="margin-bottom:12px">'+
+      '<div style="display:flex;justify-content:space-between;font-size:.79rem;margin-bottom:4px">'+
+        '<span style="font-weight:600">'+p.label+' ('+p.count+')</span>'+
+        '<span style="font-weight:700">'+fmt(p.amt)+' ('+pct+'%)</span>'+
+      '</div>'+
+      '<div style="height:6px;background:var(--border);border-radius:50px">'+
+        '<div style="height:6px;width:'+pct+'%;background:'+p.color+';border-radius:50px;transition:width .5s ease"></div>'+
+      '</div></div>';
+  }).join('');
+
+  // Status revenue
+  var statusData = [
+    {label:'Pending',   orders:orders.filter(function(o){return o.status==='pending';}),   color:'var(--warn)'},
+    {label:'Confirmed', orders:orders.filter(function(o){return o.status==='confirmed';}), color:'var(--info)'},
+    {label:'Dispatched',orders:orders.filter(function(o){return o.status==='dispatched';}),color:'var(--t)'},
+    {label:'Delivered', orders:delivered,   color:'var(--success)'},
+    {label:'Cancelled', orders:cancelled,   color:'var(--danger)'},
+  ];
+  var srEl = document.getElementById('ac-status-revenue');
+  if (srEl) srEl.innerHTML = statusData.map(function(s){
+    var amt = s.orders.reduce(function(a,o){return a+Number(o.total||0);},0);
+    var pct = gross>0 ? Math.round(amt/gross*100) : 0;
+    return '<div style="margin-bottom:10px">'+
+      '<div style="display:flex;justify-content:space-between;font-size:.79rem;margin-bottom:4px">'+
+        '<span style="font-weight:600">'+s.label+' ('+s.orders.length+')</span>'+
+        '<span style="font-weight:700">'+fmt(amt)+'</span>'+
+      '</div>'+
+      '<div style="height:5px;background:var(--border);border-radius:50px">'+
+        '<div style="height:5px;width:'+pct+'%;background:'+s.color+';border-radius:50px"></div>'+
+      '</div></div>';
+  }).join('');
+
+  renderLedger();
+}
+
+function _setEl(id, val) {
+  var el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+function renderLedger() {
+  var q = (document.getElementById('acLedgerSearch')||{}).value || '';
+  q = q.toLowerCase();
+  var orders  = _filterByPeriod(_allOrdersForAccounts);
+  var filtered = q ? orders.filter(function(o){
+    return (String(o.order_id||'')+String(o.name||'')+String(o.phone||'')).toLowerCase().includes(q);
+  }) : orders;
+
+  var GST_RATE = 0.18;
+  var fmt = function(n){ return '₹'+Math.round(n).toLocaleString('en-IN'); };
+  var statusClass = {pending:'status-pending',confirmed:'status-confirmed',dispatched:'status-dispatched',delivered:'status-confirmed',cancelled:'status-cancelled'};
+
+  var tbody = document.getElementById('acLedgerBody');
+  if (!tbody) return;
+
+  tbody.innerHTML = filtered.slice(0,200).map(function(o, idx) {
+    var total   = Number(o.total||0);
+    var taxable = Math.round(total/(1+GST_RATE));
+    var gst     = total - taxable;
+    var d = o.date ? new Date(o.date).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+    var bg = idx%2===0 ? '' : 'style="background:var(--cream)"';
+    return '<tr '+bg+'>' +
+      '<td style="padding:9px 14px;border-bottom:1px solid var(--border)">'+d+'</td>' +
+      '<td style="padding:9px 14px;border-bottom:1px solid var(--border);font-family:monospace;font-size:.78rem">'+String(o.order_id||'')+'</td>' +
+      '<td style="padding:9px 14px;border-bottom:1px solid var(--border)"><div style="font-weight:600">'+String(o.name||'—')+'</div><div style="font-size:.72rem;color:var(--muted)">'+String(o.phone||'')+'</div></td>' +
+      '<td style="padding:9px 14px;border-bottom:1px solid var(--border)"><span style="background:var(--cream);padding:2px 8px;border-radius:50px;font-size:.71rem;font-weight:700">'+String(o.payment||'COD').toUpperCase()+'</span></td>' +
+      '<td style="padding:9px 14px;border-bottom:1px solid var(--border);text-align:right">'+fmt(taxable)+'</td>' +
+      '<td style="padding:9px 14px;border-bottom:1px solid var(--border);text-align:right;color:var(--muted)">'+fmt(gst)+'</td>' +
+      '<td style="padding:9px 14px;border-bottom:1px solid var(--border);text-align:right;font-weight:700">'+fmt(total)+'</td>' +
+      '<td style="padding:9px 14px;border-bottom:1px solid var(--border);text-align:center"><span class="status-badge status-'+(o.status||'pending')+'">'+String(o.status||'pending')+'</span></td>' +
+      '</tr>';
+  }).join('');
+
+  // Footer totals
+  var totals = filtered.reduce(function(acc,o){
+    var t = Number(o.total||0);
+    if (o.status!=='cancelled') { acc.gross+=t; acc.gst+=(t-Math.round(t/(1+GST_RATE))); }
+    return acc;
+  }, {gross:0,gst:0});
+  var footEl = document.getElementById('acLedgerFooter');
+  if (footEl) footEl.innerHTML =
+    '<span>'+filtered.length+' transactions shown</span>' +
+    '<span style="display:flex;gap:32px"><span>GST: '+fmt(totals.gst)+'</span><span>Total: '+fmt(totals.gross)+'</span></span>';
+}
+
+function exportAccountsCSV() {
+  var GST_RATE = 0.18;
+  var orders = _filterByPeriod(_allOrdersForAccounts);
+  var rows = [['Date','Order ID','Customer','Phone','Payment','Status','Taxable Value','CGST (9%)','SGST (9%)','Total GST','Grand Total']];
+  orders.forEach(function(o){
+    var total   = Number(o.total||0);
+    var taxable = Math.round(total/(1+GST_RATE));
+    var gst     = total - taxable;
+    rows.push([
+      o.date?new Date(o.date).toLocaleDateString('en-IN'):'',
+      o.order_id, o.name, o.phone, (o.payment||'cod').toUpperCase(), o.status||'pending',
+      taxable, Math.round(gst/2), Math.round(gst/2), gst, total
+    ]);
+  });
+  var csv = rows.map(function(r){ return r.map(function(c){ return '"'+String(c||'').replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
+  var blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'DetoxHijama-Accounts-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  toast('CSV exported!','success');
+}
+
+function exportGSTReport() {
+  var GST_RATE = 0.18;
+  var orders = _filterByPeriod(_allOrdersForAccounts).filter(function(o){ return o.status!=='cancelled'; });
+  var rows = [['GSTIN','Invoice No','Date','Customer','Phone','City','State','Taxable Value','CGST Rate','CGST Amt','SGST Rate','SGST Amt','Total Tax','Invoice Value']];
+  orders.forEach(function(o){
+    var total   = Number(o.total||0);
+    var taxable = Math.round(total/(1+GST_RATE));
+    var gst     = total - taxable;
+    rows.push([
+      'Applied For', o.invoice_number||o.order_id, o.date?new Date(o.date).toLocaleDateString('en-IN'):'',
+      o.name, o.phone, o.city||'', o.state||'',
+      taxable, '9%', Math.round(gst/2), '9%', Math.round(gst/2), gst, total
+    ]);
+  });
+  var csv = rows.map(function(r){ return r.map(function(c){ return '"'+String(c||'').replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
+  var blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'DetoxHijama-GSTR1-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  toast('GSTR-1 export ready!','success');
+}
+
+
+// ── Load PRODUCTS from shared.js ───────────────────────────────────────────────
+var _sharedScript = document.createElement('script');
+_sharedScript.src = '../assets/js/shared.js';
+_sharedScript.onload = function() {
+  if (document.getElementById('loginOverlay').style.display === 'none') loadProducts();
+};
+document.head.appendChild(_sharedScript);
+</script>
+</body>
+</html>
+<script>
+// Inject shipping quote button into order modal footer
+(function() {
+  var origViewOrder = window.viewOrder;
+  if (!origViewOrder) return;
+  window.viewOrder = function(orderId) {
+    origViewOrder(orderId);
+    // Add quote shipping button to footer
+    var footer = document.getElementById('orderModalFooter');
+    if (!footer) return;
+    var o = _orders.find(function(x){return String(x.order_id)===String(orderId);});
+    if (!o) return;
+    // Only show for pending/confirmed orders
+    if (['pending','confirmed'].includes(o.status)) {
+      var qBtn = document.createElement('button');
+      qBtn.className = 'btn btn-outline';
+      qBtn.style.cssText = 'background:#fffbeb;border-color:#f59e0b;color:#92400e';
+      qBtn.innerHTML = '📦 Quote Shipping';
+      qBtn.onclick = function(){ openShippingQuoteModal(orderId); };
+      footer.insertBefore(qBtn, footer.firstChild);
+    }
+  };
+})();
+
+// Shipping Quote Modal
+function openShippingQuoteModal(orderId) {
+  var o = _orders.find(function(x){return String(x.order_id)===String(orderId);});
+  if (!o) return;
+  closeModal('orderModal');
+  var modal = document.getElementById('shippingQuoteModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'shippingQuoteModal';
+    modal.className = 'modal';
+    modal.innerHTML = '<div class="modal-box" style="max-width:480px">' +
+      '<div class="modal-title"><span>Quote Shipping</span><button class="modal-close" onclick="closeModal(\'shippingQuoteModal\')"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg></button></div>' +
+      '<div style="margin-bottom:16px">' +
+        '<div style="background:var(--cream);border-radius:8px;padding:12px 14px;margin-bottom:14px">' +
+          '<div style="font-size:.78rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Order</div>' +
+          '<div style="font-weight:700;color:var(--dark)" id="sqm-order-id"></div>' +
+          '<div style="font-size:.8rem;color:var(--muted)" id="sqm-customer"></div>' +
+          '<div style="font-size:.8rem;color:var(--muted)" id="sqm-address"></div>' +
+        '</div>' +
+        '<div class="form-group"><label class="form-label">Shipping Amount (₹) *</label><input type="number" id="sqm-amount" class="form-control" placeholder="e.g. 80" min="0"/></div>' +
+        '<div class="form-group"><label class="form-label">Notes for Customer</label><textarea id="sqm-notes" class="form-control" rows="2" placeholder="e.g. Express delivery — 2 business days"></textarea></div>' +
+        '<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px 12px;font-size:.78rem;color:#78350f"><strong>ℹ️</strong> Customer will receive this quote on the Track Order page and must accept or reject before dispatch. An email notification will also be sent.</div>' +
+      '</div>' +
+      '<div class="modal-footer"><button class="btn btn-outline" onclick="closeModal(\'shippingQuoteModal\')">Cancel</button><button class="btn btn-primary" onclick="sendShippingQuote()">Send Quote to Customer</button></div>' +
+    '</div>';
+    document.body.appendChild(modal);
+  }
+  document.getElementById('sqm-order-id').textContent = o.order_id;
+  document.getElementById('sqm-customer').textContent = o.name + ' · ' + o.phone;
+  document.getElementById('sqm-address').textContent  = [o.city, o.state, o.pincode].filter(Boolean).join(', ');
+  modal.setAttribute('data-oid', orderId);
+  openModal('shippingQuoteModal');
+}
+
+function sendShippingQuote() {
+  var modal   = document.getElementById('shippingQuoteModal');
+  var orderId = modal.getAttribute('data-oid');
+  var amount  = document.getElementById('sqm-amount').value;
+  var notes   = document.getElementById('sqm-notes').value;
+  if (!amount || Number(amount) < 0) { toast('Enter a valid shipping amount','error'); return; }
+  if (!API_URL) { toast('API URL not configured','error'); return; }
+  apiPost({action:'quoteShipping'}, {action:'quoteShipping', order_id:orderId, shipping_quote:Number(amount), shipping_notes:notes})
+    .then(function(d){
+      if (d.success) {
+        toast('Shipping quote sent to customer! ✓','success');
+        closeModal('shippingQuoteModal');
+        loadOrders();
+      } else { toast('Error: '+(d.error||'Unknown'),'error'); }
+    }).catch(function(e){ toast('Network error: '+e.message,'error'); });
+}
+</script>

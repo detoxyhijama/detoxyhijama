@@ -1,0 +1,1130 @@
+/* ═══════════════════════════════════════════════════
+   DETOXY HIJAMA — Global Stylesheet
+   Brand Primary: #57A2A0
+   Theme: Clean · Medical · Trustworthy · Minimal
+════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Brand Color Scale (all derived from #57A2A0) ── */
+  --c50:  #f0f8f8;
+  --c100: #d6eeed;
+  --c200: #aedcdb;
+  --c300: #80c5c4;
+  --c400: #5fb3b1;
+  --c500: #57A2A0;   /* PRIMARY */
+  --c600: #458987;
+  --c700: #356e6c;
+  --c800: #275352;
+  --c900: #1a3938;
+  --c950: #0e2120;
+
+  /* ── Variable aliases — keep all existing HTML working ── */
+  --t:    #57A2A0;
+  --td:   #356e6c;
+  --tp:   rgba(87,162,160,.08);
+  --tp2:  rgba(87,162,160,.16);
+  --dark: #1a3938;
+  --mid:  #275352;
+  --light: #458987;
+
+  /* ── Neutral / Surface ── */
+  --cream:  #f5fafa;
+  --cream2: #edf6f6;
+  --white:  #ffffff;
+  --border: #daeaea;
+  --border2: #c2dcdc;
+
+  /* ── Text ── */
+  --text:   #152e2e;
+  --muted:  #4e7878;
+  --muted2: #7daaaa;
+
+  /* ── Status ── */
+  --error:   #dc2626;
+  --success: #059669;
+
+  /* ── Radius ── */
+  --radius:    14px;
+  --radius-sm:  8px;
+  --radius-lg: 24px;
+
+  /* ── Shadows ── */
+  --shadow:    0 2px 12px rgba(21,46,46,.07);
+  --shadow-md: 0 4px 20px rgba(21,46,46,.10);
+  --shadow-lg: 0 8px 40px rgba(21,46,46,.13);
+
+  /* ── Motion ── */
+  --transition: all .22s cubic-bezier(.4,0,.2,1);
+
+  /* ── Typography ── */
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans:  'Outfit', 'Helvetica Neue', system-ui, sans-serif;
+
+  --nav-h: 68px;
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; }
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--white);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Prevent iOS from auto-scaling text on orientation change */
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+/* Suppress iOS tap highlight (blue/grey flash) on all interactive elements */
+a, button, input, select, textarea,
+[role="button"], label { -webkit-tap-highlight-color: transparent; }
+
+img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; font-family: var(--font-sans); }
+input, select, textarea { font-family: var(--font-sans); font-size: inherit; }
+
+/* ── Typography ── */
+h1, h2, h3, h4, h5, h6 { line-height: 1.25; color: var(--dark); }
+.serif { font-family: var(--font-serif); }
+
+/* ── Container ── */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+/* ── Section Spacing ── */
+.section    { padding: 72px 0; }
+.section-sm { padding: 48px 0; }
+
+.section-head { text-align: center; margin-bottom: 48px; }
+.section-head h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 10px;
+}
+.section-head p { font-size: .95rem; color: var(--muted); max-width: 540px; margin: 0 auto; }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 24px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: .9rem;
+  border: 2px solid transparent;
+  transition: var(--transition);
+  white-space: nowrap;
+  cursor: pointer;
+  line-height: 1;
+  letter-spacing: .01em;
+  touch-action: manipulation;
+}
+.btn:focus-visible {
+  outline: 3px solid rgba(87,162,160,.28);
+  outline-offset: 2px;
+}
+
+.btn-primary { background: var(--t); color: #fff; border-color: var(--t); }
+.btn-primary:hover {
+  background: var(--td);
+  border-color: var(--td);
+  -webkit-transform: translateY(-1px);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 18px rgba(87,162,160,.38);
+}
+.btn-primary:active { -webkit-transform: translateY(0); transform: translateY(0); }
+
+.btn-dark { background: var(--dark); color: #fff; border-color: var(--dark); }
+.btn-dark:hover { background: var(--mid); border-color: var(--mid); -webkit-transform: translateY(-1px); transform: translateY(-1px); }
+
+.btn-outline { background: transparent; color: var(--dark); border-color: var(--border2); }
+.btn-outline:hover { border-color: var(--t); color: var(--t); background: var(--tp); }
+
+.btn-outline-white { background: transparent; color: #fff; border-color: rgba(255,255,255,.45); }
+.btn-outline-white:hover { background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.85); }
+
+.btn-sm  { padding: 8px 16px; font-size: .82rem; }
+.btn-lg  { padding: 14px 32px; font-size: 1rem; }
+.btn-block { width: 100%; }
+
+.btn-icon { width: 40px; height: 40px; padding: 0; border-radius: var(--radius-sm); flex-shrink: 0; }
+.btn-icon svg { width: 18px; height: 18px; }
+
+/* ── Form Elements ── */
+.form-group { margin-bottom: 18px; }
+
+.form-label {
+  display: block;
+  font-size: .83rem;
+  font-weight: 600;
+  color: var(--dark);
+  margin-bottom: 7px;
+  letter-spacing: .01em;
+}
+
+.form-control {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  color: var(--text);
+  font-size: .9rem;
+  transition: var(--transition);
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.form-control::placeholder { color: var(--muted2); }
+.form-control:hover  { border-color: var(--border2); }
+.form-control:focus  { border-color: var(--t); box-shadow: 0 0 0 3px rgba(87,162,160,.14); }
+.form-control.error  { border-color: var(--error); }
+.form-error { font-size: .77rem; color: var(--error); margin-top: 4px; display: none; }
+.form-error.show { display: block; }
+
+/* ── Badges ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 50px;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  line-height: 1.4;
+}
+.badge-teal  { background: var(--tp2); color: var(--td); }
+.badge-dark  { background: var(--dark); color: #fff; }
+.badge-cream { background: var(--cream2); color: var(--muted); border: 1px solid var(--border); }
+
+/* ── Star Rating ── */
+.stars { display: inline-flex; align-items: center; gap: 1px; }
+.star       { color: #f59e0b; font-size: .85rem; line-height: 1; }
+.star.empty { color: #d1d5db; }
+
+/* ── Cards ── */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: var(--transition);
+}
+.card:hover { box-shadow: var(--shadow-lg); border-color: var(--border2); }
+
+/* ── Alert ── */
+.alert {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: .85rem;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border: 1px solid transparent;
+}
+.alert-success { background: #e6f7f2; color: #155f46; border-color: #7ed4be; }
+.alert-error   { background: #fef0f0; color: #991b1b; border-color: #f5a0a0; }
+.alert-info    { background: var(--tp); color: var(--td); border-color: var(--tp2); }
+
+/* ══════════════════════════════════
+   NAVIGATION
+══════════════════════════════════ */
+.nav {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  height: var(--nav-h);
+  box-shadow: 0 1px 0 var(--border), 0 2px 12px rgba(21,46,46,.04);
+}
+
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Logo */
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+.nav-logo-mark {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: var(--dark);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1.5px rgba(87,162,160,.30);
+}
+.nav-logo-mark svg { width: 24px; height: 24px; }
+.nav-logo-name {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--dark);
+  line-height: 1.1;
+}
+.nav-logo-sub {
+  font-size: .62rem;
+  font-weight: 600;
+  color: var(--t);
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+/* Search */
+.nav-search { flex: 1; max-width: 480px; position: relative; }
+.nav-search input {
+  width: 100%;
+  padding: 9px 40px 9px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: .88rem;
+  background: var(--cream);
+  color: var(--text);
+  outline: none;
+  transition: var(--transition);
+}
+.nav-search input::placeholder { color: var(--muted2); }
+.nav-search input:hover { border-color: var(--border2); }
+.nav-search input:focus { border-color: var(--t); background: var(--white); box-shadow: 0 0 0 3px rgba(87,162,160,.12); }
+.nav-search-btn {
+  position: absolute;
+  right: 10px; top: 50%;
+  transform: translateY(-50%);
+  background: none; border: none;
+  color: var(--muted); padding: 0;
+  display: flex; cursor: pointer;
+  transition: var(--transition);
+}
+.nav-search-btn:hover { color: var(--t); }
+.nav-search-btn svg { width: 17px; height: 17px; }
+
+/* Search dropdown */
+.nav-search-results {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0; right: 0;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  max-height: 320px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* smooth momentum scroll on iOS */
+  z-index: 210; /* raised above filter-sidebar.open (z:200) and mobile-nav (z:101) */
+  display: none;
+}
+.nav-search-results.show { display: block; }
+.search-result-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+  color: var(--text);
+}
+.search-result-item:hover { background: var(--cream); }
+.search-result-img {
+  width: 40px; height: 40px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.search-result-name  { font-size: .85rem; font-weight: 600; }
+.search-result-price { font-size: .78rem; color: var(--t); font-weight: 600; }
+
+/* Nav links */
+.nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+.nav-links a {
+  font-size: .85rem;
+  font-weight: 500;
+  color: var(--muted);
+  padding: 7px 12px;
+  border-radius: 7px;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+.nav-links a:hover  { color: var(--dark); background: var(--cream); }
+.nav-links a.active { color: var(--t);    background: var(--c50); }
+
+/* Nav actions */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.nav-action-btn {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px;
+  border-radius: 8px;
+  background: none; border: none;
+  color: var(--dark);
+  transition: var(--transition);
+}
+.nav-action-btn:hover { background: var(--cream); color: var(--t); }
+.nav-action-btn svg { width: 20px; height: 20px; }
+.nav-cart-count {
+  position: absolute;
+  top: 4px; right: 4px;
+  width: 17px; height: 17px;
+  background: var(--t);
+  color: #fff;
+  font-size: .6rem;
+  font-weight: 700;
+  border-radius: 50%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.nav-cart-count.show { display: flex; }
+
+.nav-whatsapp {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: #25d366;
+  color: #fff;
+  border-radius: 8px;
+  font-size: .82rem;
+  font-weight: 700;
+  transition: var(--transition);
+}
+.nav-whatsapp:hover { background: #128c4e; -webkit-transform: translateY(-1px); transform: translateY(-1px); }
+.nav-whatsapp svg { width: 16px; height: 16px; }
+
+/* Mobile toggle */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  width: 36px; height: 36px;
+  align-items: center;
+  justify-content: center;
+  background: none; border: none;
+  padding: 0; cursor: pointer;
+}
+.nav-toggle span {
+  display: block;
+  width: 22px; height: 2px;
+  background: var(--dark);
+  border-radius: 2px;
+  transition: var(--transition);
+}
+
+/* Mobile nav */
+.nav-mobile {
+  display: none;
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  z-index: 101;
+  background: var(--white);
+  padding: 80px 24px 24px;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  /* Prevents body from scrolling behind the open mobile nav overlay on iOS */
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.nav-mobile.open { display: flex; }
+.nav-mobile a {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--dark);
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  display: block;
+  transition: var(--transition);
+}
+.nav-mobile a:hover { color: var(--t); padding-left: 4px; }
+.nav-mobile-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 40px; height: 40px;
+  border-radius: 8px;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: var(--transition);
+}
+.nav-mobile-close:hover { background: var(--cream2); }
+.nav-mobile-close svg { width: 20px; height: 20px; color: var(--dark); }
+
+/* ══════════════════════════════════
+   FOOTER
+══════════════════════════════════ */
+.footer {
+  background: var(--dark);
+  color: rgba(255,255,255,.72);
+  padding: 64px 0 0;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.footer-brand-logo {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px;
+}
+.footer-brand-logo-mark {
+  width: 38px; height: 38px; border-radius: 9px;
+  background: var(--t);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 10px rgba(87,162,160,.35);
+}
+.footer-brand-logo-mark svg { width: 22px; height: 22px; }
+.footer-brand-name {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+}
+.footer-desc { font-size: .83rem; line-height: 1.75; margin-bottom: 20px; }
+.footer-contact-row { display: flex; align-items: center; gap: 8px; font-size: .82rem; margin-bottom: 8px; }
+.footer-contact-row svg { width: 15px; height: 15px; color: var(--t); flex-shrink: 0; }
+.footer-col h4 {
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 16px;
+}
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 9px; }
+.footer-col a { font-size: .83rem; color: rgba(255,255,255,.60); transition: var(--transition); }
+.footer-col a:hover { color: var(--t); }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,.10);
+  margin-top: 48px;
+  padding: 18px 20px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.footer-bottom p { font-size: .77rem; }
+.footer-payment { display: flex; gap: 8px; align-items: center; }
+.payment-badge {
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.65);
+  font-size: .67rem;
+  font-weight: 700;
+  padding: 4px 9px;
+  border-radius: 4px;
+  letter-spacing: .04em;
+  border: 1px solid rgba(255,255,255,.10);
+}
+
+/* ══════════════════════════════════
+   PRODUCT CARD
+══════════════════════════════════ */
+.product-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition);
+}
+.product-card:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: var(--c300);
+  -webkit-transform: translateY(-3px);
+  transform: translateY(-3px);
+}
+.product-card-img {
+  position: relative;
+  overflow: hidden;
+  background: var(--cream);
+  aspect-ratio: 1;
+}
+.product-card-img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  -webkit-transition: -webkit-transform .35s ease;
+  transition: transform .35s ease;
+}
+.product-card:hover .product-card-img img { -webkit-transform: scale(1.04); transform: scale(1.04); }
+.product-card-badge { position: absolute; top: 10px; left: 10px; }
+.product-card-wishlist {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 32px; height: 32px;
+  background: rgba(255,255,255,.92);
+  border-radius: 50%; border: none;
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+.product-card-wishlist:hover { background: #fff; -webkit-transform: scale(1.1); transform: scale(1.1); }
+.product-card-wishlist svg { width: 15px; height: 15px; color: var(--muted); }
+
+.product-card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.product-card-category { font-size: .71rem; font-weight: 700; color: var(--t); letter-spacing: .07em; text-transform: uppercase; }
+.product-card-name {
+  font-weight: 700;
+  font-size: .9rem;
+  color: var(--dark);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* Reset anchor inside card name — browser default blue+underline overrides card style */
+.product-card-name a {
+  color: inherit;
+  text-decoration: none;
+}
+.product-card-name a:hover { color: var(--t); }
+.product-card-rating { display: flex; align-items: center; gap: 6px; }
+.product-card-rating-score { font-size: .78rem; font-weight: 700; color: var(--dark); }
+.product-card-rating-count { font-size: .73rem; color: var(--muted); }
+.product-card-price { display: flex; align-items: baseline; gap: 8px; }
+.product-card-price .price { font-size: 1.15rem; font-weight: 700; color: var(--dark); font-family: var(--font-serif); }
+.product-card-price .mrp  { font-size: .8rem; color: var(--muted); text-decoration: line-through; }
+.product-card-price .off  { font-size: .75rem; font-weight: 700; color: var(--success); }
+
+.product-card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 12px 16px 16px;
+}
+.product-card-actions .btn { font-size: .8rem; padding: 9px 12px; }
+
+/* ══════════════════════════════════
+   PRODUCT GRID
+══════════════════════════════════ */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+/* ══════════════════════════════════
+   BREADCRUMB
+══════════════════════════════════ */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .78rem;
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+.breadcrumb a { color: var(--muted); transition: var(--transition); }
+.breadcrumb a:hover { color: var(--t); }
+.breadcrumb svg { width: 13px; height: 13px; color: var(--border2); }
+
+/* ══════════════════════════════════
+   PAGE HERO
+══════════════════════════════════ */
+.page-hero {
+  background: linear-gradient(135deg, var(--dark), var(--mid));
+  padding: 48px 0;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.page-hero::after {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  /* -webkit- prefix for Safari < 12.1 (pre-2018) */
+  background: -webkit-radial-gradient(circle, rgba(87,162,160,.15) 0%, transparent 70%);
+  background:         radial-gradient(circle, rgba(87,162,160,.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.page-hero h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+}
+.page-hero p { font-size: .9rem; opacity: .72; }
+
+/* ══════════════════════════════════
+   EMPTY STATE
+══════════════════════════════════ */
+.empty-state { text-align: center; padding: 80px 20px; }
+.empty-state-icon {
+  width: 72px; height: 72px;
+  border-radius: 20px;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+}
+.empty-state-icon svg { width: 36px; height: 36px; color: var(--muted); }
+.empty-state h3 { font-size: 1.1rem; color: var(--dark); margin-bottom: 8px; }
+.empty-state p  { font-size: .85rem; color: var(--muted); margin-bottom: 20px; }
+
+/* ══════════════════════════════════
+   TOAST NOTIFICATION
+══════════════════════════════════ */
+#toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  left: 24px;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+  align-items: flex-end;
+}
+.toast {
+  background: var(--dark);
+  color: #fff;
+  padding: 13px 18px;
+  border-radius: var(--radius-sm);
+  font-size: .85rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: auto;
+  -webkit-animation: toastIn .25s ease forwards;
+  animation: toastIn .25s ease forwards;
+  max-width: 320px;
+  border: 1px solid rgba(255,255,255,.08);
+}
+.toast.success { background: #059669; }
+.toast.error   { background: var(--error); }
+.toast svg { width: 16px; height: 16px; flex-shrink: 0; }
+@-webkit-keyframes toastIn  { from { opacity: 0; -webkit-transform: translateY(10px); } to { opacity: 1; -webkit-transform: translateY(0); } }
+@keyframes toastIn  { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@-webkit-keyframes toastOut { to   { opacity: 0; -webkit-transform: translateY(10px); } }
+@keyframes toastOut { to   { opacity: 0; transform: translateY(10px); } }
+
+/* ══════════════════════════════════
+   SKELETON LOADER
+══════════════════════════════════ */
+.skeleton {
+  background: linear-gradient(90deg, var(--cream) 25%, var(--cream2) 50%, var(--cream) 75%);
+  background-size: 200% 100%;
+  -webkit-animation: shimmer 1.4s infinite;
+  animation: shimmer 1.4s infinite;
+  border-radius: var(--radius-sm);
+}
+@-webkit-keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ══════════════════════════════════
+   CART BADGE (MOBILE)
+══════════════════════════════════ */
+.fixed-cart-btn {
+  display: none;
+  position: fixed;
+  bottom: 20px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 90;
+  background: var(--dark);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-size: .88rem;
+  font-weight: 700;
+  box-shadow: var(--shadow-lg);
+  align-items: center;
+  gap: 8px;
+  border: none;
+  text-decoration: none;
+  transition: var(--transition);
+}
+.fixed-cart-btn.show { display: flex; }
+.fixed-cart-btn:hover { background: var(--mid); }
+.fixed-cart-btn svg { width: 18px; height: 18px; }
+
+/* ══════════════════════════════════
+   QUANTITY CONTROL
+══════════════════════════════════ */
+.qty-control {
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.qty-btn {
+  width: 36px; height: 36px;
+  background: var(--cream);
+  border: none;
+  font-size: 1rem; font-weight: 700;
+  color: var(--dark);
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex; align-items: center; justify-content: center;
+  /* Eliminates 300ms tap delay on iOS/Android without disabling pinch-zoom */
+  touch-action: manipulation;
+}
+.qty-btn:hover { background: var(--cream2); color: var(--t); }
+.qty-input {
+  width: 44px; height: 36px;
+  border: none;
+  border-left: 1.5px solid var(--border);
+  border-right: 1.5px solid var(--border);
+  text-align: center;
+  font-size: .9rem; font-weight: 700;
+  color: var(--dark);
+  background: var(--white);
+  outline: none;
+  -moz-appearance: textfield;
+}
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+/* ══════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════ */
+@media (max-width: 1024px) {
+  .products-grid { grid-template-columns: repeat(3, 1fr); }
+  .nav-links { display: none; }
+}
+
+@media (max-width: 768px) {
+  .nav-search  { display: none; }
+  .nav-whatsapp span { display: none; }
+  .nav-toggle  { display: flex; }
+  .products-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .footer-grid   { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .section { padding: 48px 0; }
+}
+
+@media (max-width: 480px) {
+  .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .product-card-actions { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  :root { --nav-h: 60px; }
+}
+
+/* ── Logo Image (replaces SVG mark) ── */
+.nav-logo-mark { display: none; } /* hide old SVG container */
+.nav-logo-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+  /* Matches the nav-logo-mark sizing exactly */
+}
+.footer-logo-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 9px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* ── Footer Social Icons ── */
+.footer-social {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.footer-social-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+.footer-social-btn svg { width: 17px; height: 17px; }
+.footer-social-btn.wa  { background: #25d366; color: #fff; }
+.footer-social-btn.ig  { background: linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); color: #fff; }
+.footer-social-btn.fb  { background: #1877f2; color: #fff; }
+.footer-social-btn.tg  { background: #0088cc; color: #fff; }
+.footer-social-btn.gm  { background: #ea4335; color: #fff; }
+.footer-social-btn.yt  { background: #ff0000; color: #fff; }
+.footer-social-btn:hover { -webkit-transform: translateY(-2px); transform: translateY(-2px); opacity: .88; }
+
+/* ── Homepage Social Strip ── */
+.social-strip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 50px;
+  font-size: .78rem;
+  font-weight: 600;
+  color: #fff;
+  transition: var(--transition);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.social-strip-btn:hover { opacity: .85; -webkit-transform: translateY(-1px); transform: translateY(-1px); }
+.social-strip-btn.wa  { background: rgba(37,211,102,.20); border: 1px solid rgba(37,211,102,.35); }
+.social-strip-btn.ig  { background: rgba(220,39,67,.20); border: 1px solid rgba(220,39,67,.35); }
+.social-strip-btn.fb  { background: rgba(24,119,242,.20); border: 1px solid rgba(24,119,242,.35); }
+.social-strip-btn.tg  { background: rgba(0,136,204,.20); border: 1px solid rgba(0,136,204,.35); }
+.social-strip-btn.yt  { background: rgba(255,0,0,.20); border: 1px solid rgba(255,0,0,.35); }
+.social-strip-btn span { color: rgba(255,255,255,.85); }
+@media(max-width:600px) {
+  .social-strip-btn span { display: none; }
+  .social-strip-btn { padding: 8px 10px; border-radius: 50%; width: 36px; height: 36px; justify-content: center; }
+}
+
+/* ══════════════════════════════════
+   CROSS-BROWSER FALLBACKS
+══════════════════════════════════ */
+
+/* ── aspect-ratio fallback for Safari ≤ 14 / iOS 14 ── */
+/* Safari 14 and older don't support aspect-ratio. The product card image
+   area collapses to 0 height on those devices. The @supports block below
+   applies a padding-top: 100% hack (the classic square-ratio trick) only
+   when aspect-ratio is not natively understood, so modern browsers are
+   completely unaffected by this rule. */
+@supports not (aspect-ratio: 1) {
+  .product-card-img {
+    height: 0;
+    padding-top: 100%; /* creates a 1:1 square via padding trick */
+    position: relative;
+  }
+  .product-card-img > * {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+  }
+}
+
+/* ── Smoother font rendering on older WebKit (Safari/Chrome < 90) ── */
+/* -webkit-font-smoothing is already on body. Adding -moz-osx-font-smoothing
+   for Firefox on macOS — already present. Ensuring both are on .btn too
+   as buttons create a new stacking context that can lose inherited smoothing
+   in some older Blink versions. */
+.btn {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── flex gap fallback for Safari < 14.1 ── */
+/* Safari < 14.1 doesn't support gap in flexbox (only in Grid).
+   The .stars, .nav-actions, .footer-social, and social-strip rows all use flex+gap.
+   We supply a margin-right fallback inside a @supports block: modern browsers
+   use gap and ignore the margins; legacy Safari sees only the margins. */
+@supports not (gap: 1px) {
+  .stars .star         { margin-right: 1px; }
+  .nav-links li        { margin-right: 4px; }
+  .nav-actions > *     { margin-right: 6px; }
+  .nav-actions > *:last-child { margin-right: 0; }
+  .footer-social .footer-social-btn { margin-right: 8px; }
+  .footer-social .footer-social-btn:last-child { margin-right: 0; }
+  .product-card-actions .btn { margin-right: 8px; }
+  .product-card-actions .btn:last-child { margin-right: 0; }
+}
+
+/* ── overscroll-behavior vendor aliases ── */
+/* Standard `overscroll-behavior` has no -webkit- prefix, but older Chrome
+   (< 63) used -webkit-overflow-scrolling:touch instead for scroll containment.
+   The existing -webkit-overflow-scrolling:touch on .nav-mobile already handles
+   that. Adding the non-standard MS touch-action alias for IE 11 completeness. */
+.nav-mobile {
+  -ms-scroll-chaining: none;   /* IE 11 equivalent of overscroll-behavior:contain */
+}
+
+/* ══════════════════════════════════
+   MOBILE RESPONSIVENESS ADDITIONS
+══════════════════════════════════ */
+
+/* ── Narrow phone (≤ 400px): nav inner spacing ── */
+/* On 360-380px phones the nav logo + WhatsApp button compete for the same
+   ~340px of usable space. Reducing nav-inner gap prevents overlap/overflow. */
+@media (max-width: 400px) {
+  .nav-inner { gap: 12px; padding: 0 14px; }
+  .nav-logo-name { font-size: 1.1rem; }
+  .nav-logo-img { width: 36px; height: 36px; } /* .nav-logo-mark omitted — already display:none */
+}
+
+/* ── Toast on very narrow screens ── */
+/* right:24 + left:24 = 48px margin, max-width:320px means on a 360px phone
+   the toast is 312px wide which is fine, but aligning it left-to-right
+   with full-width feels better on ultra-small screens. */
+@media (max-width: 400px) {
+  #toast-container { right: 12px; left: 12px; align-items: stretch; }
+  .toast { max-width: 100%; }
+}
+
+/* ── Page hero padding reduction on small phones ── */
+/* 48px top/bottom padding wastes vertical space on 360-480px screens. */
+@media (max-width: 480px) {
+  .page-hero { padding: 32px 0; }
+  .page-hero h1 { margin-bottom: 6px; }
+}
+
+/* ── Breadcrumb overflow handling ── */
+/* Long product names in breadcrumbs can push past the viewport edge.
+   flex-wrap ensures they reflow gracefully. */
+@media (max-width: 600px) {
+  .breadcrumb { flex-wrap: wrap; row-gap: 4px; }
+}
+
+/* ── Section heading on narrow screens ── */
+/* clamp(1.8rem, 3vw, 2.6rem) can still be ~1.8rem on 360px phones
+   which may overflow if the heading has long words. */
+@media (max-width: 400px) {
+  .section-head h2 { font-size: 1.5rem; }
+}
+
+/* ── Footer bottom on small phones ── */
+/* flex row with justify-content:space-between wraps but items need centering */
+@media (max-width: 480px) {
+  .footer-bottom { justify-content: center; text-align: center; }
+  .footer-payment { justify-content: center; }
+}
+
+/* ── Footer grid: 2-col → 1-col transition needs font size guard ── */
+/* At 1-col layout footer column headings can be very wide. Cap padding. */
+@media (max-width: 480px) {
+  .footer-grid { padding: 0 16px; }
+  .footer-col h4 { margin-bottom: 10px; }
+}
+
+/* ── Products grid: enforce minimum card width at very small viewport ── */
+/* 2 columns at 10px gap on a 320px phone gives ~150px per card.
+   The product card body needs at least 140px to render legibly. */
+@media (max-width: 360px) {
+  .products-grid { grid-template-columns: 1fr; gap: 12px; }
+}
+
+/* ── Cart/checkout page: form inputs full-width on mobile ── */
+@media (max-width: 600px) {
+  .form-control { font-size: 16px; } /* prevents iOS auto-zoom on focus (zoom triggers when <16px) */
+}
+
+/* ── iOS zoom prevention — inputs must be ≥ 16px to prevent auto-zoom on focus ── */
+/* iOS Safari zooms the viewport when a focused input has font-size < 16px.
+   This affects the nav search box (.88rem ≈ 14px) and any other sub-16px inputs.
+   Setting font-size:16px only on touch-capable breakpoints preserves desktop design. */
+@media (max-width: 768px) {
+  .nav-search input { font-size: 16px; }
+}
+
+/* ── Cart count badge: enforce circular shape for single-digit numbers ── */
+/* Without min-width, "1" is narrower than 17px and the border-radius:50%
+   renders an oval instead of a circle on Chrome/Edge. */
+.nav-cart-count {
+  min-width: 17px;
+  line-height: 17px;
+}
+
+/* ══════════════════════════════════
+   ADDITIONAL CROSS-BROWSER FIXES v2
+══════════════════════════════════ */
+
+/* ── accent-color fallback for Safari < 15.4 ──
+   accent-color sets the teal colour on checkboxes/radios.
+   Safari < 15.4 ignores it, showing default grey.
+   We can't fully replicate it without custom checkbox CSS,
+   but we can at least add the -webkit- form for future compat. */
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--t);
+}
+
+/* ── button -webkit-appearance reset for Safari ──
+   Safari applies OS-native button styles that override custom CSS.
+   Adding -webkit-appearance:none ensures buttons look consistent. */
+button,
+.btn,
+input[type="submit"],
+input[type="button"],
+input[type="reset"] {
+  -webkit-appearance: none;
+}
+
+/* ── filter-sidebar smooth open/close on mobile ──
+   The sidebar snaps in/out without a transition on mobile.
+   Using opacity+visibility for a fade prevents reflow jank. */
+@media (max-width: 900px) {
+  .filter-sidebar {
+    -webkit-transition: opacity .2s ease, visibility .2s ease;
+    transition: opacity .2s ease, visibility .2s ease;
+    opacity: 0;
+    visibility: hidden;
+  }
+  .filter-sidebar.open {
+    opacity: 1;
+    visibility: visible;
+  }
+  .filter-overlay {
+    -webkit-transition: opacity .2s ease;
+    transition: opacity .2s ease;
+    opacity: 0;
+  }
+  .filter-overlay.show {
+    opacity: 1;
+  }
+}
+
+/* ── -webkit-user-select for text selection consistency ──
+   Interactive labels and badges shouldn't be selectable (accidental
+   double-tap on mobile selects them, which looks broken). */
+.badge, .nav-links a, .footer-col a, .filter-option,
+.tab-btn, .payment-badge, .trust-pill {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+/* ── Safe area inset for iPhone notch/Dynamic Island ──
+   The fixed toast container and fixed cart button can be
+   obscured by the iPhone bottom home indicator without padding. */
+#toast-container {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.fixed-cart-btn {
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+}

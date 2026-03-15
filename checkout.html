@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout | Detoxy Hijama</title>
+  <meta name="robots" content="noindex,nofollow"/>
+  <meta name="description" content="Secure checkout at Detoxy Hijama. Enter your delivery details and place your order."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/style.css"/>
+  <style>
+    .checkout-page{display:grid;grid-template-columns:1fr 380px;gap:32px;padding:40px 0 80px;align-items:start}
+    .checkout-form-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:28px 32px}
+    .checkout-section-title{font-size:1rem;font-weight:700;color:var(--dark);margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+    .checkout-section-title .step-num{width:26px;height:26px;border-radius:50%;background:var(--t);color:#fff;font-size:.78rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .payment-method{padding:14px 16px;border:2px solid var(--border);border-radius:10px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:var(--transition);margin-bottom:10px}
+    .payment-method.selected{border-color:var(--t);background:var(--tp)}
+    .payment-method input[type="radio"]{accent-color:var(--t);width:16px;height:16px}
+    .payment-method-icon{width:38px;height:38px;border-radius:8px;background:var(--cream);display:flex;align-items:center;justify-content:center}
+    .payment-method-icon svg{width:20px;height:20px;color:var(--dark)}
+    .payment-method-name{font-weight:700;font-size:.88rem;color:var(--dark)}
+    .payment-method-desc{font-size:.75rem;color:var(--muted)}
+
+    .order-summary{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px;position:sticky;top:calc(var(--nav-h) + 20px)}
+    .order-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+    .order-item:last-child{border-bottom:none}
+    .order-item-img{width:54px;height:54px;border-radius:8px;object-fit:cover;border:1px solid var(--border);flex-shrink:0}
+    .order-item-name{font-size:.84rem;font-weight:600;color:var(--dark);line-height:1.35;margin-bottom:2px}
+    .order-item-qty{font-size:.75rem;color:var(--muted)}
+    .order-item-price{font-size:.9rem;font-weight:700;color:var(--dark);margin-left:auto;flex-shrink:0}
+
+    @media(max-width:860px){.checkout-page{grid-template-columns:1fr}.order-summary{position:static}}
+    @media(max-width:540px){.form-row{grid-template-columns:1fr}}
+  </style>
+  <link rel="icon" type="image/png" href="/assets/images/favicon.png"/>
+  <link rel="apple-touch-icon" href="/assets/images/logo-192.png"/>
+</head>
+<body>
+<div id="header-mount" data-page=""></div>
+
+<section class="page-hero">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/index.html">Home</a>
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      <a href="/cart.html">Cart</a>
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      <span aria-current="page">Checkout</span>
+    </nav>
+    <h1>Secure Checkout</h1>
+  </div>
+</section>
+
+<div class="container" id="checkoutContainer">
+  <div class="checkout-page">
+    <div>
+      <!-- CONTACT INFO -->
+      <div class="checkout-form-wrap" style="margin-bottom:20px">
+        <div class="checkout-section-title"><span class="step-num">1</span>Contact Information</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="fullName">Full Name *</label>
+            <input type="text" id="fullName" class="form-control" placeholder="Your full name" required autocomplete="name"/>
+            <div class="form-error" id="err-fullName">Please enter your full name</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="phone">Mobile Number *</label>
+            <input type="tel" id="phone" class="form-control" placeholder="+91 98765 43210" required autocomplete="tel"/>
+            <div class="form-error" id="err-phone">Enter a valid 10-digit mobile number</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address (optional)</label>
+          <input type="email" id="email" class="form-control" placeholder="For order confirmation" autocomplete="email"/>
+        </div>
+      </div>
+
+      <!-- SHIPPING ADDRESS -->
+      <div class="checkout-form-wrap" style="margin-bottom:20px">
+        <div class="checkout-section-title"><span class="step-num">2</span>Delivery Address</div>
+        <div class="form-group">
+          <label class="form-label" for="address">Street Address *</label>
+          <input type="text" id="address" class="form-control" placeholder="House no., street, area" required autocomplete="street-address"/>
+          <div class="form-error" id="err-address">Please enter your delivery address</div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="city">City *</label>
+            <input type="text" id="city" class="form-control" placeholder="City" required autocomplete="address-level2"/>
+            <div class="form-error" id="err-city">Please enter your city</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="state">State *</label>
+            <select id="state" class="form-control" required>
+              <option value="">Select state</option>
+              <option>Tamil Nadu</option><option>Maharashtra</option><option>Karnataka</option>
+              <option>Telangana</option><option>Andhra Pradesh</option><option>Kerala</option>
+              <option>Gujarat</option><option>Rajasthan</option><option>Uttar Pradesh</option>
+              <option>West Bengal</option><option>Delhi</option><option>Punjab</option>
+              <option>Haryana</option><option>Madhya Pradesh</option><option>Bihar</option>
+              <option>Other</option>
+            </select>
+            <div class="form-error" id="err-state">Please select your state</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="pincode">PIN Code *</label>
+          <input type="text" id="pincode" class="form-control" placeholder="6-digit PIN code" maxlength="6" required autocomplete="postal-code"/>
+          <div class="form-error" id="err-pincode">Enter a valid 6-digit PIN code</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="notes">Order Notes (optional)</label>
+          <textarea id="notes" class="form-control" rows="2" placeholder="Any special instructions for delivery..."></textarea>
+        </div>
+      </div>
+
+      <!-- PAYMENT METHOD -->
+      <div class="checkout-form-wrap">
+        <div class="checkout-section-title"><span class="step-num">3</span>Payment Method</div>
+        <label class="payment-method selected" id="pm-cod" onclick="selectPayment('cod')">
+          <input type="radio" name="payment" value="cod" checked/>
+          <div class="payment-method-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg></div>
+          <div>
+            <div class="payment-method-name">Cash on Delivery (COD)</div>
+            <div class="payment-method-desc">Pay in cash when your order arrives</div>
+          </div>
+        </label>
+        <label class="payment-method" id="pm-upi" onclick="selectPayment('upi')">
+          <input type="radio" name="payment" value="upi"/>
+          <div class="payment-method-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg></div>
+          <div>
+            <div class="payment-method-name">UPI / Bank Transfer</div>
+            <div class="payment-method-desc">Pay via UPI, NEFT or IMPS before dispatch</div>
+          </div>
+        </label>
+        <label class="payment-method" id="pm-whatsapp" onclick="selectPayment('whatsapp')">
+          <input type="radio" name="payment" value="whatsapp"/>
+          <div class="payment-method-icon"><svg viewBox="0 0 24 24" fill="#25d366" stroke="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></div>
+          <div>
+            <div class="payment-method-name">WhatsApp Order</div>
+            <div class="payment-method-desc">Send your order via WhatsApp, pay on delivery</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- ORDER SUMMARY -->
+    <div class="order-summary" id="orderSummary">
+      <div style="font-size:1rem;font-weight:700;color:var(--dark);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">Order Summary</div>
+      <div id="orderItems"></div>
+      <hr style="border:none;border-top:1px solid var(--border);margin:16px 0"/>
+      <div style="display:flex;justify-content:space-between;font-size:.88rem;color:var(--muted);margin-bottom:8px"><span>Subtotal</span><strong id="summarySubtotal" style="color:var(--dark)"></strong></div>
+      <div style="display:flex;justify-content:space-between;font-size:.88rem;color:var(--muted);margin-bottom:12px"><span>Shipping</span><strong id="summaryShipping" style="color:var(--dark)"></strong></div>
+      <hr style="border:none;border-top:1px solid var(--border);margin:12px 0"/>
+      <div style="display:flex;justify-content:space-between;font-weight:700;font-size:1.05rem;color:var(--dark);margin-bottom:24px"><span>Total</span><span id="summaryTotal"></span></div>
+      <button class="btn btn-primary btn-block btn-lg" id="placeOrderBtn" onclick="placeOrder()">Place Order</button>
+      <div id="orderLoader" style="display:none;text-align:center;padding:12px;font-size:.85rem;color:var(--muted)">Placing your order...</div>
+      <div id="orderError" class="alert alert-error" style="display:none;margin-top:12px"></div>
+      <p style="font-size:.72rem;color:var(--muted);margin-top:14px;text-align:center">By placing your order you agree to our Terms of Service</p>
+    </div>
+  </div>
+</div>
+
+<div id="footer-mount"></div>
+<script src="assets/js/shared.js"></script>
+<script>
+var selectedPayment = 'cod';
+
+document.addEventListener('DOMContentLoaded', function() {
+  // ── Auth guard: require login before checkout ──────────────────────────────
+  var _checkoutUser = null;
+  try { _checkoutUser = JSON.parse(localStorage.getItem('dh_user')||'null'); } catch(e){}
+  if (!_checkoutUser) {
+    // Save cart state and redirect
+    localStorage.setItem('dh_redirect_after_login','/checkout.html');
+    window.location.href = '/login.html?redirect=' + encodeURIComponent('/checkout.html') + '&msg=login_to_order';
+    return;
+  }
+
+  var hm = document.getElementById('header-mount');
+  if (hm) {
+    var frag = document.createRange().createContextualFragment(renderHeader(''));
+    hm.replaceWith(frag);
+    Cart.updateUI();
+    initSearch();
+    initMobileNav();
+    updateNavAuthLink();
+  }
+  var fm = document.getElementById('footer-mount');
+  if (fm) fm.outerHTML = renderFooter();
+
+  // Handle buy-now param
+  var params = new URLSearchParams(window.location.search);
+  var buyId = params.get('buy');
+  if (buyId) {
+    var existing = Cart.get().find(function(i){ return i.id === buyId; });
+    if (!existing) Cart.add(buyId, 1);
+  }
+
+  renderOrderSummary();
+});
+
+function selectPayment(type) {
+  selectedPayment = type;
+  ['cod','upi','whatsapp'].forEach(function(t){
+    var el = document.getElementById('pm-'+t);
+    if (el) el.classList.toggle('selected', t === type);
+  });
+}
+
+function renderOrderSummary() {
+  var items = Cart.get();
+  if (items.length === 0) {
+    document.getElementById('checkoutContainer').innerHTML = '<div class="empty-state" style="padding:80px 0"><div class="empty-state-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg></div><h3>Your cart is empty</h3><p>Add products before checking out</p><a href="/products.html" class="btn btn-primary">Shop Now</a></div>';
+    return;
+  }
+
+  var itemsEl = document.getElementById('orderItems');
+  itemsEl.innerHTML = items.map(function(item) {
+    var p = PRODUCTS.find(function(x){ return x.id === item.id; });
+    if (!p) return '';
+    return '<div class="order-item"><img src="/'+p.images[0]+'" alt="'+p.name+'" class="order-item-img" onerror="this.src=\'/assets/images/placeholder.svg\'"><div style="flex:1"><div class="order-item-name">'+p.name+'</div><div class="order-item-qty">Qty: '+item.qty+'</div></div><div class="order-item-price">'+fmtINR(p.price * item.qty)+'</div></div>';
+  }).join('');
+
+  var subtotal = Cart.total();
+  var shipping = subtotal >= 999 ? 0 : 60;
+  // Show shipping pending notice for all orders
+  var shipNotice = document.getElementById('shipping-pending-notice');
+  if (shipNotice) shipNotice.style.display = 'block';
+  document.getElementById('summarySubtotal').textContent = fmtINR(subtotal);
+  document.getElementById('summaryShipping').textContent = shipping === 0 ? 'FREE' : fmtINR(shipping);
+  document.getElementById('summaryTotal').textContent = fmtINR(subtotal + shipping);
+}
+
+function validateForm() {
+  var ok = true;
+  var fields = [
+    { id: 'fullName', errId: 'err-fullName', check: function(v){ return v.trim().length >= 2; } },
+    { id: 'phone', errId: 'err-phone', check: function(v){ return /^[6-9]\d{9}$/.test(v.replace(/\D/g,'')); } },
+    { id: 'address', errId: 'err-address', check: function(v){ return v.trim().length >= 5; } },
+    { id: 'city', errId: 'err-city', check: function(v){ return v.trim().length >= 2; } },
+    { id: 'state', errId: 'err-state', check: function(v){ return v !== ''; } },
+    { id: 'pincode', errId: 'err-pincode', check: function(v){ return /^\d{6}$/.test(v.trim()); } }
+  ];
+  fields.forEach(function(f) {
+    var el = document.getElementById(f.id);
+    var err = document.getElementById(f.errId);
+    if (!el || !err) return;
+    if (!f.check(el.value)) {
+      el.classList.add('error');
+      err.classList.add('show');
+      ok = false;
+    } else {
+      el.classList.remove('error');
+      err.classList.remove('show');
+    }
+  });
+  return ok;
+}
+
+function placeOrder() {
+  if (!validateForm()) { showToast('Please fill all required fields', 'error'); return; }
+
+  var items = Cart.get();
+  if (items.length === 0) { showToast('Cart is empty', 'error'); return; }
+
+  var btn = document.getElementById('placeOrderBtn');
+  var loader = document.getElementById('orderLoader');
+  var errEl = document.getElementById('orderError');
+  btn.disabled = true;
+  btn.textContent = 'Placing Order...';
+  loader.style.display = 'block';
+  errEl.style.display = 'none';
+
+  var subtotal = Cart.total();
+  var shipping = subtotal >= 999 ? 0 : 60;
+  // Show shipping pending notice for all orders
+  var shipNotice = document.getElementById('shipping-pending-notice');
+  if (shipNotice) shipNotice.style.display = 'block';
+  var total = subtotal + shipping;
+
+  var orderData = {
+    name: document.getElementById('fullName').value.trim(),
+    phone: document.getElementById('phone').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    address: document.getElementById('address').value.trim(),
+    city: document.getElementById('city').value.trim(),
+    state: document.getElementById('state').value,
+    pincode: document.getElementById('pincode').value.trim(),
+    notes: document.getElementById('notes').value.trim(),
+    payment: selectedPayment,
+    items: items.map(function(i) {
+      var p = PRODUCTS.find(function(x){ return x.id === i.id; });
+      return { id: i.id, name: p ? p.name : i.id, qty: i.qty, price: p ? p.price : 0 };
+    }),
+    subtotal: subtotal,
+    shipping: shipping,
+    total: total,
+    date: new Date().toISOString()
+  };
+
+  var orderId = 'DH' + Date.now().toString().slice(-8);
+  orderData.orderId = orderId;
+
+  // Save to Google Sheets if URL configured
+  var sheetsUrl = localStorage.getItem('detoxy_sheets_url');
+
+  function finalizeOrder() {
+    // Save order locally for confirmation page
+    localStorage.setItem('dh_last_order', JSON.stringify(orderData));
+    Cart.clear();
+
+    // If WhatsApp payment, send via WhatsApp
+    if (selectedPayment === 'whatsapp') {
+      var msg = 'New Order #' + orderId + '\n\n' +
+        'Name: ' + orderData.name + '\n' +
+        'Phone: ' + orderData.phone + '\n' +
+        'Address: ' + orderData.address + ', ' + orderData.city + ', ' + orderData.state + ' - ' + orderData.pincode + '\n\n' +
+        'Items:\n' + orderData.items.map(function(i){ return '- ' + i.name + ' x' + i.qty + ' = ' + fmtINR(i.price * i.qty); }).join('\n') + '\n\n' +
+        'Total: ' + fmtINR(total) + '\nPayment: COD\n\nThank you!';
+      window.open('https://wa.me/919566596077?text=' + encodeURIComponent(msg), '_blank');
+    }
+
+    window.location.href = '/confirmation.html';
+  }
+
+  if (sheetsUrl) {
+    fetch(sheetsUrl + '?action=createOrder', {
+      method: 'POST',
+      redirect: 'follow', headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(orderData)
+    }).then(function(){ finalizeOrder(); }).catch(function(){ finalizeOrder(); });
+  } else {
+    setTimeout(finalizeOrder, 800);
+  }
+}
+</script>
+</body>
+</html>
