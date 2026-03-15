@@ -52,7 +52,7 @@
       <span class="blog-logo-name">Detoxy Hijama</span>
     </div>
     <div class="blog-post-cat">Conditions</div>
-    <h1 class="blog-post-title">Hijama for Back Pain: Clinical Evidence</h1>
+    <h1 class="blog-post-title">Hijama for Back Pain: Clinical Evidence & Treatment Points</h1>
     <div class="blog-post-meta">
       <span>📅 Nov 25, 2024</span>
       <span>⏱ 9 min read</span>
@@ -61,7 +61,24 @@
   </header>
 
   <div class="blog-content" id="blogContent">
-    <p style="color:var(--muted);text-align:center;padding:20px">Loading article…</p>
+<h2>Hijama for Back Pain: Comprehensive Clinical Guide</h2>
+<p>Back pain is the single most common musculoskeletal complaint presented at hijama clinics across India. With an estimated 540 million people globally suffering from lower back pain at any given time, and chronic back pain being the leading cause of disability worldwide, effective treatment options are urgently needed. Hijama cupping therapy has emerged as one of the most evidence-supported complementary approaches for managing both acute and chronic back pain conditions — providing sustained relief that is often superior to conventional analgesics, with none of the side effects associated with long-term NSAID use.</p>
+<h2>The Evidence Base: What Clinical Research Shows</h2>
+<p>The clinical evidence for hijama in back pain is among the strongest of any complementary therapy for any musculoskeletal condition. A landmark 2006 study in Spine Journal evaluated wet cupping for 70 patients with non-specific lower back pain and found statistically significant reductions in pain scores, disability, and analgesic use compared to controls. A 2011 meta-analysis in PLOS ONE examining 16 randomised controlled trials found that cupping therapy provided significantly greater pain relief than no treatment, waiting-list controls, and sham cupping for musculoskeletal pain conditions. More recently, a 2018 systematic review specifically examining cupping for lumbar pain across 11 studies found consistent evidence of clinically meaningful pain reduction with an excellent safety profile.</p>
+<h2>Why Back Pain Responds So Well to Hijama</h2>
+<p>The back — particularly the lumbar and thoracic regions — is uniquely well-suited to hijama therapy for several physiological reasons. The large, flat muscle groups of the back (erector spinae, latissimus dorsi, trapezius, rhomboids) have rich subcutaneous capillary networks that are primary targets of wet hijama. These muscles are also significant sites of metabolic waste accumulation in sedentary, stressed, or physically overworked individuals. The fascia of the back is densely connected, meaning that myofascial restrictions can cause referred pain patterns far from the actual restriction site — and cupping's myofascial release effects address these restrictions across wide areas in a single session.</p>
+<h2>Types of Back Pain Treated by Hijama</h2>
+<p><strong>Non-Specific Lower Back Pain (NSLBP):</strong> The most common form, accounting for 80-90% of all back pain presentations, has the strongest evidence base for hijama treatment. Multiple sessions over 4-6 weeks typically produce significant, sustained improvement.</p>
+<p><strong>Disc-Related Back Pain:</strong> Hijama is beneficial as an adjunct for disc bulges and herniations, reducing the inflammatory component that drives nerve irritation and spasm. It does not mechanically correct disc pathology but significantly reduces the pain and disability associated with it.</p>
+<p><strong>Sciatica:</strong> Sciatic nerve pain from lumbosacral nerve root compression responds well to hijama, particularly when applied along the sciatic nerve distribution from the lumbar spine through the gluteal region and down the posterior leg.</p>
+<p><strong>Sacroiliac Joint Dysfunction:</strong> The sacroiliac (SI) joint is a common pain generator often missed in conventional medical evaluations. Hijama at SI joint-specific points provides targeted relief for this condition.</p>
+<p><strong>Upper Back and Thoracic Pain:</strong> Often associated with poor posture and prolonged sitting, thoracic region pain responds exceptionally well to cupping, including moving cup techniques along the thoracic spine and paravertebral muscles.</p>
+<h2>Traditional Hijama Points for Back Pain</h2>
+<p>Classical hijama medicine identifies specific therapeutic points for back pain treatment. The primary points used are: Al-Kahil (the base of the neck/upper thoracic, known as the "master point" for pain), the paravertebral points (on either side of the spine at the relevant vertebral level), the sacral points (over the sacrum for lower back and sciatic conditions), and Bladder meridian points (in traditional Chinese-influenced hijama). Additional specific points may be used based on the individual presentation and the practitioner's assessment.</p>
+<h2>The Hijama Protocol for Back Pain</h2>
+<p>A standard hijama protocol for chronic lower back pain typically consists of: an initial assessment session to identify treatment points and evaluate contraindications, 3-5 wet hijama sessions over 4-6 weeks with a minimum of 2 weeks between wet sessions (dry cupping sessions can be scheduled more frequently), and maintenance sessions monthly or bi-monthly once the acute condition has resolved. Most patients with chronic back pain report significant improvement after the first 2-3 sessions, with full therapeutic benefit achieved by 6-8 weeks of treatment.</p>
+<h2>Equipment Used for Back Pain Hijama</h2>
+<p>Effective back pain hijama requires appropriately sized cups for the large muscle groups of the back: Size 5 and 6 Indian Standard Cups or Premium silicone cups for the major paravertebral and lumbar areas, Size 3 and 4 cups for the thoracic paravertebral and mid-back areas, and the moving cup for myofascial release work along the thoracic and lumbar fascia. The Detoxy Hijama range provides all these cup sizes, along with sterile lancet pens and surgical blades for the wet hijama incision phase. All products are available at factory-direct prices with pan-India delivery.</p>
   </div>
 
   <div class="blog-cta">
@@ -94,23 +111,19 @@ function loadBlogContent() {
   try { apiUrl = localStorage.getItem('detoxy_sheets_url') || ''; } catch(e) {}
 
   function renderContent(blog) {
-    if (!blog) {
-      document.getElementById('blogContent').innerHTML =
-        '<p style="color:var(--muted);text-align:center">Article not found. <a href="/blogs.html">Return to Blog</a></p>';
-      return;
-    }
-    // Update page title and meta
-    document.title = (blog.title || '') + ' | Detoxy Hijama Blog';
-    document.getElementById('blogContent').innerHTML = blog.content ||
-      '<p>' + (blog.excerpt || '') + '</p><p style="color:var(--muted)"><em>Full article coming soon.</em></p>';
-    // Tags
-    var tags = [];
-    try { tags = typeof blog.tags === 'string' ? JSON.parse(blog.tags||'[]') : (blog.tags||[]); } catch(e) {}
-    if (tags.length) {
-      document.getElementById('blogContent').innerHTML +=
-        '<div class="blog-tags">' + tags.map(function(t) {
-          return '<span class="blog-tag">' + t + '</span>';
-        }).join('') + '</div>';
+    // Content is pre-rendered in HTML — only update title and tags from API if available
+    if (blog && blog.title) document.title = blog.title + ' | Detoxy Hijama Blog';
+    if (blog && blog.tags) {
+      var tags = [];
+      try { tags = typeof blog.tags === 'string' ? JSON.parse(blog.tags||'[]') : (blog.tags||[]); } catch(e) {}
+      if (tags.length) {
+        var blogContentEl = document.getElementById('blogContent');
+        if (blogContentEl && !blogContentEl.querySelector('.blog-tags')) {
+          blogContentEl.innerHTML += '<div class="blog-tags">' + tags.map(function(t) {
+            return '<span class="blog-tag">' + t + '</span>';
+          }).join('') + '</div>';
+        }
+      }
     }
   }
 
